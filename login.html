@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Soul Syync · Admin Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0d0b10;
+  --surface: #13111a;
+  --border: rgba(212,175,120,0.15);
+  --gold: #d4af78;
+  --text: #f0ece6;
+  --text-muted: #8b8097;
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:var(--font-body); display:flex; justify-content:center; align-items:center; height:100vh; }
+.login-box { background:var(--surface); border:1px solid var(--border); padding:40px; border-radius:12px; width:100%; max-width:400px; text-align:center; }
+.login-box h2 { font-family:var(--font-display); color:var(--gold); font-size:2rem; margin-bottom:10px; }
+.login-box p { color:var(--text-muted); font-size:0.9rem; margin-bottom:30px; }
+.input-group { margin-bottom:20px; text-align:left; }
+.input-group label { display:block; color:var(--text-muted); font-size:0.8rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.1em; }
+.input-group input { width:100%; padding:12px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:1rem; outline:none; transition:0.3s; }
+.input-group input:focus { border-color:var(--gold); background:rgba(212,175,120,0.05); }
+.login-btn { width:100%; padding:14px; background:var(--gold); color:#000; border:none; border-radius:8px; font-size:1rem; font-weight:500; cursor:pointer; transition:0.3s; margin-top:10px; }
+.login-btn:hover { opacity:0.9; transform:translateY(-1px); }
+.error-msg { color:#c9a0a0; font-size:0.85rem; margin-bottom:20px; padding:10px; background:rgba(201,160,160,0.1); border-radius:8px; border:1px solid rgba(201,160,160,0.2); }
+</style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>Soul Syync</h2>
+    <p>Admin Authorization Required</p>
+    
+    {% if error %}
+    <div class="error-msg">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/admin">
+      <div class="input-group">
+        <label>Username</label>
+        <input type="text" name="username" required autocomplete="off">
+      </div>
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" name="password" required>
+      </div>
+      <button type="submit" class="login-btn">Login to Dashboard</button>
+      <div style="margin-top: 15px; font-size: 0.85rem;">
+        <span style="color:var(--text-muted)">Need a new admin account?</span> 
+        <a href="/register-admin" style="color:var(--gold); text-decoration:none;">Register here</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

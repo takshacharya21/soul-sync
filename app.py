@@ -1,0 +1,284 @@
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from functools import wraps
+from flask_cors import CORS
+import sqlite3
+from datetime import datetime
+import os
+import socket
+from dotenv import load_dotenv
+
+load_dotenv()
+
+app = Flask(__name__, template_folder='.', static_folder='.', static_url_path='')
+CORS(app)
+app.secret_key = os.environ.get('SECRET_KEY', 'soul_syync_new_secret_key_v2_local_only')
+
+# ─── Database Configuration ───────────────────────────────────────────────────
+DATABASE = 'database.db'
+
+def get_db():
+    try:
+        conn = sqlite3.connect(DATABASE)
+        conn.row_factory = sqlite3.Row
+        return conn
+    except sqlite3.Error as e:
+        print(f"DB Connection Error: {e}")
+        return None
+
+
+# ─── Auth ─────────────────────────────────────────────────────────────────────
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            return redirect(url_for('admin'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if not session.get('logged_in'):
+        error = None
+        if request.method == 'POST':
+            username = request.form.get('username')
+            password = request.form.get('password')
+            
+            # Superadmin check (uses env variables in production)
+            admin_user = os.environ.get('ADMIN_USERNAME', 'taksh')
+            admin_pass = os.environ.get('ADMIN_PASSWORD', 'taksh2006')
+            if username == admin_user and password == admin_pass:
+                session['logged_in'] = True
+                session['role'] = 'admin'
+                return redirect(url_for('admin'))
+                
+            # Database admin check
+            conn = get_db()
+            if conn:
+                cur = conn.cursor()
+                cur.execute("SELECT * FROM users WHERE username = ? AND role = 'admin'", (username,))
+                user = cur.fetchone()
+                if user and user['password'] == password:
+                    session['logged_in'] = True
+                    session['role'] = 'admin'
+                    cur.execute("UPDATE users SET last_login = ? WHERE id = ?", (datetime.now(), user['id']))
+                    conn.commit()
+                    conn.close()
+                    return redirect(url_for('admin'))
+                else:
+                    error = "Invalid username or password"
+                conn.close()
+            else:
+                error = "Database error"
+        return render_template('login.html', error=error)
+    return render_template('admin.html')
+
+@app.route('/register-admin', methods=['GET', 'POST'])
+def register_admin():
+    error = None
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        conn = get_db()
+        if conn:
+            try:
+                cur = conn.cursor()
+                cur.execute("INSERT INTO users (username, password, role) VALUES (?, ?, 'admin')", (username, password))
+                conn.commit()
+                return redirect(url_for('admin'))
+            except sqlite3.IntegrityError:
+                error = "Admin username already exists"
+            finally:
+                conn.close()
+        else:
+            error = "Database error"
+    return render_template('register.html', error=error)
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('admin'))
+
+# ─── Routes ───────────────────────────────────────────────────────────────────
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+# ─── API: Booking ─────────────────────────────────────────────────────────────
+
+@app.route('/api/book', methods=['POST'])
+def book_session():
+    data = request.get_json()
+    required = ['name', 'email', 'phone', 'service', 'date', 'time']
+    if not all(k in data for k in required):
+        return jsonify({'success': False, 'message': 'All fields are required'}), 400
+
+    conn = get_db()
+    if not conn:
+        return jsonify({'success': False, 'message': 'Database unavailable'}), 503
+
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO bookings (name, email, phone, service, preferred_date, preferred_time, message, status, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?)
+        """, (
+            data['name'], data['email'], data['phone'],
+            data['service'], data['date'], data['time'],
+            data.get('message', ''), datetime.now()
+        ))
+        conn.commit()
+        return jsonify({'success': True, 'message': 'Booking received! We will confirm shortly.'})
+    except sqlite3.Error as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        conn.close()
+
+@app.route('/api/bookings', methods=['GET'])
+@login_required
+def get_bookings():
+    conn = get_db()
+    if not conn:
+        return jsonify({'success': False, 'data': []}), 503
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM bookings ORDER BY created_at DESC")
+        rows = cur.fetchall()
+        result = []
+        for r in rows:
+            d = dict(r)
+            # SQLite stores dates as strings usually, but just in case
+            if isinstance(d.get('created_at'), datetime):
+                d['created_at'] = d['created_at'].strftime('%Y-%m-%d %H:%M')
+            result.append(d)
+        return jsonify({'success': True, 'data': result})
+    except sqlite3.Error as e:
+        return jsonify({'success': False, 'data': [], 'message': str(e)}), 500
+    finally:
+        conn.close()
+
+@app.route('/api/bookings/<int:bid>', methods=['PATCH'])
+@login_required
+def update_booking(bid):
+    data = request.get_json()
+    status = data.get('status')
+    if status not in ['pending', 'confirmed', 'cancelled']:
+        return jsonify({'success': False, 'message': 'Invalid status'}), 400
+    conn = get_db()
+    if not conn:
+        return jsonify({'success': False}), 503
+    try:
+        cur = conn.cursor()
+        cur.execute("UPDATE bookings SET status=? WHERE id=?", (status, bid))
+        conn.commit()
+        return jsonify({'success': True})
+    except sqlite3.Error as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        conn.close()
+
+@app.route('/api/bookings/<int:bid>', methods=['DELETE'])
+@login_required
+def delete_booking(bid):
+    conn = get_db()
+    if not conn:
+        return jsonify({'success': False}), 503
+    try:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM bookings WHERE id=?", (bid,))
+        conn.commit()
+        return jsonify({'success': True})
+    except sqlite3.Error as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        conn.close()
+
+# ─── API: Contact ─────────────────────────────────────────────────────────────
+
+@app.route('/api/contact', methods=['POST'])
+def contact():
+    data = request.get_json()
+    if not all(k in data for k in ['name', 'email', 'message']):
+        return jsonify({'success': False, 'message': 'Required fields missing'}), 400
+
+    conn = get_db()
+    if not conn:
+        return jsonify({'success': False, 'message': 'Database unavailable'}), 503
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO contacts (name, email, phone, message, created_at)
+            VALUES (?, ?, ?, ?, ?)
+        """, (data['name'], data['email'], data.get('phone', ''), data['message'], datetime.now()))
+        conn.commit()
+        return jsonify({'success': True, 'message': 'Message sent! We will get back to you soon.'})
+    except sqlite3.Error as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        conn.close()
+
+@app.route('/api/contacts', methods=['GET'])
+@login_required
+def get_contacts():
+    conn = get_db()
+    if not conn:
+        return jsonify({'success': False, 'data': []}), 503
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM contacts ORDER BY created_at DESC")
+        rows = cur.fetchall()
+        result = []
+        for r in rows:
+            d = dict(r)
+            # SQLite stores dates as strings usually, but just in case
+            if isinstance(d.get('created_at'), datetime):
+                d['created_at'] = d['created_at'].strftime('%Y-%m-%d %H:%M')
+            result.append(d)
+        return jsonify({'success': True, 'data': result})
+    except sqlite3.Error as e:
+        return jsonify({'success': False, 'data': []}), 500
+    finally:
+        conn.close()
+
+# ─── API: Stats ───────────────────────────────────────────────────────────────
+
+@app.route('/api/stats', methods=['GET'])
+@login_required
+def get_stats():
+    conn = get_db()
+    if not conn:
+        return jsonify({'bookings': 0, 'contacts': 0, 'confirmed': 0, 'pending': 0})
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM bookings")
+        total_bookings = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM contacts")
+        total_contacts = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM bookings WHERE status='confirmed'")
+        confirmed = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM bookings WHERE status='pending'")
+        pending = cur.fetchone()[0]
+        return jsonify({
+            'bookings': total_bookings,
+            'contacts': total_contacts,
+            'confirmed': confirmed,
+            'pending': pending
+        })
+    except:
+        return jsonify({'bookings': 0, 'contacts': 0, 'confirmed': 0, 'pending': 0})
+    finally:
+        conn.close()
+
+if __name__ == '__main__':
+    # Get local IP so user can open on phone
+    try:
+        local_ip = socket.gethostbyname(socket.gethostname())
+    except:
+        local_ip = '0.0.0.0'
+    print('\n' + '='*50)
+    print(f'  Soul Syync is running!')
+    print(f'  PC:    http://127.0.0.1:5000')
+    print(f'  Phone: http://{local_ip}:5000')
+    print('='*50 + '\n')
+    app.run(debug=True, host='0.0.0.0', port=5000)
