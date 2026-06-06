@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from functools import wraps
 from flask_cors import CORS
-import sqlite3
+import psycopg2
+import psycopg2.extras
 from datetime import datetime
 import os
 import socket
@@ -14,17 +15,17 @@ CORS(app)
 app.secret_key = os.environ.get('SECRET_KEY', 'soul_syync_new_secret_key_v2_local_only')
 
 # ─── Database Configuration ───────────────────────────────────────────────────
-DATABASE = 'database.db'
-
 def get_db():
     try:
-        conn = sqlite3.connect(DATABASE)
-        conn.row_factory = sqlite3.Row
+        database_url = os.environ.get('DATABASE_URL')
+        if not database_url:
+            print("DATABASE_URL environment variable is missing")
+            return None
+        conn = psycopg2.connect(database_url)
         return conn
-    except sqlite3.Error as e:
+    except psycopg2.Error as e:
         print(f"DB Connection Error: {e}")
         return None
-
 
 # ─── Auth ─────────────────────────────────────────────────────────────────────
 
@@ -55,13 +56,13 @@ def admin():
             # Database admin check
             conn = get_db()
             if conn:
-                cur = conn.cursor()
-                cur.execute("SELECT * FROM users WHERE username = ? AND role = 'admin'", (username,))
+                cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+                cur.execute("SELECT * FROM users WHERE username = %s AND role = 'admin'", (username,))
                 user = cur.fetchone()
                 if user and user['password'] == password:
                     session['logged_in'] = True
                     session['role'] = 'admin'
-                    cur.execute("UPDATE users SET last_login = ? WHERE id = ?", (datetime.now(), user['id']))
+                    cur.execute("UPDATE users SET last_login = %s WHERE id = %s", (datetime.now(), user['id']))
                     conn.commit()
                     conn.close()
                     return redirect(url_for('admin'))
@@ -83,10 +84,10 @@ def register_admin():
         if conn:
             try:
                 cur = conn.cursor()
-                cur.execute("INSERT INTO users (username, password, role) VALUES (?, ?, 'admin')", (username, password))
+                cur.execute("INSERT INTO users (username, password, role) VALUES (%s, %s, 'admin')", (username, password))
                 conn.commit()
                 return redirect(url_for('admin'))
-            except sqlite3.IntegrityError:
+            except psycopg2.IntegrityError:
                 error = "Admin username already exists"
             finally:
                 conn.close()
@@ -122,7 +123,7 @@ def book_session():
         cur = conn.cursor()
         cur.execute("""
             INSERT INTO bookings (name, email, phone, service, preferred_date, preferred_time, message, status, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, 'pending', %s)
         """, (
             data['name'], data['email'], data['phone'],
             data['service'], data['date'], data['time'],
@@ -130,10 +131,11 @@ def book_session():
         ))
         conn.commit()
         return jsonify({'success': True, 'message': 'Booking received! We will confirm shortly.'})
-    except sqlite3.Error as e:
+    except psycopg2.Error as e:
         return jsonify({'success': False, 'message': str(e)}), 500
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 @app.route('/api/bookings', methods=['GET'])
 @login_required
@@ -142,21 +144,24 @@ def get_bookings():
     if not conn:
         return jsonify({'success': False, 'data': []}), 503
     try:
-        cur = conn.cursor()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute("SELECT * FROM bookings ORDER BY created_at DESC")
         rows = cur.fetchall()
         result = []
         for r in rows:
             d = dict(r)
-            # SQLite stores dates as strings usually, but just in case
             if isinstance(d.get('created_at'), datetime):
                 d['created_at'] = d['created_at'].strftime('%Y-%m-%d %H:%M')
+            import datetime as dt
+            if isinstance(d.get('preferred_date'), dt.date):
+                d['preferred_date'] = d['preferred_date'].strftime('%Y-%m-%d')
             result.append(d)
         return jsonify({'success': True, 'data': result})
-    except sqlite3.Error as e:
+    except psycopg2.Error as e:
         return jsonify({'success': False, 'data': [], 'message': str(e)}), 500
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 @app.route('/api/bookings/<int:bid>', methods=['PATCH'])
 @login_required
@@ -170,13 +175,14 @@ def update_booking(bid):
         return jsonify({'success': False}), 503
     try:
         cur = conn.cursor()
-        cur.execute("UPDATE bookings SET status=? WHERE id=?", (status, bid))
+        cur.execute("UPDATE bookings SET status=%s WHERE id=%s", (status, bid))
         conn.commit()
         return jsonify({'success': True})
-    except sqlite3.Error as e:
+    except psycopg2.Error as e:
         return jsonify({'success': False, 'message': str(e)}), 500
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 @app.route('/api/bookings/<int:bid>', methods=['DELETE'])
 @login_required
@@ -186,13 +192,14 @@ def delete_booking(bid):
         return jsonify({'success': False}), 503
     try:
         cur = conn.cursor()
-        cur.execute("DELETE FROM bookings WHERE id=?", (bid,))
+        cur.execute("DELETE FROM bookings WHERE id=%s", (bid,))
         conn.commit()
         return jsonify({'success': True})
-    except sqlite3.Error as e:
+    except psycopg2.Error as e:
         return jsonify({'success': False, 'message': str(e)}), 500
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 # ─── API: Contact ─────────────────────────────────────────────────────────────
 
@@ -209,14 +216,15 @@ def contact():
         cur = conn.cursor()
         cur.execute("""
             INSERT INTO contacts (name, email, phone, message, created_at)
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s)
         """, (data['name'], data['email'], data.get('phone', ''), data['message'], datetime.now()))
         conn.commit()
         return jsonify({'success': True, 'message': 'Message sent! We will get back to you soon.'})
-    except sqlite3.Error as e:
+    except psycopg2.Error as e:
         return jsonify({'success': False, 'message': str(e)}), 500
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 @app.route('/api/contacts', methods=['GET'])
 @login_required
@@ -225,21 +233,21 @@ def get_contacts():
     if not conn:
         return jsonify({'success': False, 'data': []}), 503
     try:
-        cur = conn.cursor()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute("SELECT * FROM contacts ORDER BY created_at DESC")
         rows = cur.fetchall()
         result = []
         for r in rows:
             d = dict(r)
-            # SQLite stores dates as strings usually, but just in case
             if isinstance(d.get('created_at'), datetime):
                 d['created_at'] = d['created_at'].strftime('%Y-%m-%d %H:%M')
             result.append(d)
         return jsonify({'success': True, 'data': result})
-    except sqlite3.Error as e:
+    except psycopg2.Error as e:
         return jsonify({'success': False, 'data': []}), 500
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 # ─── API: Stats ───────────────────────────────────────────────────────────────
 
@@ -268,10 +276,10 @@ def get_stats():
     except:
         return jsonify({'bookings': 0, 'contacts': 0, 'confirmed': 0, 'pending': 0})
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 if __name__ == '__main__':
-    # Get local IP so user can open on phone
     try:
         local_ip = socket.gethostbyname(socket.gethostname())
     except:

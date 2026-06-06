@@ -355,17 +355,90 @@ select.status-select{background:var(--surface2);border:1px solid var(--border);c
     </div>
 
     <!-- Contacts Table -->
-    <div id="panel-contacts" class="table-wrap" style="display:none">
-      <div class="table-header">
-        <h3>Inquiries & Messages</h3>
-        <span class="table-count" id="contactCount">Loading…</span>
+    <div id="panel-contacts" style="display:none">
+      <!-- Booking Messages Sub-section -->
+      <div class="table-wrap" style="margin-bottom:24px">
+        <div class="table-header">
+          <h3>📅 Booking Messages</h3>
+          <span class="table-count" id="bookingMsgCount">Loading…</span>
+        </div>
+        <div id="bookingMsgsBody"><div class="loading">Loading booking messages…</div></div>
       </div>
-      <div id="contactsBody"><div class="loading">Loading messages…</div></div>
+      <!-- Contact Inquiries Sub-section -->
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3>💬 Contact Inquiries</h3>
+          <span class="table-count" id="contactCount">Loading…</span>
+        </div>
+        <div id="contactsBody"><div class="loading">Loading messages…</div></div>
+      </div>
     </div>
   </div>
 </main>
 
 <div class="toast-admin" id="toast"></div>
+
+<!-- WhatsApp Notification Modal -->
+<div id="waModal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.78);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;overflow-y:auto">
+  <div style="background:var(--surface);border:1px solid rgba(37,211,102,0.35);border-radius:16px;width:100%;max-width:500px;overflow:hidden;box-shadow:0 0 60px rgba(37,211,102,0.15);margin:auto">
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#128C7E,#25D366);padding:20px 24px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:1.6rem">📲</span>
+        <div>
+          <div id="waModalTitle" style="color:#fff;font-weight:600;font-size:1rem">Send WhatsApp Message</div>
+          <div style="color:rgba(255,255,255,0.75);font-size:.75rem;margin-top:2px">User ke number par message bhejein</div>
+        </div>
+      </div>
+      <button onclick="closeWAModal()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center">&times;</button>
+    </div>
+    <!-- Body -->
+    <div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+
+      <!-- Phone -->
+      <div>
+        <label style="font-size:.72rem;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:6px">📞 Phone Number</label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="background:var(--surface2);border:1px solid var(--border);padding:9px 12px;border-radius:8px;color:var(--text-muted);font-size:.85rem">🇮🇳 +91</span>
+          <input id="waPhone" type="tel" placeholder="Enter phone number" style="flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 14px;border-radius:8px;font-size:.85rem;font-family:var(--font-body);outline:none">
+        </div>
+      </div>
+
+      <!-- Suggest New Time (only for cancellations) -->
+      <div id="waSuggestSection" style="background:rgba(212,175,120,0.06);border:1px solid rgba(212,175,120,0.2);border-radius:12px;padding:16px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <span style="font-size:1rem">⏰</span>
+          <span style="font-size:.8rem;color:var(--gold);font-weight:500">Naya Time Suggest Karein (Optional)</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label style="font-size:.7rem;color:var(--text-muted);display:block;margin-bottom:5px">🗓️ Naya Date</label>
+            <input id="waNewDate" type="date" onchange="updateWAMsg()" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:8px;font-size:.82rem;font-family:var(--font-body);outline:none;cursor:pointer">
+          </div>
+          <div>
+            <label style="font-size:.7rem;color:var(--text-muted);display:block;margin-bottom:5px">⏱️ Naya Time</label>
+            <input id="waNewTime" type="time" onchange="updateWAMsg()" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:8px;font-size:.82rem;font-family:var(--font-body);outline:none;cursor:pointer">
+          </div>
+        </div>
+        <p style="font-size:.7rem;color:var(--text-muted);margin-top:8px;line-height:1.5">ℹ️ Date ya time bharo to message me automatically suggest ho jayega</p>
+      </div>
+
+      <!-- Message Preview -->
+      <div>
+        <label style="font-size:.72rem;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:6px">💬 WhatsApp Message</label>
+        <textarea id="waMsg" rows="8" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:8px;font-size:.82rem;font-family:var(--font-body);resize:vertical;outline:none;line-height:1.6"></textarea>
+      </div>
+
+      <!-- Buttons -->
+      <div style="display:flex;gap:10px">
+        <button onclick="closeWAModal()" style="flex:1;padding:11px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text-muted);cursor:pointer;font-size:.85rem">Skip</button>
+        <button onclick="sendWhatsApp()" style="flex:2;padding:11px;border-radius:8px;border:none;background:linear-gradient(135deg,#128C7E,#25D366);color:#fff;cursor:pointer;font-size:.9rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px">
+          <span>💬</span> Send on WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 const API = '';
@@ -426,8 +499,8 @@ async function loadBookings() {
           <td><span class="status-badge ${b.status}">${b.status}</span></td>
           <td>
             <div class="action-btns">
-              <button class="act-btn confirm" onclick="updateBooking(${b.id},'confirmed')">✓ Confirm</button>
-              <button class="act-btn" onclick="updateBooking(${b.id},'cancelled')">✕ Cancel</button>
+              <button class="act-btn confirm" onclick="confirmBookingAction(${b.id},'confirmed','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}')">✓ Confirm</button>
+              <button class="act-btn" onclick="confirmBookingAction(${b.id},'cancelled','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}')">✕ Cancel</button>
               <button class="act-btn danger" onclick="deleteBooking(${b.id})">🗑</button>
             </div>
           </td>
@@ -436,6 +509,39 @@ async function loadBookings() {
     </table>`;
   } catch(e) {
     body.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load bookings. Is the Flask server running?</p></div>';
+  }
+}
+
+async function loadBookingMessages() {
+  const body = document.getElementById('bookingMsgsBody');
+  body.innerHTML = '<div class="loading">Loading…</div>';
+  try {
+    const r = await fetch(`${API}/api/bookings`);
+    const d = await r.json();
+    const rows = d.data || [];
+    document.getElementById('bookingMsgCount').textContent = `${rows.length} records`;
+    if (!rows.length) {
+      body.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><p>No bookings yet</p></div>';
+      return;
+    }
+    body.innerHTML = `<table>
+      <thead><tr>
+        <th>#</th><th>Name</th><th>Service</th><th>Date & Time</th><th>Phone</th><th>Message</th><th>Status</th>
+      </tr></thead>
+      <tbody>${rows.map(b => `
+        <tr>
+          <td style="color:var(--text-muted)">${b.id}</td>
+          <td><strong>${esc(b.name)}</strong><br/><small style="color:var(--text-muted)">${esc(b.email)}</small></td>
+          <td>${esc(b.service)}</td>
+          <td>${esc(b.preferred_date)}<br/><small style="color:var(--text-muted)">${esc(b.preferred_time)}</small></td>
+          <td>${esc(b.phone)}</td>
+          <td style="max-width:260px;white-space:pre-wrap;word-break:break-word;color:${b.message && b.message.trim() ? 'inherit' : 'var(--text-muted)'}">${b.message && b.message.trim() ? esc(b.message) : '—'}</td>
+          <td><span class="status-badge ${b.status}">${b.status}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+  } catch(e) {
+    body.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load booking messages.</p></div>';
   }
 }
 
@@ -484,6 +590,116 @@ async function updateBooking(id, status) {
   } catch(e) { toast('Error updating'); }
 }
 
+// WhatsApp Notification Flow
+function confirmBookingAction(id, status, phone, name, service, date, time) {
+  // First update the booking status
+  fetch(`${API}/api/bookings/${id}`, {
+    method: 'PATCH',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({status})
+  }).then(r => r.json()).then(d => {
+    if (!d.success) { toast('Update failed'); return; }
+    toast(`Booking ${status} ✓`);
+    loadAll();
+    // Show WhatsApp modal
+    showWAModal(phone, name, service, date, time, status);
+  }).catch(() => toast('Error updating'));
+}
+
+// Store modal context globally
+let _waContext = {};
+
+function showWAModal(phone, name, service, date, time, status) {
+  const isCancelled = status === 'cancelled';
+  // Use explicit Unicode escapes - pure ASCII, never corrupted
+  const cross  = '\u274C'; // ❌
+  const check  = '\u2705'; // ✅
+  const emoji  = isCancelled ? cross : check;
+
+  // Store context for message rebuild (include original booking time)
+  _waContext = { name, service, date, time, status, isCancelled };
+
+  // Show/hide suggest section
+  document.getElementById('waSuggestSection').style.display = isCancelled ? 'block' : 'none';
+  // Reset new date/time
+  document.getElementById('waNewDate').value = '';
+  document.getElementById('waNewTime').value = '';
+
+  document.getElementById('waModal').style.display = 'flex';
+  document.getElementById('waModalTitle').textContent = isCancelled ? `${emoji} Cancellation Notice` : `${emoji} Booking Confirmed`;
+  document.getElementById('waPhone').value = phone;
+
+  // Build default message
+  buildWAMsg();
+}
+
+function buildWAMsg() {
+  const { name, service, date, time, isCancelled } = _waContext;
+  const newDate = document.getElementById('waNewDate').value;
+  const newTime = document.getElementById('waNewTime').value;
+
+  // Format new date nicely if provided
+  let newDateStr = '';
+  if (newDate) {
+    const d = new Date(newDate);
+    newDateStr = d.toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  }
+  let newTimeStr = '';
+  if (newTime) {
+    const [h, m] = newTime.split(':');
+    const hr = parseInt(h);
+    newTimeStr = `${hr > 12 ? hr-12 : hr || 12}:${m} ${hr >= 12 ? 'PM' : 'AM'}`;
+  }
+
+  // Emoji using explicit UTF-16 surrogate pairs (pure ASCII in source, safe from encoding corruption)
+  const pray    = '\uD83D\uDE4F'; // 🙏
+  const cal     = '\uD83D\uDCC5'; // 📅
+  const caldate = '\uD83D\uDDD3'; // 🗓
+  const clock   = '\u23F0';       // ⏰
+  const sparkle = '\u2728';       // ✨
+  const flower  = '\uD83C\uDF38'; // 🌸
+
+  let msg = '';
+  if (isCancelled) {
+    if (newDate || newTime) {
+      // Cancellation WITH new time suggestion
+      msg = `Namaste ${name} ji ${pray}\n\nAapki Soul Syync booking *cancel* kar di gayi hai.\n${cal} Service: ${service}\n${caldate} Date: ${date}\n${clock} Time: ${time || 'N/A'}\n\n${sparkle} *Humne aapke liye ek naya slot suggest kiya hai:*\n${newDateStr ? caldate+' Naya Date: ' + newDateStr + '\n' : ''}${newTimeStr ? clock+' Naya Time: ' + newTimeStr + '\n' : ''}\nAgar ye slot aapko theek lage to reply karein, hum confirm kar denge. ${pray}\n\nDhanyawad! ${flower} *Soul Syync*`;
+    } else {
+      // Plain cancellation
+      msg = `Namaste ${name} ji ${pray}\n\nAapki Soul Syync booking *cancel* kar di gayi hai.\n${cal} Service: ${service}\n${caldate} Date: ${date}\n${clock} Time: ${time || 'N/A'}\n\nKoi sawaal ho to humse sampark karein.\nDhanyawad! ${flower} *Soul Syync*`;
+    }
+  } else {
+    msg = `Namaste ${name} ji ${pray}\n\nAapki Soul Syync booking *confirm* ho gayi hai! ${sparkle}\n${cal} Service: ${service}\n${caldate} Date: ${date}\n${clock} Time: ${time || 'N/A'}\n\nHum aapka intezaar karenge. ${pray}\nDhanyawad! ${flower} *Soul Syync*`;
+  }
+  document.getElementById('waMsg').value = msg;
+}
+
+function updateWAMsg() {
+  buildWAMsg();
+}
+
+function sendWhatsApp() {
+  let phone = document.getElementById('waPhone').value.trim();
+  const msg  = document.getElementById('waMsg').value.trim();
+  if (!phone || !msg) { toast('Phone ya message empty hai!'); return; }
+  // Clean phone: remove spaces, dashes, +
+  phone = phone.replace(/[\s\-\(\)]/g, '');
+  if (!phone.startsWith('+')) {
+    // Assume Indian number if no country code
+    if (phone.length === 10) phone = '91' + phone;
+    else phone = phone.replace(/^0/, '91');
+  } else {
+    phone = phone.replace('+', '');
+  }
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+  closeWAModal();
+}
+
+function closeWAModal() {
+  document.getElementById('waModal').style.display = 'none';
+}
+
 async function deleteBooking(id) {
   if (!confirm('Delete this booking?')) return;
   try {
@@ -499,7 +715,7 @@ function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function loadAll() { loadStats(); loadBookings(); loadContacts(); }
+function loadAll() { loadStats(); loadBookings(); loadContacts(); loadBookingMessages(); }
 
 // Particle Background Animation
 (function () {
