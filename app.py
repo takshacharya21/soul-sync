@@ -121,6 +121,19 @@ def book_session():
 
     try:
         cur = conn.cursor()
+
+        # ── One booking per phone per day restriction ─────────────────────────
+        cur.execute(
+            "SELECT COUNT(*) FROM bookings WHERE phone = %s AND preferred_date = %s AND status != 'cancelled'",
+            (data['phone'], data['date'])
+        )
+        if cur.fetchone()[0] > 0:
+            return jsonify({
+                'success': False,
+                'message': 'This phone number already has a booking for this date. Only one booking per day is allowed per number.'
+            }), 400
+        # ─────────────────────────────────────────────────────────────────────
+
         cur.execute("""
             INSERT INTO bookings (name, email, phone, service, preferred_date, preferred_time, message, session_mode, status, created_at)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'pending', %s)
