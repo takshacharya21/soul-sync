@@ -31,7 +31,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 /* Sidebar */
 .sidebar{width:240px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
 .sidebar-logo{padding:24px 20px;border-bottom:1px solid var(--border)}
-.sidebar-logo .logo-sym{color:var(--gold);font-size:20px}
+.sidebar-logo .logo-img{height:32px;width:auto;object-fit:contain}
 .sidebar-logo h2{font-family:var(--font-display);font-size:1.3rem;color:var(--gold);margin-top:4px}
 .sidebar-logo p{font-size:.7rem;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase}
 .sidebar-nav{flex:1;padding:20px 0}
@@ -282,7 +282,7 @@ select.status-select{background:var(--surface2);border:1px solid var(--border);c
 <!-- Sidebar -->
 <aside class="sidebar">
   <div class="sidebar-logo">
-    <div class="logo-sym">✦</div>
+    <img src="/logo.png.PNG" alt="Soul Syync Logo" class="logo-img">
     <h2>Soul Syync</h2>
     <p>Admin Panel</p>
   </div>
