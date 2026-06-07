@@ -358,55 +358,75 @@ button { cursor: pointer; font-family: var(--font-body); }
 .chakra-bg-hero { position: absolute; inset: 0; pointer-events: none; }
 .hchakra {
   position: absolute;
+  border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   flex-direction: column;
-  animation: hChakraFloat 18s ease-in-out infinite;
-  filter: drop-shadow(0 0 18px currentColor);
+  animation: hChakraFloat 18s ease-in-out infinite, hChakraSpin 22s linear infinite;
 }
-.chakra-svg {
-  width: 100%; height: 100%;
-  animation: hChakraSpin 28s linear infinite;
-  filter: drop-shadow(0 0 8px currentColor);
+.hchakra::before, .hchakra::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+}
+.hchakra::before { inset: 12%; animation: hChakraSpin 6s linear infinite reverse; }
+.hchakra::after  { inset: 28%; animation: hChakraSpin 10s linear infinite; }
+.hck-inner {
+  position: absolute;
+  width: 22%; height: 22%;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 20px 6px currentColor;
+  animation: hChakraPulse 2.5s ease-in-out infinite;
 }
 .hck-label {
   position: absolute;
-  bottom: -38px;
+  bottom: -52px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1px;
+  animation: hChakraSpin 22s linear infinite reverse;
   white-space: nowrap;
+}
+.hck-symbol {
+  font-size: 1rem;
+  color: currentColor;
+  opacity: 0.8;
+  line-height: 1;
 }
 .hck-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   font-style: italic;
   letter-spacing: 0.12em;
-  color: rgba(255,255,255,0.6);
+  color: currentColor;
+  opacity: 0.75;
   text-transform: capitalize;
 }
 .hck-sub {
-  font-size: 0.45rem;
+  font-size: 0.5rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
+  color: currentColor;
+  opacity: 0.5;
 }
 /* Root - Red */
-.hck-1 { width:110px;height:110px; color:rgba(255,61,61,0.6);  bottom:8%;left:6%;   animation-delay:0s; }
+.hck-1 { width:130px;height:130px; color:rgba(255,61,61,0.55);   bottom:8%;left:6%;   animation-delay:0s,0s;  border: 1px solid rgba(255,61,61,0.25); }
 /* Sacral - Orange */
-.hck-2 { width:90px; height:90px;  color:rgba(255,140,0,0.6);  bottom:20%;left:22%; animation-delay:2s; }
+.hck-2 { width:105px;height:105px; color:rgba(255,140,0,0.55);   bottom:20%;left:22%; animation-delay:2s,3s;  border: 1px solid rgba(255,140,0,0.2); }
 /* Solar Plexus - Yellow */
-.hck-3 { width:120px;height:120px; color:rgba(255,215,0,0.6);  bottom:28%;right:8%; animation-delay:4s; }
+.hck-3 { width:140px;height:140px; color:rgba(255,215,0,0.5);    bottom:28%;right:8%; animation-delay:4s,5s;  border: 1px solid rgba(255,215,0,0.2); }
 /* Heart - Green */
-.hck-4 { width:130px;height:130px; color:rgba(0,200,83,0.6);   top:35%;left:3%;     animation-delay:1s; }
+.hck-4 { width:160px;height:160px; color:rgba(0,200,83,0.5);     top:35%;left:3%;     animation-delay:1s,7s;  border: 1px solid rgba(0,200,83,0.2); }
 /* Throat - Cyan */
-.hck-5 { width:100px;height:100px; color:rgba(0,188,212,0.6);  top:18%;right:5%;    animation-delay:5s; }
+.hck-5 { width:115px;height:115px; color:rgba(0,188,212,0.55);   top:18%;right:5%;    animation-delay:5s,2s;  border: 1px solid rgba(0,188,212,0.2); }
 /* Third Eye - Indigo */
-.hck-6 { width:100px;height:100px; color:rgba(130,60,255,0.6); top:10%;left:12%;    animation-delay:3s; }
+.hck-6 { width:120px;height:120px; color:rgba(130,60,255,0.55);  top:10%;left:12%;    animation-delay:3s,9s;  border: 1px solid rgba(130,60,255,0.2); }
 /* Crown - Violet */
-.hck-7 { width:140px;height:140px; color:rgba(180,0,255,0.55); top:5%;right:16%;    animation-delay:6s; }
+.hck-7 { width:170px;height:170px; color:rgba(180,0,255,0.45);   top:5%;right:16%;    animation-delay:6s,4s;  border: 1px solid rgba(180,0,255,0.2); }
 
 @keyframes hChakraFloat {
   0%,100% { margin-top: 0px; }
@@ -416,6 +436,10 @@ button { cursor: pointer; font-family: var(--font-body); }
 @keyframes hChakraSpin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
+}
+@keyframes hChakraPulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:0.5; transform:scale(0.8); }
 }
 
 .hero-content {
@@ -1043,16 +1067,19 @@ button { cursor: pointer; font-family: var(--font-body); }
   .cta-actions a, .cta-actions button { justify-content: center; }
 
   /* ── Shrink chakras on mobile ── */
-  .hck-1 { width:50px !important; height:50px !important; bottom:6% !important; left:4% !important; }
-  .hck-2 { width:40px !important; height:40px !important; bottom:18% !important; left:18% !important; }
-  .hck-3 { width:54px !important; height:54px !important; bottom:26% !important; right:6% !important; }
-  .hck-4 { width:60px !important; height:60px !important; top:35% !important; left:2% !important; }
-  .hck-5 { width:46px !important; height:46px !important; top:16% !important; right:4% !important; }
-  .hck-6 { width:48px !important; height:48px !important; top:10% !important; left:10% !important; }
-  .hck-7 { width:64px !important; height:64px !important; top:5% !important; right:12% !important; }
+  .hck-1 { width:42px !important; height:42px !important; bottom:6% !important; left:4% !important; }
+  .hck-2 { width:34px !important; height:34px !important; bottom:18% !important; left:18% !important; }
+  .hck-3 { width:46px !important; height:46px !important; bottom:26% !important; right:6% !important; }
+  .hck-4 { width:52px !important; height:52px !important; top:35% !important; left:2% !important; }
+  .hck-5 { width:38px !important; height:38px !important; top:16% !important; right:4% !important; }
+  .hck-6 { width:40px !important; height:40px !important; top:10% !important; left:10% !important; }
+  .hck-7 { width:55px !important; height:55px !important; top:5% !important; right:12% !important; }
 
-  /* Chakra labels — hidden on mobile */
-  .hck-label { display: none; }
+  /* Chakra labels — tiny on mobile */
+  .hck-label { display: flex; bottom: -30px; gap: 0px; }
+  .hck-symbol { font-size: 0.45rem; }
+  .hck-name   { font-size: 0.38rem; letter-spacing: 0.05em; }
+  .hck-sub    { font-size: 0.3rem;  letter-spacing: 0.08em; }
 
 
   /* Shrink mandala rings on mobile */
