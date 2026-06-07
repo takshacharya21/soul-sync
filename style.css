@@ -1037,7 +1037,7 @@ button { cursor: pointer; font-family: var(--font-body); }
 @media (max-width: 768px) {
   :root { --nav-h: 60px; }
   .nav-links, .nav-cta { display: none; }
-  .hamburger { display: flex; }
+  .hamburger { display: flex; margin-left: auto; }
   .nav-links.open {
     display: flex; flex-direction: column;
     position: fixed; top: var(--nav-h); left: 0; right: 0;
