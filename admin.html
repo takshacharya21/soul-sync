@@ -81,6 +81,7 @@ tr:hover td{background:rgba(212,175,120,.03)}
 .status-badge.pending{background:rgba(232,199,122,.12);color:var(--pending);border:1px solid rgba(232,199,122,.2)}
 .status-badge.confirmed{background:rgba(143,170,156,.12);color:var(--confirmed);border:1px solid rgba(143,170,156,.2)}
 .status-badge.cancelled{background:rgba(201,160,160,.12);color:var(--cancelled);border:1px solid rgba(201,160,160,.2)}
+.status-badge.rescheduled{background:rgba(130,100,255,.12);color:#a080ff;border:1px solid rgba(130,100,255,.25)}
 .action-btns{display:flex;gap:6px}
 .act-btn{padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--text-muted);font-size:.72rem;cursor:pointer;transition:.2s}
 .act-btn:hover{color:var(--gold);border-color:var(--gold)}
@@ -497,7 +498,7 @@ async function loadBookings() {
           <td>${esc(b.preferred_date)} <br/><small style="color:var(--text-muted)">${esc(b.preferred_time)}</small></td>
           <td>${esc(b.phone)}</td>
           <td><span style="font-size:.75rem;padding:3px 8px;border-radius:10px;background:${b.session_mode==='offline'?'rgba(212,175,120,0.12)':'rgba(0,188,212,0.1)'};color:${b.session_mode==='offline'?'#d4af78':'#00bcd4'};border:1px solid ${b.session_mode==='offline'?'rgba(212,175,120,0.3)':'rgba(0,188,212,0.2)'}">${b.session_mode==='offline'?'📍 Offline':'💻 Online'}</span></td>
-          <td><span class="status-badge ${b.status}">${b.status}</span></td>
+          <td><span class="status-badge ${b.status}">${b.status === 'rescheduled' ? '📅 Rescheduled' : b.status === 'confirmed' ? '✓ Confirmed' : b.status === 'cancelled' ? '✕ Cancelled' : '⏳ Pending'}</span></td>
           <td>
             <div class="action-btns">
               <button class="act-btn confirm" onclick="confirmBookingAction(${b.id},'confirmed','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')">✓ Confirm</button>
@@ -593,7 +594,6 @@ async function updateBooking(id, status) {
 
 // WhatsApp Notification Flow
 function confirmBookingAction(id, status, phone, name, service, date, time, sessionMode) {
-  // First update the booking status
   fetch(`${API}/api/bookings/${id}`, {
     method: 'PATCH',
     headers: {'Content-Type':'application/json'},
@@ -602,27 +602,22 @@ function confirmBookingAction(id, status, phone, name, service, date, time, sess
     if (!d.success) { toast('Update failed'); return; }
     toast(`Booking ${status} ✓`);
     loadAll();
-    // Show WhatsApp modal
-    showWAModal(phone, name, service, date, time, status, sessionMode);
+    showWAModal(phone, name, service, date, time, status, sessionMode, id);
   }).catch(() => toast('Error updating'));
 }
 
 // Store modal context globally
 let _waContext = {};
 
-function showWAModal(phone, name, service, date, time, status, sessionMode) {
+function showWAModal(phone, name, service, date, time, status, sessionMode, bookingId) {
   const isCancelled = status === 'cancelled';
-  // Use explicit Unicode escapes - pure ASCII, never corrupted
   const cross  = '\u274C'; // ❌
   const check  = '\u2705'; // ✅
   const emoji  = isCancelled ? cross : check;
 
-  // Store context for message rebuild (include original booking time)
-  _waContext = { name, service, date, time, status, isCancelled, sessionMode };
+  _waContext = { name, service, date, time, status, isCancelled, sessionMode, bookingId };
 
-  // Show/hide suggest section
   document.getElementById('waSuggestSection').style.display = isCancelled ? 'block' : 'none';
-  // Reset new date/time
   document.getElementById('waNewDate').value = '';
   document.getElementById('waNewTime').value = '';
 
@@ -630,7 +625,6 @@ function showWAModal(phone, name, service, date, time, status, sessionMode) {
   document.getElementById('waModalTitle').textContent = isCancelled ? `${emoji} Cancellation Notice` : `${emoji} Booking Confirmed`;
   document.getElementById('waPhone').value = phone;
 
-  // Build default message
   buildWAMsg();
 }
 
@@ -691,7 +685,6 @@ function sendWhatsApp() {
   // Clean phone: remove spaces, dashes, +
   phone = phone.replace(/[\s\-\(\)]/g, '');
   if (!phone.startsWith('+')) {
-    // Assume Indian number if no country code
     if (phone.length === 10) phone = '91' + phone;
     else phone = phone.replace(/^0/, '91');
   } else {
@@ -699,6 +692,20 @@ function sendWhatsApp() {
   }
   const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
+
+  // If cancelled with new date/time → upgrade status to 'rescheduled'
+  if (_waContext.isCancelled && _waContext.bookingId) {
+    const newDate = document.getElementById('waNewDate').value;
+    const newTime = document.getElementById('waNewTime').value;
+    if (newDate || newTime) {
+      fetch(`${API}/api/bookings/${_waContext.bookingId}`, {
+        method: 'PATCH',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({status: 'rescheduled'})
+      }).then(() => { loadAll(); });
+    }
+  }
+
   closeWAModal();
 }
 

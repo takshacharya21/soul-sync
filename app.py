@@ -201,7 +201,7 @@ def get_bookings():
 def update_booking(bid):
     data = request.get_json()
     status = data.get('status')
-    if status not in ['pending', 'confirmed', 'cancelled']:
+    if status not in ['pending', 'confirmed', 'cancelled', 'rescheduled']:
         return jsonify({'success': False, 'message': 'Invalid status'}), 400
     conn = get_db()
     if not conn:
