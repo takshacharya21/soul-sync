@@ -27,6 +27,26 @@ def get_db():
         print(f"DB Connection Error: {e}")
         return None
 
+def run_migrations():
+    """Add new columns to existing tables if they don't exist."""
+    conn = get_db()
+    if not conn:
+        return
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            ALTER TABLE bookings
+            ADD COLUMN IF NOT EXISTS session_mode VARCHAR(10) DEFAULT 'online';
+        """)
+        conn.commit()
+        print("✓ Migrations complete")
+    except Exception as e:
+        print(f"Migration warning: {e}")
+    finally:
+        conn.close()
+
+run_migrations()
+
 # ─── Auth ─────────────────────────────────────────────────────────────────────
 
 def login_required(f):
