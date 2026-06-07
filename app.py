@@ -97,22 +97,34 @@ def admin():
 @app.route('/register-admin', methods=['GET', 'POST'])
 def register_admin():
     error = None
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        conn = get_db()
-        if conn:
-            try:
-                cur = conn.cursor()
-                cur.execute("INSERT INTO users (username, password, role) VALUES (%s, %s, 'admin')", (username, password))
-                conn.commit()
-                return redirect(url_for('admin'))
-            except psycopg2.IntegrityError:
-                error = "Admin username already exists"
-            finally:
-                conn.close()
-        else:
-            error = "Database error"
+    conn = get_db()
+    if conn:
+        try:
+            cur = conn.cursor()
+            cur.execute("SELECT COUNT(*) FROM users WHERE role = 'admin'")
+            admin_count = cur.fetchone()[0]
+            
+            if request.method == 'POST':
+                username = request.form.get('username')
+                password = request.form.get('password')
+                
+                if admin_count >= 2:
+                    error = "Maximum limit of 2 admin users reached. Cannot register more users."
+                else:
+                    cur.execute("INSERT INTO users (username, password, role) VALUES (%s, %s, 'admin')", (username, password))
+                    conn.commit()
+                    return redirect(url_for('admin'))
+            else:
+                if admin_count >= 2:
+                    error = "Maximum limit of 2 admin users reached. Registration is disabled."
+        except psycopg2.IntegrityError:
+            error = "Admin username already exists"
+        except Exception as e:
+            error = f"Database error: {str(e)}"
+        finally:
+            conn.close()
+    else:
+        error = "Database error"
     return render_template('register.html', error=error)
 
 @app.route('/logout')
