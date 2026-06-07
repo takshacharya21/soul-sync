@@ -429,9 +429,9 @@ button { cursor: pointer; font-family: var(--font-body); }
 .hck-7 { width:170px;height:170px; color:rgba(180,0,255,0.45); top:5%;right:16%; animation-delay:6s,4s; border: 1px solid rgba(180,0,255,0.2); }
 
 @keyframes hChakraFloat {
-  0%,100% { transform: translateY(0) scale(1); }
-  40%      { transform: translateY(-15px) scale(1.03); }
-  70%      { transform: translateY(10px) scale(0.97); }
+  0%,100% { margin-top: 0px; }
+  40%      { margin-top: -15px; }
+  70%      { margin-top: 10px; }
 }
 @keyframes hChakraSpin {
   from { transform: rotate(0deg); }
