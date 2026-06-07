@@ -770,6 +770,9 @@ function loadAll() { loadStats(); loadBookings(); loadContacts(); loadBookingMes
 const d = new Date();
 document.getElementById('topbarDate').textContent = d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
 loadAll();
+
+// Auto-refresh every 30 seconds
+setInterval(loadAll, 30000);
 </script>
 
 <!-- Mobile Bottom Nav -->
