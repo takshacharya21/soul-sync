@@ -179,10 +179,10 @@ button { cursor: pointer; font-family: var(--font-body); }
   text-decoration: none;
   flex-shrink: 0;
 }
-.logo-symbol { color: var(--gold); font-size: 1.2rem; }
+.logo-img { height: 28px; width: auto; object-fit: contain; }
 .logo-text {
   font-family: var(--font-display);
-  font-size: 1.3rem; font-weight: 600;
+  font-size: 1.5rem; font-weight: 600;
   color: var(--gold-light);
   letter-spacing: .05em;
 }
@@ -430,8 +430,8 @@ button { cursor: pointer; font-family: var(--font-body); }
 
 @keyframes hChakraFloat {
   0%,100% { transform: translateY(0) scale(1); }
-  40%      { transform: translateY(-18px) scale(1.04); }
-  70%      { transform: translateY(10px) scale(0.96); }
+  40%      { transform: translateY(-45px) scale(1.1); }
+  70%      { transform: translateY(25px) scale(0.93); }
 }
 @keyframes hChakraSpin {
   from { transform: rotate(0deg); }
