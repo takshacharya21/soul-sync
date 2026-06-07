@@ -152,6 +152,8 @@ function closeBooking() {
   document.getElementById('bookingSuccess').style.display = 'none';
   document.getElementById('bookingForm').style.display = '';
   document.getElementById('bookingForm').reset();
+  // Reset session mode toggle
+  selectMode('online');
 }
 
 function closeModalOnOverlay(e) {
@@ -171,13 +173,14 @@ async function submitBooking(e) {
   btn.disabled = true;
 
   const payload = {
-    name:    document.getElementById('bName').value,
-    email:   document.getElementById('bEmail').value,
-    phone:   document.getElementById('bPhone').value,
-    service: document.getElementById('bService').value,
-    date:    document.getElementById('bDate').value,
-    time:    document.getElementById('bTime').value,
-    message: document.getElementById('bMessage').value,
+    name:         document.getElementById('bName').value,
+    email:        document.getElementById('bEmail').value,
+    phone:        document.getElementById('bPhone').value,
+    service:      document.getElementById('bService').value,
+    date:         document.getElementById('bDate').value,
+    time:         document.getElementById('bTime').value,
+    message:      document.getElementById('bMessage').value,
+    session_mode: document.getElementById('bMode').value,
   };
 
   try {
@@ -247,6 +250,13 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ── Session Mode Toggle ─────────────────────────── */
+function selectMode(mode) {
+  document.getElementById('bMode').value = mode;
+  document.getElementById('btnOnline').classList.toggle('active', mode === 'online');
+  document.getElementById('btnOffline').classList.toggle('active', mode === 'offline');
 }
 
 /* ── Smooth scroll for anchor links ──────────────── */

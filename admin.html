@@ -486,8 +486,8 @@ async function loadBookings() {
     }
     body.innerHTML = `<table>
       <thead><tr>
-        <th>#</th><th>Name</th><th>Service</th><th>Date & Time</th>
-        <th>Phone</th><th>Status</th><th>Actions</th>
+        <th>#</th><th>Name</th><th>Service</th><th>Date &amp; Time</th>
+        <th>Phone</th><th>Mode</th><th>Status</th><th>Actions</th>
       </tr></thead>
       <tbody>${rows.map(b => `
         <tr id="row-${b.id}">
@@ -496,11 +496,12 @@ async function loadBookings() {
           <td>${esc(b.service)}</td>
           <td>${esc(b.preferred_date)} <br/><small style="color:var(--text-muted)">${esc(b.preferred_time)}</small></td>
           <td>${esc(b.phone)}</td>
+          <td><span style="font-size:.75rem;padding:3px 8px;border-radius:10px;background:${b.session_mode==='offline'?'rgba(212,175,120,0.12)':'rgba(0,188,212,0.1)'};color:${b.session_mode==='offline'?'#d4af78':'#00bcd4'};border:1px solid ${b.session_mode==='offline'?'rgba(212,175,120,0.3)':'rgba(0,188,212,0.2)'}">${b.session_mode==='offline'?'📍 Offline':'💻 Online'}</span></td>
           <td><span class="status-badge ${b.status}">${b.status}</span></td>
           <td>
             <div class="action-btns">
-              <button class="act-btn confirm" onclick="confirmBookingAction(${b.id},'confirmed','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}')">✓ Confirm</button>
-              <button class="act-btn" onclick="confirmBookingAction(${b.id},'cancelled','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}')">✕ Cancel</button>
+              <button class="act-btn confirm" onclick="confirmBookingAction(${b.id},'confirmed','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')">✓ Confirm</button>
+              <button class="act-btn" onclick="confirmBookingAction(${b.id},'cancelled','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')">✕ Cancel</button>
               <button class="act-btn danger" onclick="deleteBooking(${b.id})">🗑</button>
             </div>
           </td>
@@ -591,7 +592,7 @@ async function updateBooking(id, status) {
 }
 
 // WhatsApp Notification Flow
-function confirmBookingAction(id, status, phone, name, service, date, time) {
+function confirmBookingAction(id, status, phone, name, service, date, time, sessionMode) {
   // First update the booking status
   fetch(`${API}/api/bookings/${id}`, {
     method: 'PATCH',
@@ -602,14 +603,14 @@ function confirmBookingAction(id, status, phone, name, service, date, time) {
     toast(`Booking ${status} ✓`);
     loadAll();
     // Show WhatsApp modal
-    showWAModal(phone, name, service, date, time, status);
+    showWAModal(phone, name, service, date, time, status, sessionMode);
   }).catch(() => toast('Error updating'));
 }
 
 // Store modal context globally
 let _waContext = {};
 
-function showWAModal(phone, name, service, date, time, status) {
+function showWAModal(phone, name, service, date, time, status, sessionMode) {
   const isCancelled = status === 'cancelled';
   // Use explicit Unicode escapes - pure ASCII, never corrupted
   const cross  = '\u274C'; // ❌
@@ -617,7 +618,7 @@ function showWAModal(phone, name, service, date, time, status) {
   const emoji  = isCancelled ? cross : check;
 
   // Store context for message rebuild (include original booking time)
-  _waContext = { name, service, date, time, status, isCancelled };
+  _waContext = { name, service, date, time, status, isCancelled, sessionMode };
 
   // Show/hide suggest section
   document.getElementById('waSuggestSection').style.display = isCancelled ? 'block' : 'none';
@@ -634,7 +635,7 @@ function showWAModal(phone, name, service, date, time, status) {
 }
 
 function buildWAMsg() {
-  const { name, service, date, time, isCancelled } = _waContext;
+  const { name, service, date, time, isCancelled, sessionMode } = _waContext;
   const newDate = document.getElementById('waNewDate').value;
   const newTime = document.getElementById('waNewTime').value;
 
@@ -658,6 +659,7 @@ function buildWAMsg() {
   const clock   = '\u23F0';       // ⏰
   const sparkle = '\u2728';       // ✨
   const flower  = '\uD83C\uDF38'; // 🌸
+  const pin     = '\uD83D\uDCCD'; // 📍
 
   let msg = '';
   if (isCancelled) {
@@ -669,7 +671,11 @@ function buildWAMsg() {
       msg = `Namaste ${name} ji ${pray}\n\nAapki Soul Syync booking *cancel* kar di gayi hai.\n${cal} Service: ${service}\n${caldate} Date: ${date}\n${clock} Time: ${time || 'N/A'}\n\nKoi sawaal ho to humse sampark karein.\nDhanyawad! ${flower} *Soul Syync*`;
     }
   } else {
-    msg = `Namaste ${name} ji ${pray}\n\nAapki Soul Syync booking *confirm* ho gayi hai! ${sparkle}\n${cal} Service: ${service}\n${caldate} Date: ${date}\n${clock} Time: ${time || 'N/A'}\n\nHum aapka intezaar karenge. ${pray}\nDhanyawad! ${flower} *Soul Syync*`;
+    if (sessionMode === 'offline') {
+      msg = `Namaste ${name} ji ${pray}\n\nAapki Soul Syync *In-Person* booking *confirm* ho gayi hai! ${sparkle}\n${cal} Service: ${service}\n${caldate} Date: ${date}\n${clock} Time: ${time || 'N/A'}\n\n${pin} *Location:*\nJayshree Dixit - Soul Syync\nSurat, Gujarat, India\n(Exact address will be shared by the counsellor)\n\nHum aapka intezaar karenge. ${pray}\nDhanyawad! ${flower} *Soul Syync*`;
+    } else {
+      msg = `Namaste ${name} ji ${pray}\n\nAapki Soul Syync booking *confirm* ho gayi hai! ${sparkle}\n${cal} Service: ${service}\n${caldate} Date: ${date}\n${clock} Time: ${time || 'N/A'}\n\nHum aapka intezaar karenge. ${pray}\nDhanyawad! ${flower} *Soul Syync*`;
+    }
   }
   document.getElementById('waMsg').value = msg;
 }

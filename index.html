@@ -8,6 +8,23 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+<style>
+.session-toggle { display: flex; gap: 8px; margin-top: 6px; }
+.session-btn {
+  flex: 1; padding: 10px; border-radius: 12px;
+  border: 1px solid rgba(212,175,120,0.2);
+  background: rgba(255,255,255,0.03);
+  color: rgba(240,236,230,0.5);
+  font-size: .85rem; cursor: pointer;
+  transition: all 0.25s; font-family: 'DM Sans', sans-serif;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.session-btn.active {
+  background: linear-gradient(135deg, rgba(212,175,120,0.18), rgba(212,175,120,0.08));
+  border-color: rgba(212,175,120,0.6);
+  color: #d4af78;
+}
+</style>
 </head>
 <body>
 
@@ -600,6 +617,19 @@
       <button class="btn-primary" onclick="closeBooking()">Close</button>
     </div>
     <form id="bookingForm" onsubmit="submitBooking(event)">
+      <!-- Session Mode -->
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label>Session Type *</label>
+        <div class="session-toggle" id="sessionToggle">
+          <button type="button" class="session-btn active" id="btnOnline" onclick="selectMode('online')">
+            <span>💻</span> Online
+          </button>
+          <button type="button" class="session-btn" id="btnOffline" onclick="selectMode('offline')">
+            <span>📍</span> In-Person
+          </button>
+        </div>
+        <input type="hidden" id="bMode" value="online">
+      </div>
       <div class="form-row">
         <div class="form-group">
           <label>Full Name *</label>

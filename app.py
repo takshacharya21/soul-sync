@@ -122,12 +122,12 @@ def book_session():
     try:
         cur = conn.cursor()
         cur.execute("""
-            INSERT INTO bookings (name, email, phone, service, preferred_date, preferred_time, message, status, created_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, 'pending', %s)
+            INSERT INTO bookings (name, email, phone, service, preferred_date, preferred_time, message, session_mode, status, created_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'pending', %s)
         """, (
             data['name'], data['email'], data['phone'],
             data['service'], data['date'], data['time'],
-            data.get('message', ''), datetime.now()
+            data.get('message', ''), data.get('session_mode', 'online'), datetime.now()
         ))
         conn.commit()
         return jsonify({'success': True, 'message': 'Booking received! We will confirm shortly.'})
