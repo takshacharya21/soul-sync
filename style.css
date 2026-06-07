@@ -179,11 +179,11 @@ button { cursor: pointer; font-family: var(--font-body); }
   text-decoration: none;
   flex-shrink: 0;
 }
-.logo-img { height: 28px; width: auto; object-fit: contain; }
+.logo-img { height: clamp(32px, 5vw, 48px); width: auto; object-fit: contain; }
 .logo-text {
   font-family: var(--font-display);
   font-size: 1.5rem; font-weight: 600;
-  color: var(--gold-light);
+  color: #ffffff;
   letter-spacing: .05em;
 }
 .nav-links {
