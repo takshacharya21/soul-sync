@@ -280,3 +280,53 @@ window.addEventListener('scroll', () => {
     hero.style.opacity   = 1 - scrolled / (window.innerHeight * 0.8);
   }
 });
+
+/* ── Intro Splash Screen Controller ──────────────── */
+(function handleIntroSplash() {
+  const overlay = document.getElementById('introOverlay');
+  if (!overlay) return;
+
+  // Add scroll locking class immediately
+  document.documentElement.classList.add('intro-active');
+  document.body.classList.add('intro-active');
+
+  // Build stars specifically for the intro
+  const field = document.getElementById('introStarField');
+  if (field) {
+    const count = 40;
+    for (let i = 0; i < count; i++) {
+      const star = document.createElement('div');
+      const size  = Math.random() * 1.8 + 0.6;
+      const x     = Math.random() * 100;
+      const y     = Math.random() * 100;
+      const delay = Math.random() * 4;
+      const dur   = 2.5 + Math.random() * 3.5;
+      star.style.cssText = `
+        position:absolute;
+        left:${x}%; top:${y}%;
+        width:${size}px; height:${size}px;
+        border-radius:50%;
+        background:rgba(212,175,120,${0.15 + Math.random() * 0.55});
+        animation:starTwinkle ${dur}s ease-in-out ${delay}s infinite;
+      `;
+      field.appendChild(star);
+    }
+  }
+
+  // Fade out transition after 7 seconds
+  setTimeout(() => {
+    overlay.classList.add('fade-out');
+
+    // Unlock scrolling slightly before cleanup for a smooth feel
+    setTimeout(() => {
+      document.documentElement.classList.remove('intro-active');
+      document.body.classList.remove('intro-active');
+    }, 400);
+
+    // Remove overlay from DOM once transition is finished
+    setTimeout(() => {
+      overlay.remove();
+    }, 1000);
+
+  }, 7000); // 7 seconds duration
+})();
