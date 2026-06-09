@@ -1103,7 +1103,7 @@ button { cursor: pointer; font-family: var(--font-body); }
   inset: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--bg);
+  background: radial-gradient(circle at 50% 50%, #120b1f 0%, #08060c 60%, #030205 100%);
   z-index: 99999;
   display: flex;
   align-items: center;
@@ -1133,10 +1133,90 @@ button { cursor: pointer; font-family: var(--font-body); }
   z-index: 1;
 }
 
+/* Nebulae Styles */
+.intro-nebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  opacity: 0.32;
+  mix-blend-mode: screen;
+  animation: nebulaFloat 15s ease-in-out infinite alternate;
+}
+
+.nebula-violet {
+  width: min(600px, 100vw);
+  height: min(600px, 100vw);
+  background: radial-gradient(circle, #38126b 0%, transparent 70%);
+  top: -10%;
+  left: -10%;
+  animation-delay: 0s;
+}
+
+.nebula-pink {
+  width: min(700px, 100vw);
+  height: min(700px, 100vw);
+  background: radial-gradient(circle, #611142 0%, transparent 70%);
+  bottom: -15%;
+  right: -10%;
+  animation-delay: -3s;
+}
+
+.nebula-blue {
+  width: min(500px, 100vw);
+  height: min(500px, 100vw);
+  background: radial-gradient(circle, #103463 0%, transparent 70%);
+  top: 35%;
+  left: 50%;
+  transform: translateX(-50%);
+  animation-delay: -6s;
+  opacity: 0.22;
+}
+
+@keyframes nebulaFloat {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  100% { transform: translate(-30px, -20px) scale(1.15) rotate(15deg); }
+}
+
+/* Shooting Stars Styles */
+.intro-shooting-star {
+  position: absolute;
+  background: linear-gradient(90deg, rgba(255,255,255,0.9), transparent);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.shooting-star-1 {
+  top: 15%;
+  left: 15%;
+  width: 90px;
+  height: 1.5px;
+  transform: rotate(-35deg) translateX(0);
+  animation: shootStar 6s ease-out 1.2s infinite;
+}
+
+.shooting-star-2 {
+  top: 35%;
+  left: 55%;
+  width: 120px;
+  height: 1.5px;
+  transform: rotate(-35deg) translateX(0);
+  animation: shootStar 8s ease-out 3.5s infinite;
+}
+
+@keyframes shootStar {
+  0% { transform: rotate(-35deg) translateX(-150px); opacity: 0; }
+  12% { opacity: 1; }
+  35% { transform: rotate(-35deg) translateX(250px); opacity: 0; }
+  100% { transform: rotate(-35deg) translateX(250px); opacity: 0; }
+}
+
 .intro-star-field {
   position: absolute;
   inset: 0;
-  opacity: 0.6;
+  opacity: 0.85;
 }
 
 .intro-aura-blob {

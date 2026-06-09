@@ -290,24 +290,39 @@ window.addEventListener('scroll', () => {
   document.documentElement.classList.add('intro-active');
   document.body.classList.add('intro-active');
 
-  // Build stars specifically for the intro
+  // Build stars specifically for the intro (Galaxy effect)
   const field = document.getElementById('introStarField');
   if (field) {
-    const count = 40;
+    const count = 120;
     for (let i = 0; i < count; i++) {
       const star = document.createElement('div');
-      const size  = Math.random() * 1.8 + 0.6;
+      const size  = Math.random() * 2.2 + 0.4;
       const x     = Math.random() * 100;
       const y     = Math.random() * 100;
-      const delay = Math.random() * 4;
-      const dur   = 2.5 + Math.random() * 3.5;
+      const delay = Math.random() * 5;
+      const dur   = 2 + Math.random() * 4;
+      
+      // Randomize star color: 60% white/light-blue, 35% gold/orange, 5% soft purple
+      let color = 'rgba(255,255,255,';
+      const randType = Math.random();
+      if (randType > 0.95) {
+        color = 'rgba(184,168,200,'; // purple
+      } else if (randType > 0.6) {
+        color = 'rgba(212,175,120,'; // gold
+      } else if (randType > 0.4) {
+        color = 'rgba(173,216,230,'; // light blue
+      }
+      
+      const opacity = 0.25 + Math.random() * 0.75;
+      
       star.style.cssText = `
         position:absolute;
         left:${x}%; top:${y}%;
         width:${size}px; height:${size}px;
         border-radius:50%;
-        background:rgba(212,175,120,${0.15 + Math.random() * 0.55});
+        background:${color}${opacity});
         animation:starTwinkle ${dur}s ease-in-out ${delay}s infinite;
+        ${size > 1.8 ? `box-shadow: 0 0 ${size * 1.5}px ${color}${opacity * 0.6});` : ''}
       `;
       field.appendChild(star);
     }
