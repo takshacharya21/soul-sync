@@ -146,7 +146,8 @@ const modal = document.getElementById('bookingModal');
 
 function openBooking(service) {
   modal.classList.add('open');
-  modal.scrollTop = 0;                        // scroll modal to top on open
+  document.body.classList.add('modal-open');   // lock background scroll
+  modal.scrollTop = 0;                          // start from top
   if (typeof lenis !== 'undefined') lenis.stop();
   if (service) {
     const sel = document.getElementById('bService');
@@ -169,6 +170,7 @@ function openBooking(service) {
 
 function closeBooking() {
   modal.classList.remove('open');
+  document.body.classList.remove('modal-open'); // unlock background scroll
   document.body.style.overflow = '';
   if (typeof lenis !== 'undefined') lenis.start();
   document.getElementById('bookingSuccess').style.display = 'none';

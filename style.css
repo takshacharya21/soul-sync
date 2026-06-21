@@ -990,13 +990,15 @@ button { cursor: pointer; font-family: var(--font-body); }
   backdrop-filter: blur(8px);
   display: flex; align-items: flex-start; justify-content: center;
   padding: 24px 20px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
+  overflow-y: scroll;               /* always show scrollbar slot */
+  -webkit-overflow-scrolling: touch; /* iOS momentum scroll */
+  overscroll-behavior: contain;     /* prevent body from scrolling behind */
   opacity: 0; pointer-events: none;
   transition: opacity .3s;
 }
 .modal-overlay.open { opacity: 1; pointer-events: all; }
+/* Lock body scroll class applied via JS */
+body.modal-open { overflow: hidden !important; }
 .modal {
   background: var(--bg2);
   border: 1px solid var(--border);
