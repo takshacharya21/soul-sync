@@ -553,7 +553,7 @@ async function loadContacts() {
     }
     body.innerHTML = `<table>
       <thead><tr>
-        <th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Received</th>
+        <th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Received</th><th>Action</th>
       </tr></thead>
       <tbody>${rows.map(c => `
         <tr>
@@ -561,8 +561,11 @@ async function loadContacts() {
           <td><strong>${esc(c.name)}</strong></td>
           <td><a href="mailto:${esc(c.email)}" style="color:var(--gold)">${esc(c.email)}</a></td>
           <td>${esc(c.phone||'—')}</td>
-          <td style="max-width:300px;white-space:pre-wrap;word-break:break-word">${esc(c.message)}</td>
+          <td style="max-width:260px;white-space:pre-wrap;word-break:break-word">${esc(c.message)}</td>
           <td style="color:var(--text-muted);white-space:nowrap">${esc(c.created_at||'')}</td>
+          <td>
+            ${c.phone && c.phone.trim() ? `<button class="act-btn" style="background:rgba(37,211,102,0.1);border-color:rgba(37,211,102,0.3);color:#25d366;white-space:nowrap" onclick="sendFeedbackThankYou('${esc(c.phone)}','${esc(c.name)}')">💬 Thank You</button>` : '<span style="color:var(--text-muted);font-size:.75rem">No phone</span>'}
+          </td>
         </tr>`).join('')}
       </tbody>
     </table>`;
@@ -713,6 +716,28 @@ async function deleteBooking(id) {
     if (d.success) { toast('Booking deleted'); loadAll(); }
     else toast('Delete failed');
   } catch(e) { toast('Error deleting'); }
+}
+
+function sendFeedbackThankYou(phone, name) {
+  // Clean phone number
+  let p = phone.replace(/[\s\-\(\)]/g, '');
+  if (!p.startsWith('+')) {
+    if (p.length === 10) p = '91' + p;
+    else p = p.replace(/^0/, '91');
+  } else {
+    p = p.replace('+', '');
+  }
+
+  const pray    = '\uD83D\uDE4F'; // 🙏
+  const sparkle = '\u2728';       // ✨
+  const flower  = '\uD83C\uDF38'; // 🌸
+  const heart   = '\uD83D\uDC9C'; // 💜
+  const star    = '\u2B50';       // ⭐
+
+  const msg = `Namaste ${name} ji ${pray}\n\n${sparkle} *Thank you so much for your valuable feedback!* ${sparkle}\n\nAapka message humne receive kar liya hai. Aapke words hamare liye bahut important hain aur humein behtar banane mein madad karte hain. ${heart}\n\nHum jald hi aapse sampark karenge. ${star}\n\nDhanyawad! ${flower}\n*Soul Syync — Jayshree Dixit*`;
+
+  const url = `https://wa.me/${p}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
 }
 
 function esc(s) {
