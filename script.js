@@ -4,6 +4,26 @@
 
 const API = '';
 
+// Initialize Lenis Smooth Scroll
+const lenis = new Lenis({
+  duration: 1.1,
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  direction: 'vertical',
+  gestureDirection: 'vertical',
+  smooth: true,
+  mouseMultiplier: 1.0,
+  smoothTouch: false,
+  touchMultiplier: 2,
+  infinite: false,
+});
+
+function raf(time) {
+  lenis.raf(time);
+  requestAnimationFrame(raf);
+}
+
+requestAnimationFrame(raf);
+
 /* ── Cursor Aura ──────────────────────────────────── */
 const cursorAura = document.getElementById('cursorAura');
 document.addEventListener('mousemove', (e) => {
@@ -127,6 +147,7 @@ const modal = document.getElementById('bookingModal');
 function openBooking(service) {
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
+  if (typeof lenis !== 'undefined') lenis.stop();
   if (service) {
     const sel = document.getElementById('bService');
     if (sel) {
@@ -149,6 +170,7 @@ function openBooking(service) {
 function closeBooking() {
   modal.classList.remove('open');
   document.body.style.overflow = '';
+  if (typeof lenis !== 'undefined') lenis.start();
   document.getElementById('bookingSuccess').style.display = 'none';
   document.getElementById('bookingForm').style.display = '';
   document.getElementById('bookingForm').reset();
@@ -265,8 +287,8 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     const target = document.querySelector(a.getAttribute('href'));
     if (target) {
       e.preventDefault();
-      const top = target.getBoundingClientRect().top + window.scrollY - parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'));
-      window.scrollTo({ top, behavior: 'smooth' });
+      const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
+      lenis.scrollTo(target, { offset: -offset });
     }
   });
 });
@@ -289,6 +311,7 @@ window.addEventListener('scroll', () => {
   // Add scroll locking class immediately
   document.documentElement.classList.add('intro-active');
   document.body.classList.add('intro-active');
+  if (typeof lenis !== 'undefined') lenis.stop();
 
   // Build stars specifically for the intro (Galaxy effect)
   const field = document.getElementById('introStarField');
@@ -336,6 +359,7 @@ window.addEventListener('scroll', () => {
     setTimeout(() => {
       document.documentElement.classList.remove('intro-active');
       document.body.classList.remove('intro-active');
+      if (typeof lenis !== 'undefined') lenis.start();
     }, 400);
 
     // Remove overlay from DOM once transition is finished
