@@ -988,10 +988,12 @@ button { cursor: pointer; font-family: var(--font-body); }
   position: fixed; inset: 0; z-index: 2000;
   background: rgba(10,8,15,.85);
   backdrop-filter: blur(8px);
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 24px 20px;
+  overflow-y: auto;
   opacity: 0; pointer-events: none;
   transition: opacity .3s;
+  scroll-behavior: smooth;
 }
 .modal-overlay.open { opacity: 1; pointer-events: all; }
 .modal {
@@ -1000,8 +1002,8 @@ button { cursor: pointer; font-family: var(--font-body); }
   border-radius: var(--radius-lg);
   padding: 48px 40px;
   width: 100%; max-width: 560px;
-  max-height: 90vh; overflow-y: auto;
   position: relative;
+  margin: auto;
   transform: translateY(20px);
   transition: transform .35s;
 }
