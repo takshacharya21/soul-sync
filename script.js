@@ -146,7 +146,7 @@ const modal = document.getElementById('bookingModal');
 
 function openBooking(service) {
   modal.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  modal.scrollTop = 0;                        // scroll modal to top on open
   if (typeof lenis !== 'undefined') lenis.stop();
   if (service) {
     const sel = document.getElementById('bService');

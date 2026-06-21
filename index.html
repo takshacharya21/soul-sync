@@ -1,705 +1,768 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Soul Syync | Ancient Wisdom · Modern Vibes</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
-<style>
-.session-toggle { display: flex; gap: 8px; margin-top: 6px; }
-.session-btn {
-  flex: 1; padding: 10px; border-radius: 12px;
-  border: 1px solid rgba(212,175,120,0.2);
-  background: rgba(255,255,255,0.03);
-  color: rgba(240,236,230,0.5);
-  font-size: .85rem; cursor: pointer;
-  transition: all 0.25s; font-family: 'DM Sans', sans-serif;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-}
-.session-btn.active {
-  background: linear-gradient(135deg, rgba(212,175,120,0.18), rgba(212,175,120,0.08));
-  border-color: rgba(212,175,120,0.6);
-  color: #d4af78;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soul Syync | Ancient Wisdom · Modern Vibes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@400;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <style>
+    .session-toggle {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .session-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(212, 175, 120, 0.2);
+      background: rgba(255, 255, 255, 0.03);
+      color: rgba(240, 236, 230, 0.5);
+      font-size: .85rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .session-btn.active {
+      background: linear-gradient(135deg, rgba(212, 175, 120, 0.18), rgba(212, 175, 120, 0.08));
+      border-color: rgba(212, 175, 120, 0.6);
+      color: #d4af78;
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- ░░ INTRO SPLASH SCREEN ░░ -->
-<div class="intro-overlay" id="introOverlay">
-  <div class="intro-cosmos">
-    <div class="intro-star-field" id="introStarField"></div>
-    <div class="intro-aura-blob"></div>
-    <div class="intro-mandala-ring"></div>
-    
-    <!-- Galaxy Nebulae -->
-    <div class="intro-nebula nebula-violet"></div>
-    <div class="intro-nebula nebula-pink"></div>
-    <div class="intro-nebula nebula-blue"></div>
-    
-    <!-- Galaxy Shooting Stars -->
-    <div class="intro-shooting-star shooting-star-1"></div>
-    <div class="intro-shooting-star shooting-star-2"></div>
-  </div>
-  <div class="intro-content">
-    <div class="intro-logo-wrap">
-      <img src="/logo.png.PNG" alt="Soul Syync Logo" class="intro-logo">
-      <div class="intro-logo-glow"></div>
+  <!-- ░░ INTRO SPLASH SCREEN ░░ -->
+  <div class="intro-overlay" id="introOverlay">
+    <div class="intro-cosmos">
+      <div class="intro-star-field" id="introStarField"></div>
+      <div class="intro-aura-blob"></div>
+      <div class="intro-mandala-ring"></div>
+
+      <!-- Galaxy Nebulae -->
+      <div class="intro-nebula nebula-violet"></div>
+      <div class="intro-nebula nebula-pink"></div>
+      <div class="intro-nebula nebula-blue"></div>
+
+      <!-- Galaxy Shooting Stars -->
+      <div class="intro-shooting-star shooting-star-1"></div>
+      <div class="intro-shooting-star shooting-star-2"></div>
     </div>
-    <div class="intro-text-wrap">
-      <p class="intro-subtitle">Welcome to</p>
-      <h1 class="intro-title">
-        <span class="intro-title-line">Soul</span>
-        <span class="intro-title-line accent">Syync</span>
+    <div class="intro-content">
+      <div class="intro-logo-wrap">
+        <img src="/logo.png.PNG" alt="Soul Syync Logo" class="intro-logo">
+        <div class="intro-logo-glow"></div>
+      </div>
+      <div class="intro-text-wrap">
+        <p class="intro-subtitle">Welcome to</p>
+        <h1 class="intro-title">
+          <span class="intro-title-line">Soul</span>
+          <span class="intro-title-line accent">Syync</span>
+        </h1>
+        <p class="intro-tagline">Ancient Wisdom · Modern Vibes</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ CURSOR AURA ░░ -->
+  <div class="cursor-aura" id="cursorAura"></div>
+
+  <!-- ░░ NAVIGATION ░░ -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#home" class="nav-logo">
+        <img src="/logo.png.PNG" alt="Soul Syync Logo" class="logo-img">
+        <span class="logo-text">Soul Syync</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#testimonials">Stories</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="nav-cta" onclick="openBooking()">Book a Session</button>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ░░ HERO ░░ -->
+  <section class="hero" id="home">
+    <div class="hero-cosmos">
+      <div class="star-field" id="starField"></div>
+      <div class="mandala-wrap">
+        <div class="mandala-ring m-ring-1"></div>
+        <div class="mandala-ring m-ring-2"></div>
+        <div class="mandala-ring m-ring-3"></div>
+        <div class="mandala-ring m-ring-4"></div>
+        <div class="mandala-ring m-ring-5"></div>
+        <div class="mandala-spokes">
+          <div class="spoke spoke-1"></div>
+          <div class="spoke spoke-2"></div>
+          <div class="spoke spoke-3"></div>
+          <div class="spoke spoke-4"></div>
+        </div>
+        <div class="mandala-dots">
+          <div class="mdot d1"></div>
+          <div class="mdot d2"></div>
+          <div class="mdot d3"></div>
+          <div class="mdot d4"></div>
+          <div class="mdot d5"></div>
+          <div class="mdot d6"></div>
+        </div>
+      </div>
+      <div class="aura-blob blob-1"></div>
+      <div class="aura-blob blob-2"></div>
+      <!-- 7 Chakras floating in background -->
+      <div class="chakra-bg-hero">
+        <div class="hchakra hck-1">
+          <div class="hck-inner"></div>
+          <div class="hck-label">
+            <span class="hck-symbol">☽</span>
+            <span class="hck-name">Muladhara</span>
+            <span class="hck-sub">Root</span>
+          </div>
+        </div>
+        <div class="hchakra hck-2">
+          <div class="hck-inner"></div>
+          <div class="hck-label">
+            <span class="hck-symbol">☿</span>
+            <span class="hck-name">Svadhisthana</span>
+            <span class="hck-sub">Sacral</span>
+          </div>
+        </div>
+        <div class="hchakra hck-3">
+          <div class="hck-inner"></div>
+          <div class="hck-label">
+            <span class="hck-symbol">☀</span>
+            <span class="hck-name">Manipura</span>
+            <span class="hck-sub">Solar Plexus</span>
+          </div>
+        </div>
+        <div class="hchakra hck-4">
+          <div class="hck-inner"></div>
+          <div class="hck-label">
+            <span class="hck-symbol">✦</span>
+            <span class="hck-name">Anahata</span>
+            <span class="hck-sub">Heart</span>
+          </div>
+        </div>
+        <div class="hchakra hck-5">
+          <div class="hck-inner"></div>
+          <div class="hck-label">
+            <span class="hck-symbol">◎</span>
+            <span class="hck-name">Vishuddha</span>
+            <span class="hck-sub">Throat</span>
+          </div>
+        </div>
+        <div class="hchakra hck-6">
+          <div class="hck-inner"></div>
+          <div class="hck-label">
+            <span class="hck-symbol">◉</span>
+            <span class="hck-name">Ajna</span>
+            <span class="hck-sub">Third Eye</span>
+          </div>
+        </div>
+        <div class="hchakra hck-7">
+          <div class="hck-inner"></div>
+          <div class="hck-label">
+            <span class="hck-symbol">✿</span>
+            <span class="hck-name">Sahasrara</span>
+            <span class="hck-sub">Crown</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-content">
+      <p class="hero-eyebrow reveal">Healing · Counselling · Astrology</p>
+      <h1 class="hero-title reveal">
+        <span class="title-line">Soul</span>
+        <span class="title-line accent">Syync</span>
       </h1>
-      <p class="intro-tagline">Ancient Wisdom · Modern Vibes</p>
-    </div>
-  </div>
-</div>
-
-<!-- ░░ CURSOR AURA ░░ -->
-<div class="cursor-aura" id="cursorAura"></div>
-
-<!-- ░░ NAVIGATION ░░ -->
-<nav class="nav" id="nav">
-  <div class="nav-inner">
-    <a href="#home" class="nav-logo">
-      <img src="/logo.png.PNG" alt="Soul Syync Logo" class="logo-img">
-      <span class="logo-text">Soul Syync</span>
-    </a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#services">Services</a></li>
-      <li><a href="#testimonials">Stories</a></li>
-      <li><a href="#faq">FAQ</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <button class="nav-cta" onclick="openBooking()">Book a Session</button>
-    <button class="hamburger" id="hamburger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</nav>
-
-<!-- ░░ HERO ░░ -->
-<section class="hero" id="home">
-  <div class="hero-cosmos">
-    <div class="star-field" id="starField"></div>
-    <div class="mandala-wrap">
-      <div class="mandala-ring m-ring-1"></div>
-      <div class="mandala-ring m-ring-2"></div>
-      <div class="mandala-ring m-ring-3"></div>
-      <div class="mandala-ring m-ring-4"></div>
-      <div class="mandala-ring m-ring-5"></div>
-      <div class="mandala-spokes">
-        <div class="spoke spoke-1"></div>
-        <div class="spoke spoke-2"></div>
-        <div class="spoke spoke-3"></div>
-        <div class="spoke spoke-4"></div>
-      </div>
-      <div class="mandala-dots">
-        <div class="mdot d1"></div>
-        <div class="mdot d2"></div>
-        <div class="mdot d3"></div>
-        <div class="mdot d4"></div>
-        <div class="mdot d5"></div>
-        <div class="mdot d6"></div>
-      </div>
-    </div>
-    <div class="aura-blob blob-1"></div>
-    <div class="aura-blob blob-2"></div>
-    <!-- 7 Chakras floating in background -->
-    <div class="chakra-bg-hero">
-      <div class="hchakra hck-1">
-        <div class="hck-inner"></div>
-        <div class="hck-label">
-          <span class="hck-symbol">☽</span>
-          <span class="hck-name">Muladhara</span>
-          <span class="hck-sub">Root</span>
-        </div>
-      </div>
-      <div class="hchakra hck-2">
-        <div class="hck-inner"></div>
-        <div class="hck-label">
-          <span class="hck-symbol">☿</span>
-          <span class="hck-name">Svadhisthana</span>
-          <span class="hck-sub">Sacral</span>
-        </div>
-      </div>
-      <div class="hchakra hck-3">
-        <div class="hck-inner"></div>
-        <div class="hck-label">
-          <span class="hck-symbol">☀</span>
-          <span class="hck-name">Manipura</span>
-          <span class="hck-sub">Solar Plexus</span>
-        </div>
-      </div>
-      <div class="hchakra hck-4">
-        <div class="hck-inner"></div>
-        <div class="hck-label">
-          <span class="hck-symbol">✦</span>
-          <span class="hck-name">Anahata</span>
-          <span class="hck-sub">Heart</span>
-        </div>
-      </div>
-      <div class="hchakra hck-5">
-        <div class="hck-inner"></div>
-        <div class="hck-label">
-          <span class="hck-symbol">◎</span>
-          <span class="hck-name">Vishuddha</span>
-          <span class="hck-sub">Throat</span>
-        </div>
-      </div>
-      <div class="hchakra hck-6">
-        <div class="hck-inner"></div>
-        <div class="hck-label">
-          <span class="hck-symbol">◉</span>
-          <span class="hck-name">Ajna</span>
-          <span class="hck-sub">Third Eye</span>
-        </div>
-      </div>
-      <div class="hchakra hck-7">
-        <div class="hck-inner"></div>
-        <div class="hck-label">
-          <span class="hck-symbol">✿</span>
-          <span class="hck-name">Sahasrara</span>
-          <span class="hck-sub">Crown</span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="hero-content">
-    <p class="hero-eyebrow reveal">Healing · Counselling · Astrology</p>
-    <h1 class="hero-title reveal">
-      <span class="title-line">Soul</span>
-      <span class="title-line accent">Syync</span>
-    </h1>
-    <p class="hero-tagline reveal">Ancient Wisdom &nbsp;·&nbsp; Modern Vibes</p>
-    <p class="hero-sub reveal">A safe space for healing, guidance,<br/>and deeper inner alignment.</p>
-    <div class="hero-actions reveal">
-      <button class="btn-primary" onclick="openBooking()">
-        <span>Book a Session</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-      <a href="#services" class="btn-ghost">Explore Services</a>
-    </div>
-    <div class="hero-badges reveal">
-      <span class="badge">✦ Safe Space</span>
-      <span class="badge">✦ Real Talk</span>
-      <span class="badge">✦ Soul Deep</span>
-    </div>
-  </div>
-  <div class="hero-scroll">
-    <span>Scroll</span>
-    <div class="scroll-line"></div>
-  </div>
-</section>
-
-<!-- ░░ MARQUEE ░░ -->
-<div class="marquee-wrap">
-  <div class="marquee-track">
-    <span>Healing</span><span>✦</span><span>Counselling</span><span>✦</span>
-    <span>Astrology</span><span>✦</span><span>Inner Peace</span><span>✦</span>
-    <span>Soul Alignment</span><span>✦</span><span>Sacred Guidance</span><span>✦</span>
-    <span>Healing</span><span>✦</span><span>Counselling</span><span>✦</span>
-    <span>Astrology</span><span>✦</span><span>Inner Peace</span><span>✦</span>
-  </div>
-</div>
-
-<!-- ░░ ABOUT ░░ -->
-<section class="about section" id="about">
-  <div class="container">
-    <div class="about-grid">
-      <div class="about-visual">
-        <div class="about-frame">
-          <div class="about-portrait">
-            <img src="/static/images/jayshree-dixit.jpg" alt="Jayshree Dixit – Counsellor &amp; Healer" class="portrait-photo"/>
-            <div class="portrait-glow"></div>
-          </div>
-          <div class="about-floats">
-            <div class="float-tag tag-1">✦ Certified Counselor</div>
-            <div class="float-tag tag-2">🌀 Energy Healer</div>
-            <div class="float-tag tag-3">🕊️ Wellness Guide</div>
-          </div>
-        </div>
-      </div>
-      <div class="about-content">
-        <p class="section-label">About Your Guide</p>
-        <h2 class="section-title">Meet <em>Jayshree Dixit</em></h2>
-        <p class="about-lead">I believe every soul carries its own map — sometimes we just need a gentle hand to help us read it.</p>
-        <p class="about-body">With years of experience in counselling, Vedic astrology, and holistic wellness, I created Soul Syync as a sacred digital space where ancient wisdom meets modern understanding. Whether you're navigating emotional turbulence, seeking cosmic clarity, or looking to align your living spaces — I'm here to walk alongside you.</p>
-        <p class="about-body">My approach is warm, non-judgmental, and deeply human. Sessions are a dialogue — not a prescription. You are always the expert of your own life.</p>
-        <div class="about-values">
-          <div class="value-pill">🕊 Compassionate</div>
-          <div class="value-pill">🌿 Holistic</div>
-          <div class="value-pill">✨ Non-judgmental</div>
-          <div class="value-pill">🔮 Spiritually rooted</div>
-        </div>
-        <button class="btn-primary" onclick="openBooking()">Begin Your Journey</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ░░ SERVICES ░░ -->
-<section class="services section" id="services">
-  <div class="container">
-    <div class="section-header">
-      <p class="section-label">What We Offer</p>
-      <h2 class="section-title">Services for Your <em>Whole Self</em></h2>
-      <p class="section-sub">Each service is a doorway — choose the one calling you home.</p>
-    </div>
-    <div class="services-grid">
-      <div class="service-card" data-delay="0">
-        <div class="service-icon">🌀</div>
-        <h3>Healing Sessions</h3>
-        <p>Energy-based healing to release emotional blocks, trauma, and patterns that no longer serve your highest self.</p>
-        <ul class="service-list">
-          <li>Energy clearing</li>
-          <li>Emotional release</li>
-          <li>Trauma-informed support</li>
-        </ul>
-        <button class="service-btn" onclick="openBooking('Healing Sessions')">Book Now →</button>
-      </div>
-      <div class="service-card featured" data-delay="100">
-        <div class="featured-badge">Most Popular</div>
-        <div class="service-icon">💬</div>
-        <h3>Personal Counselling</h3>
-        <p>One-on-one sessions that provide a safe, confidential space to explore your feelings, challenges, and growth.</p>
-        <ul class="service-list">
-          <li>Relationship & family</li>
-          <li>Anxiety & stress</li>
-          <li>Life transitions</li>
-        </ul>
-        <button class="service-btn" onclick="openBooking('Personal Counselling')">Book Now →</button>
-      </div>
-      <div class="service-card" data-delay="200">
-        <div class="service-icon">🔮</div>
-        <h3>Astrology Guidance</h3>
-        <p>Vedic astrology readings that illuminate your soul's path, karmic patterns, and cosmic timing.</p>
-        <ul class="service-list">
-          <li>Birth chart reading</li>
-          <li>Career & relationship</li>
-          <li>Annual forecast</li>
-        </ul>
-        <button class="service-btn" onclick="openBooking('Astrology Guidance')">Book Now →</button>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ░░ WHY CHOOSE ░░ -->
-<section class="why section">
-  <div class="why-bg">
-    <div class="sacred-ring ring-sm ring-a"></div>
-    <div class="sacred-ring ring-sm ring-b"></div>
-  </div>
-  <div class="container">
-    <div class="section-header">
-      <p class="section-label">Why Soul Syync</p>
-      <h2 class="section-title">Healing That <em>Honours</em> You</h2>
-    </div>
-    <div class="why-grid">
-      <div class="why-item">
-        <div class="why-icon">🌙</div>
-        <h4>Ancient Wisdom</h4>
-        <p>Grounded in Vedic traditions, astrology, and time-tested healing arts.</p>
-      </div>
-      <div class="why-item">
-        <div class="why-icon">💫</div>
-        <h4>Modern Understanding</h4>
-        <p>Integrated with contemporary psychology and wellness practices.</p>
-      </div>
-      <div class="why-item">
-        <div class="why-icon">🕊</div>
-        <h4>Non-Judgmental</h4>
-        <p>Every story is welcome here. Radical compassion in every session.</p>
-      </div>
-      <div class="why-item">
-        <div class="why-icon">🎯</div>
-        <h4>Personalized</h4>
-        <p>No two souls are alike. Sessions tailored specifically to you.</p>
-      </div>
-      <div class="why-item">
-        <div class="why-icon">🔒</div>
-        <h4>Fully Confidential</h4>
-        <p>Your privacy is sacred. Everything shared stays within our space.</p>
-      </div>
-      <div class="why-item">
-        <div class="why-icon">🌐</div>
-        <h4>Online & In-Person</h4>
-        <p>Flexible sessions to meet you wherever you are in the world.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ░░ TESTIMONIALS ░░ -->
-<section class="testimonials section" id="testimonials">
-  <div class="container">
-    <div class="section-header">
-      <p class="section-label">Soul Stories</p>
-      <h2 class="section-title">Words From Those <em>Who've Walked Here</em></h2>
-    </div>
-    <div class="testi-grid">
-      <div class="testi-card">
-        <div class="testi-stars">✦✦✦✦✦</div>
-        <p class="testi-text">"My sessions with Jayshree completely changed how I relate to myself. She holds space with such grace and wisdom. I felt seen for the first time in years."</p>
-        <div class="testi-author">
-          <div class="testi-avatar">PS</div>
-          <div>
-            <strong>Priya S.</strong>
-            <span>Personal Counselling</span>
-          </div>
-        </div>
-      </div>
-      <div class="testi-card featured-testi">
-        <div class="testi-stars">✦✦✦✦✦</div>
-        <p class="testi-text">"The astrology reading was incredibly accurate and healing at the same time. Jayshree doesn't just read charts — she reads your soul. Truly transformative."</p>
-        <div class="testi-author">
-          <div class="testi-avatar">AM</div>
-          <div>
-            <strong>Ananya M.</strong>
-            <span>Astrology Guidance</span>
-          </div>
-        </div>
-      </div>
-      <div class="testi-card">
-        <div class="testi-stars">✦✦✦✦✦</div>
-        <p class="testi-text">"The healing sessions helped me release years of bottled-up anxiety and stress. Jayshree's gentle energy and guidance created a safe space where I could truly find peace."</p>
-        <div class="testi-author">
-          <div class="testi-avatar">KD</div>
-          <div>
-            <strong>Karan D.</strong>
-            <span>Healing Sessions</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ░░ BOOKING CTA ░░ -->
-<section class="cta-section">
-  <div class="cta-cosmos">
-    <div class="sacred-ring ring-cta-1"></div>
-    <div class="sacred-ring ring-cta-2"></div>
-    <div class="aura-blob blob-cta"></div>
-  </div>
-  <div class="container">
-    <div class="cta-content">
-      <p class="section-label">Begin Today</p>
-      <h2 class="cta-title">Ready to Begin Your <em>Healing Journey?</em></h2>
-      <p class="cta-sub">You deserve a space that feels safe, real, and soulful. Let's walk this path together.</p>
-      <div class="cta-actions">
-        <button class="btn-primary btn-large" onclick="openBooking()">
+      <p class="hero-tagline reveal">Ancient Wisdom &nbsp;·&nbsp; Modern Vibes</p>
+      <p class="hero-sub reveal">A safe space for healing, guidance,<br />and deeper inner alignment.</p>
+      <div class="hero-actions reveal">
+        <button class="btn-primary" onclick="openBooking()">
           <span>Book a Session</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
         </button>
-        <a href="https://wa.me/910123456789?text=Hi%20Jayshree%2C%20I%20would%20like%20to%20book%20a%20session%20with%20Soul%20Syync." target="_blank" class="btn-whatsapp">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          DM on WhatsApp
-        </a>
-        <a href="https://www.instagram.com/_soul_syync?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="btn-instagram">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          DM on Instagram
-        </a>
+        <a href="#services" class="btn-ghost">Explore Services</a>
       </div>
+      <div class="hero-badges reveal">
+        <span class="badge">✦ Safe Space</span>
+        <span class="badge">✦ Real Talk</span>
+        <span class="badge">✦ Soul Deep</span>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ░░ MARQUEE ░░ -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span>Healing</span><span>✦</span><span>Counselling</span><span>✦</span>
+      <span>Astrology</span><span>✦</span><span>Inner Peace</span><span>✦</span>
+      <span>Soul Alignment</span><span>✦</span><span>Sacred Guidance</span><span>✦</span>
+      <span>Healing</span><span>✦</span><span>Counselling</span><span>✦</span>
+      <span>Astrology</span><span>✦</span><span>Inner Peace</span><span>✦</span>
     </div>
   </div>
-</section>
 
-<!-- ░░ FAQ ░░ -->
-<section class="faq section" id="faq">
-  <div class="container">
-    <div class="section-header">
-      <p class="section-label">Questions</p>
-      <h2 class="section-title">Frequently Asked <em>Questions</em></h2>
-    </div>
-    <div class="faq-list">
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFAQ(this)">
-          What happens in a healing or counselling session?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Sessions are warm, conversational, and completely led by your comfort. We start with a brief check-in, move through your concerns at your pace, and close with grounding practices or action points. No agenda is forced — this is your time.</p>
+  <!-- ░░ ABOUT ░░ -->
+  <section class="about section" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-visual">
+          <div class="about-frame">
+            <div class="about-portrait">
+              <img src="/static/images/jayshree-dixit.jpg" alt="Jayshree Dixit – Counsellor &amp; Healer"
+                class="portrait-photo" />
+              <div class="portrait-glow"></div>
+            </div>
+            <div class="about-floats">
+              <div class="float-tag tag-1">✦ Certified Counselor</div>
+              <div class="float-tag tag-2">🌀 Energy Healer</div>
+              <div class="float-tag tag-3">🕊️ Wellness Guide</div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFAQ(this)">
-          Is everything I share completely confidential?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Absolutely. Confidentiality is the cornerstone of this work. Nothing you share leaves this space without your explicit consent. You can speak freely and safely.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFAQ(this)">
-          Do you offer online sessions?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Yes! All services are available online via video call, making healing accessible from anywhere in the world. In-person sessions are also available in Surat, Gujarat.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFAQ(this)">
-          How do I book a session?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Simply click "Book a Session" on this page, fill in the form, and we'll confirm your appointment within 24 hours. You can also DM on WhatsApp or Instagram for a quick response.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFAQ(this)">
-          How many sessions will I need?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Every healing journey is unique. Some find clarity in a single session; others benefit from ongoing support. We'll discuss what feels right for you after the first session — no pressure, no packages pushed.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFAQ(this)">
-          Is astrology a religious service?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Not at all. Vedic astrology is a wisdom science — a tool for self-understanding and timing. It works alongside any belief system (or none). It's about patterns, not prescriptions.</p>
+        <div class="about-content">
+          <p class="section-label">About Your Guide</p>
+          <h2 class="section-title">Meet <em>Jayshree Dixit</em></h2>
+          <p class="about-lead">I believe every soul carries its own map — sometimes we just need a gentle hand to help
+            us read it.</p>
+          <p class="about-body">With years of experience in counselling, Vedic astrology, and holistic wellness, I
+            created Soul Syync as a sacred digital space where ancient wisdom meets modern understanding. Whether you're
+            navigating emotional turbulence, seeking cosmic clarity, or looking to align your living spaces — I'm here
+            to walk alongside you.</p>
+          <p class="about-body">My approach is warm, non-judgmental, and deeply human. Sessions are a dialogue — not a
+            prescription. You are always the expert of your own life.</p>
+          <div class="about-values">
+            <div class="value-pill">🕊 Compassionate</div>
+            <div class="value-pill">🌿 Holistic</div>
+            <div class="value-pill">✨ Non-judgmental</div>
+            <div class="value-pill">🔮 Spiritually rooted</div>
+          </div>
+          <button class="btn-primary" onclick="openBooking()">Begin Your Journey</button>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ░░ CONTACT ░░ -->
-<section class="contact section" id="contact">
-  <div class="container">
-    <div class="contact-grid">
-      <div class="contact-info">
-        <p class="section-label">Reach Out</p>
-        <h2 class="section-title">Let's <em>Connect</em></h2>
-        <p class="contact-lead">Have questions? Want to know what's right for you? Send a message and we'll respond with warmth.</p>
-        <div class="contact-details">
-          <div class="contact-item">
-            <div class="contact-icon">📱</div>
+  <!-- ░░ SERVICES ░░ -->
+  <section class="services section" id="services">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">What We Offer</p>
+        <h2 class="section-title">Services for Your <em>Whole Self</em></h2>
+        <p class="section-sub">Each service is a doorway — choose the one calling you home.</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card" data-delay="0">
+          <div class="service-icon">🌀</div>
+          <h3>Healing Sessions</h3>
+          <p>Energy-based healing to release emotional blocks, trauma, and patterns that no longer serve your highest
+            self.</p>
+          <ul class="service-list">
+            <li>Energy clearing</li>
+            <li>Emotional release</li>
+            <li>Trauma-informed support</li>
+          </ul>
+          <button class="service-btn" onclick="openBooking('Healing Sessions')">Book Now →</button>
+        </div>
+        <div class="service-card featured" data-delay="100">
+          <div class="featured-badge">Most Popular</div>
+          <div class="service-icon">💬</div>
+          <h3>Personal Counselling</h3>
+          <p>One-on-one sessions that provide a safe, confidential space to explore your feelings, challenges, and
+            growth.</p>
+          <ul class="service-list">
+            <li>Relationship & family</li>
+            <li>Anxiety & stress</li>
+            <li>Life transitions</li>
+          </ul>
+          <button class="service-btn" onclick="openBooking('Personal Counselling')">Book Now →</button>
+        </div>
+        <div class="service-card" data-delay="200">
+          <div class="service-icon">🔮</div>
+          <h3>Astrology Guidance</h3>
+          <p>Vedic astrology readings that illuminate your soul's path, karmic patterns, and cosmic timing.</p>
+          <ul class="service-list">
+            <li>Birth chart reading</li>
+            <li>Career & relationship</li>
+            <li>Annual forecast</li>
+          </ul>
+          <button class="service-btn" onclick="openBooking('Astrology Guidance')">Book Now →</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ░░ WHY CHOOSE ░░ -->
+  <section class="why section">
+    <div class="why-bg">
+      <div class="sacred-ring ring-sm ring-a"></div>
+      <div class="sacred-ring ring-sm ring-b"></div>
+    </div>
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Why Soul Syync</p>
+        <h2 class="section-title">Healing That <em>Honours</em> You</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-item">
+          <div class="why-icon">🌙</div>
+          <h4>Ancient Wisdom</h4>
+          <p>Grounded in Vedic traditions, astrology, and time-tested healing arts.</p>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">💫</div>
+          <h4>Modern Understanding</h4>
+          <p>Integrated with contemporary psychology and wellness practices.</p>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">🕊</div>
+          <h4>Non-Judgmental</h4>
+          <p>Every story is welcome here. Radical compassion in every session.</p>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">🎯</div>
+          <h4>Personalized</h4>
+          <p>No two souls are alike. Sessions tailored specifically to you.</p>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">🔒</div>
+          <h4>Fully Confidential</h4>
+          <p>Your privacy is sacred. Everything shared stays within our space.</p>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">🌐</div>
+          <h4>Online & In-Person</h4>
+          <p>Flexible sessions to meet you wherever you are in the world.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ░░ TESTIMONIALS ░░ -->
+  <section class="testimonials section" id="testimonials">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Soul Stories</p>
+        <h2 class="section-title">Words From Those <em>Who've Walked Here</em></h2>
+      </div>
+      <div class="testi-grid">
+        <div class="testi-card">
+          <div class="testi-stars">✦✦✦✦✦</div>
+          <p class="testi-text">"My sessions with Jayshree completely changed how I relate to myself. She holds space
+            with such grace and wisdom. I felt seen for the first time in years."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">PS</div>
             <div>
-              <strong>WhatsApp</strong>
-              <a href="https://wa.me/910123456789" target="_blank">+91 01234 56789</a>
-            </div>
-          </div>
-          <div class="contact-item">
-            <div class="contact-icon">📧</div>
-            <div>
-              <strong>Email</strong>
-              <a href="mailto:hello@soulsyncc.com">hello@soulsyncc.com</a>
-            </div>
-          </div>
-          <div class="contact-item">
-            <div class="contact-icon">📍</div>
-            <div>
-              <strong>Location</strong>
-              <span>Surat, Gujarat, India</span>
-            </div>
-          </div>
-          <div class="contact-item">
-            <div class="contact-icon">🕐</div>
-            <div>
-              <strong>Hours</strong>
-              <span>Mon–Sat, 10am – 7pm IST</span>
+              <strong>Priya S.</strong>
+              <span>Personal Counselling</span>
             </div>
           </div>
         </div>
-        <div class="social-row">
-          <a href="https://www.instagram.com/_soul_syync?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="social-btn" aria-label="Instagram">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        <div class="testi-card featured-testi">
+          <div class="testi-stars">✦✦✦✦✦</div>
+          <p class="testi-text">"The astrology reading was incredibly accurate and healing at the same time. Jayshree
+            doesn't just read charts — she reads your soul. Truly transformative."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">AM</div>
+            <div>
+              <strong>Ananya M.</strong>
+              <span>Astrology Guidance</span>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-stars">✦✦✦✦✦</div>
+          <p class="testi-text">"The healing sessions helped me release years of bottled-up anxiety and stress.
+            Jayshree's gentle energy and guidance created a safe space where I could truly find peace."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">KD</div>
+            <div>
+              <strong>Karan D.</strong>
+              <span>Healing Sessions</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ░░ BOOKING CTA ░░ -->
+  <section class="cta-section">
+    <div class="cta-cosmos">
+      <div class="sacred-ring ring-cta-1"></div>
+      <div class="sacred-ring ring-cta-2"></div>
+      <div class="aura-blob blob-cta"></div>
+    </div>
+    <div class="container">
+      <div class="cta-content">
+        <p class="section-label">Begin Today</p>
+        <h2 class="cta-title">Ready to Begin Your <em>Healing Journey?</em></h2>
+        <p class="cta-sub">You deserve a space that feels safe, real, and soulful. Let's walk this path together.</p>
+        <div class="cta-actions">
+          <button class="btn-primary btn-large" onclick="openBooking()">
+            <span>Book a Session</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </button>
+          <a href="https://wa.me/910123456789?text=Hi%20Jayshree%2C%20I%20would%20like%20to%20book%20a%20session%20with%20Soul%20Syync."
+            target="_blank" class="btn-whatsapp">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+            </svg>
+            DM on WhatsApp
           </a>
-          <a href="https://wa.me/910123456789" target="_blank" class="social-btn" aria-label="WhatsApp">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          <a href="https://www.instagram.com/_soul_syync?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+            target="_blank" class="btn-instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+            </svg>
+            DM on Instagram
           </a>
         </div>
       </div>
-      <div class="contact-form-wrap">
-        <div id="formSuccess" class="form-success" style="display:none">
-          <div class="success-icon">✦</div>
-          <h3>Message Received!</h3>
-          <p>Thank you for reaching out. We'll respond within 24 hours with warmth.</p>
+    </div>
+  </section>
+
+  <!-- ░░ FAQ ░░ -->
+  <section class="faq section" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Questions</p>
+        <h2 class="section-title">Frequently Asked <em>Questions</em></h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            What happens in a healing or counselling session?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <p>Sessions are warm, conversational, and completely led by your comfort. We start with a brief check-in,
+              move through your concerns at your pace, and close with grounding practices or action points. No agenda is
+              forced — this is your time.</p>
+          </div>
         </div>
-        <form class="contact-form" id="contactForm" onsubmit="submitContact(event)">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Your Name *</label>
-              <input type="text" id="cName" placeholder="Priya Sharma" required/>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            Is everything I share completely confidential?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <p>Absolutely. Confidentiality is the cornerstone of this work. Nothing you share leaves this space without
+              your explicit consent. You can speak freely and safely.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            Do you offer online sessions?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <p>Yes! All services are available online via video call, making healing accessible from anywhere in the
+              world. In-person sessions are also available in Surat, Gujarat.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            How do I book a session?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <p>Simply click "Book a Session" on this page, fill in the form, and we'll confirm your appointment within
+              24 hours. You can also DM on WhatsApp or Instagram for a quick response.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            How many sessions will I need?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <p>Every healing journey is unique. Some find clarity in a single session; others benefit from ongoing
+              support. We'll discuss what feels right for you after the first session — no pressure, no packages pushed.
+            </p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            Is astrology a religious service?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <p>Not at all. Vedic astrology is a wisdom science — a tool for self-understanding and timing. It works
+              alongside any belief system (or none). It's about patterns, not prescriptions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ░░ CONTACT ░░ -->
+  <section class="contact section" id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <p class="section-label">Reach Out</p>
+          <h2 class="section-title">Let's <em>Connect</em></h2>
+          <p class="contact-lead">Have questions? Want to know what's right for you? Send a message and we'll respond
+            with warmth.</p>
+          <div class="contact-details">
+            <div class="contact-item">
+              <div class="contact-icon">📱</div>
+              <div>
+                <strong>WhatsApp</strong>
+                <a href="https://wa.me/910123456789" target="_blank">+91 01234 56789</a>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">📧</div>
+              <div>
+                <strong>Email</strong>
+                <a href="mailto:hello@soulsyncc.com">hello@soulsyncc.com</a>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">📍</div>
+              <div>
+                <strong>Location</strong>
+                <span>Surat, Gujarat, India</span>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">🕐</div>
+              <div>
+                <strong>Hours</strong>
+                <span>Mon–Sat, 10am – 7pm IST</span>
+              </div>
+            </div>
+          </div>
+          <div class="social-row">
+            <a href="https://www.instagram.com/_soul_syync?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+              target="_blank" class="social-btn" aria-label="Instagram">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+              </svg>
+            </a>
+            <a href="https://wa.me/910123456789" target="_blank" class="social-btn" aria-label="WhatsApp">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+              </svg>
+            </a>
+          </div>
+        </div>
+        <div class="contact-form-wrap">
+          <div id="formSuccess" class="form-success" style="display:none">
+            <div class="success-icon">✦</div>
+            <h3>Message Received!</h3>
+            <p>Thank you for reaching out. We'll respond within 24 hours with warmth.</p>
+          </div>
+          <form class="contact-form" id="contactForm" onsubmit="submitContact(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Your Name *</label>
+                <input type="text" id="cName" placeholder="Priya Sharma" required />
+              </div>
+              <div class="form-group">
+                <label>Email Address *</label>
+                <input type="email" id="cEmail" placeholder="priya@email.com" required />
+              </div>
             </div>
             <div class="form-group">
-              <label>Email Address *</label>
-              <input type="email" id="cEmail" placeholder="priya@email.com" required/>
+              <label>Phone (optional)</label>
+              <input type="tel" id="cPhone" placeholder="+91 01234 56789" />
             </div>
+            <div class="form-group">
+              <label>Your Message *</label>
+              <textarea id="cMessage" rows="5" placeholder="Tell us what's on your heart..." required></textarea>
+            </div>
+            <button type="submit" class="btn-primary btn-full" id="cSubmitBtn">
+              <span>Send Message</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ░░ FOOTER ░░ -->
+  <footer class="footer">
+    <div class="footer-cosmos">
+      <div class="sacred-ring ring-footer"></div>
+    </div>
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="/logo.png.PNG" alt="Soul Syync" class="logo-img">
+            <h3>Soul Syync</h3>
+          </div>
+          <p class="footer-tagline">Ancient Wisdom · Modern Vibes</p>
+          <p class="footer-mission">A safe space for healing, guidance,<br />and deeper inner alignment.</p>
+        </div>
+        <div class="footer-links-grid">
+          <div class="footer-col">
+            <h5>Navigate</h5>
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#testimonials">Stories</a>
+            <a href="#faq">FAQ</a>
+            <a href="#contact">Contact</a>
+          </div>
+          <div class="footer-col">
+            <h5>Services</h5>
+            <a href="#services">Healing Sessions</a>
+            <a href="#services">Personal Counselling</a>
+            <a href="#services">Astrology Guidance</a>
+
+          </div>
+          <div class="footer-col">
+            <h5>Connect</h5>
+            <a href="https://wa.me/910123456789" target="_blank">WhatsApp</a>
+            <a href="https://www.instagram.com/_soul_syync?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+              target="_blank">Instagram</a>
+            <a href="mailto:hello@soulsyncc.com">Email Us</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p><a href="/admin" style="color:inherit; text-decoration:none; cursor:default;" title="Copyright">©</a> 2025
+          Soul Syync · Jayshree Dixit · All rights reserved</p>
+        <p>Made with ♡ in Surat, Gujarat</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ░░ BOOKING MODAL ░░ -->
+  <div class="modal-overlay" id="bookingModal" onclick="closeModalOnOverlay(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="closeBooking()">✕</button>
+      <div class="modal-header">
+        <span class="modal-symbol">✦</span>
+        <h3>Book Your Session</h3>
+        <p>Fill in your details and we'll confirm within 24 hours.</p>
+      </div>
+      <div id="bookingSuccess" style="display:none" class="form-success">
+        <div class="success-icon">✦</div>
+        <h3>Booking Received!</h3>
+        <p>We'll confirm your session within 24 hours. Looking forward to meeting you.</p>
+        <button class="btn-primary" onclick="closeBooking()">Close</button>
+      </div>
+      <form id="bookingForm" onsubmit="submitBooking(event)">
+        <!-- Session Mode -->
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label>Session Type *</label>
+          <div class="session-toggle" id="sessionToggle">
+            <button type="button" class="session-btn active" id="btnOnline" onclick="selectMode('online')">
+              <span>💻</span> Online
+            </button>
+            <button type="button" class="session-btn" id="btnOffline" onclick="selectMode('offline')">
+              <span>📍</span> In-Person
+            </button>
+          </div>
+          <input type="hidden" id="bMode" value="online">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="bName" placeholder="Your name" required />
           </div>
           <div class="form-group">
-            <label>Phone (optional)</label>
-            <input type="tel" id="cPhone" placeholder="+91 01234 56789"/>
+            <label>Email *</label>
+            <input type="email" id="bEmail" placeholder="your@email.com" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone *</label>
+            <input type="tel" id="bPhone" placeholder="+91 01234 56789" required />
           </div>
           <div class="form-group">
-            <label>Your Message *</label>
-            <textarea id="cMessage" rows="5" placeholder="Tell us what's on your heart..." required></textarea>
+            <label>Service *</label>
+            <select id="bService" required>
+              <option value="">Select a service</option>
+              <option>Healing Sessions</option>
+              <option>Personal Counselling</option>
+              <option>Astrology Guidance</option>
+
+            </select>
           </div>
-          <button type="submit" class="btn-primary btn-full" id="cSubmitBtn">
-            <span>Send Message</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
-        </form>
-      </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Preferred Date *</label>
+            <input type="date" id="bDate" required />
+          </div>
+          <div class="form-group">
+            <label>Preferred Time *</label>
+            <select id="bTime" required>
+              <option value="">Select time</option>
+              <option>10:00 AM</option>
+              <option>11:00 AM</option>
+              <option>12:00 PM</option>
+              <option>2:00 PM</option>
+              <option>3:00 PM</option>
+              <option>4:00 PM</option>
+              <option>5:00 PM</option>
+              <option>6:00 PM</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Message (optional)</label>
+          <textarea id="bMessage" rows="3" placeholder="Anything you'd like us to know beforehand..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary btn-full" id="bSubmitBtn">
+          <span>Confirm Booking</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </button>
+      </form>
     </div>
   </div>
-</section>
 
-<!-- ░░ FOOTER ░░ -->
-<footer class="footer">
-  <div class="footer-cosmos">
-    <div class="sacred-ring ring-footer"></div>
-  </div>
-  <div class="container">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="footer-logo">
-          <img src="/logo.png.PNG" alt="Soul Syync" class="logo-img">
-          <h3>Soul Syync</h3>
-        </div>
-        <p class="footer-tagline">Ancient Wisdom · Modern Vibes</p>
-        <p class="footer-mission">A safe space for healing, guidance,<br/>and deeper inner alignment.</p>
-      </div>
-      <div class="footer-links-grid">
-        <div class="footer-col">
-          <h5>Navigate</h5>
-          <a href="#home">Home</a>
-          <a href="#about">About</a>
-          <a href="#services">Services</a>
-          <a href="#testimonials">Stories</a>
-          <a href="#faq">FAQ</a>
-          <a href="#contact">Contact</a>
-        </div>
-        <div class="footer-col">
-          <h5>Services</h5>
-          <a href="#services">Healing Sessions</a>
-          <a href="#services">Personal Counselling</a>
-          <a href="#services">Astrology Guidance</a>
+  <!-- ░░ TOAST ░░ -->
+  <div class="toast" id="toast"></div>
 
-        </div>
-        <div class="footer-col">
-          <h5>Connect</h5>
-          <a href="https://wa.me/910123456789" target="_blank">WhatsApp</a>
-          <a href="https://www.instagram.com/_soul_syync?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank">Instagram</a>
-          <a href="mailto:hello@soulsyncc.com">Email Us</a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p><a href="/admin" style="color:inherit; text-decoration:none; cursor:default;" title="Copyright">©</a> 2025 Soul Syync · Jayshree Dixit · All rights reserved</p>
-      <p>Made with ♡ in Surat, Gujarat</p>
-    </div>
-  </div>
-</footer>
-
-<!-- ░░ BOOKING MODAL ░░ -->
-<div class="modal-overlay" id="bookingModal" onclick="closeModalOnOverlay(event)">
-  <div class="modal">
-    <button class="modal-close" onclick="closeBooking()">✕</button>
-    <div class="modal-header">
-      <span class="modal-symbol">✦</span>
-      <h3>Book Your Session</h3>
-      <p>Fill in your details and we'll confirm within 24 hours.</p>
-    </div>
-    <div id="bookingSuccess" style="display:none" class="form-success">
-      <div class="success-icon">✦</div>
-      <h3>Booking Received!</h3>
-      <p>We'll confirm your session within 24 hours. Looking forward to meeting you.</p>
-      <button class="btn-primary" onclick="closeBooking()">Close</button>
-    </div>
-    <form id="bookingForm" onsubmit="submitBooking(event)">
-      <!-- Session Mode -->
-      <div class="form-group" style="margin-bottom: 16px;">
-        <label>Session Type *</label>
-        <div class="session-toggle" id="sessionToggle">
-          <button type="button" class="session-btn active" id="btnOnline" onclick="selectMode('online')">
-            <span>💻</span> Online
-          </button>
-          <button type="button" class="session-btn" id="btnOffline" onclick="selectMode('offline')">
-            <span>📍</span> In-Person
-          </button>
-        </div>
-        <input type="hidden" id="bMode" value="online">
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Full Name *</label>
-          <input type="text" id="bName" placeholder="Your name" required/>
-        </div>
-        <div class="form-group">
-          <label>Email *</label>
-          <input type="email" id="bEmail" placeholder="your@email.com" required/>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Phone *</label>
-          <input type="tel" id="bPhone" placeholder="+91 01234 56789" required/>
-        </div>
-        <div class="form-group">
-          <label>Service *</label>
-          <select id="bService" required>
-            <option value="">Select a service</option>
-            <option>Healing Sessions</option>
-            <option>Personal Counselling</option>
-            <option>Astrology Guidance</option>
-
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Preferred Date *</label>
-          <input type="date" id="bDate" required/>
-        </div>
-        <div class="form-group">
-          <label>Preferred Time *</label>
-          <select id="bTime" required>
-            <option value="">Select time</option>
-            <option>10:00 AM</option>
-            <option>11:00 AM</option>
-            <option>12:00 PM</option>
-            <option>2:00 PM</option>
-            <option>3:00 PM</option>
-            <option>4:00 PM</option>
-            <option>5:00 PM</option>
-            <option>6:00 PM</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Message (optional)</label>
-        <textarea id="bMessage" rows="3" placeholder="Anything you'd like us to know beforehand..."></textarea>
-      </div>
-      <button type="submit" class="btn-primary btn-full" id="bSubmitBtn">
-        <span>Confirm Booking</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-    </form>
-  </div>
-</div>
-
-<!-- ░░ TOAST ░░ -->
-<div class="toast" id="toast"></div>
-
-<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
+
 </html>
