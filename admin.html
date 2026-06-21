@@ -357,15 +357,7 @@ select.status-select{background:var(--surface2);border:1px solid var(--border);c
 
     <!-- Contacts Table -->
     <div id="panel-contacts" style="display:none">
-      <!-- Booking Messages Sub-section -->
-      <div class="table-wrap" style="margin-bottom:24px">
-        <div class="table-header">
-          <h3>📅 Booking Messages</h3>
-          <span class="table-count" id="bookingMsgCount">Loading…</span>
-        </div>
-        <div id="bookingMsgsBody"><div class="loading">Loading booking messages…</div></div>
-      </div>
-      <!-- Contact Inquiries Sub-section -->
+      <!-- Contact Inquiries Only -->
       <div class="table-wrap">
         <div class="table-header">
           <h3>💬 Contact Inquiries</h3>
@@ -728,7 +720,7 @@ function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function loadAll() { loadStats(); loadBookings(); loadContacts(); loadBookingMessages(); }
+function loadAll() { loadStats(); loadBookings(); loadContacts(); }
 
 // Particle Background Animation
 (function () {
