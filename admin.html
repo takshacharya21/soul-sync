@@ -734,7 +734,7 @@ function sendFeedbackThankYou(phone, name) {
   const heart   = '\uD83D\uDC9C'; // 💜
   const star    = '\u2B50';       // ⭐
 
-  const msg = `Namaste ${name} ji ${pray}\n\n*Soul Syync* mein aapka hardik swagat hai! ${sparkle}\n\nAapne jo feedback share kiya, uske liye bahut bahut dhanyawad. ${heart}\nAapke vichaar hamare liye ek anmol uphar hain — yeh humein aur behtar seva dene ki prerna dete hain.\n\nHum jald hi aapse sampark karenge. ${star}\n\nSadar pranam, ${flower}\n*Jayshree Dixit*\n*Soul Syync — Healing \u0026 Wellness*`;
+  const msg = `Dear ${name}, ${pray}\n\nThank you so much for sharing your feedback with us! ${sparkle}\n\nYour thoughts and words truly mean a lot to us. ${heart} They inspire us to keep growing and serve you even better on your healing journey.\n\nWe will get back to you shortly. ${star}\n\nWith gratitude & love, ${flower}\n*Jayshree Dixit*\n*Soul Syync — Healing & Wellness*`;
 
   const url = `https://wa.me/${p}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
