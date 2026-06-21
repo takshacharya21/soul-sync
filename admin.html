@@ -728,10 +728,13 @@ function sendFeedbackThankYou(phone, name) {
     p = p.replace('+', '');
   }
 
-  const pray   = '\uD83D\uDE4F'; // 🙏
-  const flower = '\uD83C\uDF38'; // 🌸
+  const pray    = '\uD83D\uDE4F'; // 🙏
+  const sparkle = '\u2728';       // ✨
+  const flower  = '\uD83C\uDF38'; // 🌸
+  const heart   = '\uD83D\uDC9C'; // 💜
+  const star    = '\u2B50';       // ⭐
 
-  const msg = `Namaste ${name} ji ${pray}\n\nAapka feedback receive ho gaya. Bahut shukriya! ${flower}\n\n*Soul Syync — Jayshree Dixit*`;
+  const msg = `Namaste ${name} ji ${pray}\n\n*Soul Syync* mein aapka hardik swagat hai! ${sparkle}\n\nAapne jo feedback share kiya, uske liye bahut bahut dhanyawad. ${heart}\nAapke vichaar hamare liye ek anmol uphar hain — yeh humein aur behtar seva dene ki prerna dete hain.\n\nHum jald hi aapse sampark karenge. ${star}\n\nSadar pranam, ${flower}\n*Jayshree Dixit*\n*Soul Syync — Healing \u0026 Wellness*`;
 
   const url = `https://wa.me/${p}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
