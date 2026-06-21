@@ -728,13 +728,10 @@ function sendFeedbackThankYou(phone, name) {
     p = p.replace('+', '');
   }
 
-  const pray    = '\uD83D\uDE4F'; // 🙏
-  const sparkle = '\u2728';       // ✨
-  const flower  = '\uD83C\uDF38'; // 🌸
-  const heart   = '\uD83D\uDC9C'; // 💜
-  const star    = '\u2B50';       // ⭐
+  const pray   = '\uD83D\uDE4F'; // 🙏
+  const flower = '\uD83C\uDF38'; // 🌸
 
-  const msg = `Namaste ${name} ji ${pray}\n\n${sparkle} *Thank you so much for your valuable feedback!* ${sparkle}\n\nAapka message humne receive kar liya hai. Aapke words hamare liye bahut important hain aur humein behtar banane mein madad karte hain. ${heart}\n\nHum jald hi aapse sampark karenge. ${star}\n\nDhanyawad! ${flower}\n*Soul Syync — Jayshree Dixit*`;
+  const msg = `Namaste ${name} ji ${pray}\n\nAapka feedback receive ho gaya. Bahut shukriya! ${flower}\n\n*Soul Syync — Jayshree Dixit*`;
 
   const url = `https://wa.me/${p}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
