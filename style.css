@@ -197,7 +197,7 @@ button { cursor: pointer; font-family: var(--font-body); }
   text-decoration: none;
   flex-shrink: 0;
 }
-.logo-img { height: clamp(32px, 5vw, 48px); width: auto; object-fit: contain; }
+.logo-img { height: clamp(44px, 6vw, 64px); width: auto; object-fit: contain; }
 .logo-text {
   font-family: var(--font-display);
   font-size: 1.5rem; font-weight: 600;
@@ -1308,8 +1308,8 @@ body.modal-open { overflow: hidden !important; }
 /* Logo Anim & Glow */
 .intro-logo-wrap {
   position: relative;
-  width: 120px;
-  height: 120px;
+  width: 180px;
+  height: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1317,7 +1317,7 @@ body.modal-open { overflow: hidden !important; }
 }
 
 .intro-logo {
-  height: 90px;
+  height: 150px;
   width: auto;
   object-fit: contain;
   z-index: 2;
