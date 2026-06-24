@@ -276,6 +276,29 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 
+/* ── Instagram Smart Open ─────────────────────────── */
+// Mobile ma Instagram app open kare, PC ma browser ma open kare
+function openInstagram() {
+  const webUrl = 'https://www.instagram.com/_soul_syync?igsh=NmYzOGtwNW82cnVr';
+  const appUrl = 'instagram://user?username=_soul_syync';
+  const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  if (isMobile) {
+    // Try to open app first
+    const start = Date.now();
+    window.location = appUrl;
+    // If app not installed, fallback to web after 1.5s
+    setTimeout(() => {
+      if (Date.now() - start < 2000) {
+        window.open(webUrl, '_blank');
+      }
+    }, 1500);
+  } else {
+    // PC — open in browser tab
+    window.open(webUrl, '_blank');
+  }
+}
+
 /* ── Session Mode Toggle ─────────────────────────── */
 function selectMode(mode) {
   document.getElementById('bMode').value = mode;
