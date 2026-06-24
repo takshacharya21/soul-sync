@@ -251,7 +251,7 @@ def delete_booking(bid):
 @app.route('/api/contact', methods=['POST'])
 def contact():
     data = request.get_json()
-    if not all(k in data for k in ['name', 'email', 'message']):
+    if not all(k in data for k in ['name', 'email', 'phone', 'message']) or not data.get('phone'):
         return jsonify({'success': False, 'message': 'Required fields missing'}), 400
 
     conn = get_db()
