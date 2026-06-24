@@ -145,26 +145,10 @@ function toggleFAQ(btn) {
 const modal = document.getElementById('bookingModal');
 
 function openBooking(service) {
-  modal.classList.add('open');
-  document.body.classList.add('modal-open');   // lock background scroll
-  modal.scrollTop = 0;                          // start from top
-  if (typeof lenis !== 'undefined') lenis.stop();
   if (service) {
-    const sel = document.getElementById('bService');
-    if (sel) {
-      for (let i = 0; i < sel.options.length; i++) {
-        if (sel.options[i].text === service) {
-          sel.selectedIndex = i;
-          break;
-        }
-      }
-    }
-  }
-  // Set min date to today
-  const dateInput = document.getElementById('bDate');
-  if (dateInput) {
-    const today = new Date().toISOString().split('T')[0];
-    dateInput.min = today;
+    window.location.href = `/booking.html?service=${encodeURIComponent(service)}`;
+  } else {
+    window.location.href = '/booking.html';
   }
 }
 

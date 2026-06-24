@@ -519,6 +519,32 @@
   resize(); initParticles(); draw();
   window.addEventListener('resize', () => { resize(); initParticles(); });
 
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const serviceParam = params.get('service');
+    if (serviceParam) {
+      const sel = document.getElementById('bService');
+      if (sel) {
+        let mappedService = serviceParam;
+        if (serviceParam.toLowerCase().includes('healing')) mappedService = 'Energy Healing';
+        else if (serviceParam.toLowerCase().includes('counselling')) mappedService = 'Therapy Session';
+        else if (serviceParam.toLowerCase().includes('astrology')) mappedService = 'Soul Coaching';
+
+        for (let i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].text.toLowerCase() === mappedService.toLowerCase()) {
+            sel.selectedIndex = i;
+            break;
+          }
+        }
+      }
+    }
+    const dateInput = document.getElementById('bDate');
+    if (dateInput) {
+      const today = new Date().toISOString().split('T')[0];
+      dateInput.min = today;
+    }
+  });
+
   /* ── TOGGLE BUTTONS ── */
   let sessionMode = 'online';
   document.getElementById('onlineBtn').addEventListener('click', function() {
