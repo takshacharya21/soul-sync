@@ -485,7 +485,16 @@ button { cursor: pointer; font-family: var(--font-body); }
 .hero-tagline {
   font-family: var(--font-cinzel);
   font-size: .8rem; letter-spacing: .2em;
-  color: var(--gold); margin-bottom: 20px;
+  color: var(--gold); margin-bottom: 12px;
+}
+.hero-rhythm {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--rose-soft);
+  letter-spacing: .04em;
+  margin-bottom: 20px;
+  opacity: 0.85;
 }
 .hero-sub {
   font-size: 1.05rem; color: var(--text-muted);
