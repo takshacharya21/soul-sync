@@ -279,7 +279,7 @@ function showToast(msg) {
 /* ── Instagram Smart Open ─────────────────────────── */
 // Mobile ma Instagram app open kare, PC ma browser ma open kare
 function openInstagram() {
-  const webUrl = 'https://www.instagram.com/_soul_syync?igsh=NmYzOGtwNW82cnVr';
+  const webUrl = 'https://www.instagram.com/_soul_syync?igsh=MXZnNDhhNmx2bWpxbQ%3D%3D&utm_source=qr';
   const appUrl = 'instagram://user?username=_soul_syync';
   const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
