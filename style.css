@@ -1117,14 +1117,16 @@ body.modal-open { overflow: hidden !important; }
   .section { padding: 72px 0; }
   .container { padding: 0 20px; }
   .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+  .about-frame { padding: 20px; }
   .about-portrait { width: 240px; height: 300px; }
+  .about-floats { display: none; }
   .services-grid, .testi-grid, .why-grid { grid-template-columns: 1fr; }
   .services-grid .service-card:nth-child(5),
   .testi-grid .testi-card:nth-child(3) { grid-column: span 1; }
   .footer-top, .footer-links-grid { grid-template-columns: 1fr; gap: 36px; }
   .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
   .form-row { grid-template-columns: 1fr; }
-  .hero-title { font-size: clamp(4rem, 18vw, 7rem); }
+  .hero-title { font-size: clamp(3rem, 12vw, 5.5rem); }
   .modal { padding: 32px 24px; }
   .contact-form { padding: 28px 20px; }
   .cta-actions { flex-direction: column; align-items: stretch; }
@@ -1147,18 +1149,18 @@ body.modal-open { overflow: hidden !important; }
 
 
   /* Shrink mandala rings on mobile */
-  .mandala-wrap { width: 340px !important; height: 340px !important; }
-  .m-ring-1 { width: 80px !important;  height: 80px !important; }
-  .m-ring-2 { width: 140px !important; height: 140px !important; }
-  .m-ring-3 { width: 200px !important; height: 200px !important; }
-  .m-ring-4 { width: 270px !important; height: 270px !important; }
-  .m-ring-5 { width: 340px !important; height: 340px !important; }
+  .mandala-wrap { width: 290px !important; height: 290px !important; }
+  .m-ring-1 { width: 70px !important;  height: 70px !important; }
+  .m-ring-2 { width: 120px !important; height: 120px !important; }
+  .m-ring-3 { width: 170px !important; height: 170px !important; }
+  .m-ring-4 { width: 230px !important; height: 230px !important; }
+  .m-ring-5 { width: 290px !important; height: 290px !important; }
 
   /* Smaller mandala spokes and dots */
-  .mandala-spokes { width: 200px !important; height: 200px !important; }
-  .mandala-dots   { width: 140px !important; height: 140px !important; }
-  .d1,.d2,.d3,.d4,.d5,.d6 { transform: translate(-50%,-50%) translateX(70px) !important; }
-  .mdot { width: 3px !important; height: 3px !important; }
+  .mandala-spokes { width: 170px !important; height: 170px !important; }
+  .mandala-dots   { width: 120px !important; height: 120px !important; }
+  .d1,.d2,.d3,.d4,.d5,.d6 { transform: translate(-50%,-50%) translateX(60px) !important; }
+  .mdot { width: 2.5px !important; height: 2.5px !important; }
 }
 
 /* ── Intro Splash Screen ────────────────────────────── */
