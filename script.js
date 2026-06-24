@@ -28,13 +28,13 @@ requestAnimationFrame(raf);
 const cursorAura = document.getElementById('cursorAura');
 document.addEventListener('mousemove', (e) => {
   cursorAura.style.left = e.clientX + 'px';
-  cursorAura.style.top  = e.clientY + 'px';
+  cursorAura.style.top = e.clientY + 'px';
 });
 
 /* ── Navigation ───────────────────────────────────── */
-const nav      = document.getElementById('nav');
+const nav = document.getElementById('nav');
 const hamburger = document.getElementById('hamburger');
-const navLinks  = document.getElementById('navLinks');
+const navLinks = document.getElementById('navLinks');
 
 window.addEventListener('scroll', () => {
   nav.classList.toggle('scrolled', window.scrollY > 40);
@@ -55,7 +55,7 @@ navLinks.querySelectorAll('a').forEach(a => {
 
 // Active nav link on scroll
 const sections = document.querySelectorAll('section[id], div[id]');
-const navAs    = navLinks.querySelectorAll('a[href^="#"]');
+const navAs = navLinks.querySelectorAll('a[href^="#"]');
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -77,11 +77,11 @@ sections.forEach(s => observer.observe(s));
   const count = 80;
   for (let i = 0; i < count; i++) {
     const star = document.createElement('div');
-    const size  = Math.random() * 2 + 0.5;
-    const x     = Math.random() * 100;
-    const y     = Math.random() * 100;
+    const size = Math.random() * 2 + 0.5;
+    const x = Math.random() * 100;
+    const y = Math.random() * 100;
     const delay = Math.random() * 6;
-    const dur   = 3 + Math.random() * 4;
+    const dur = 3 + Math.random() * 4;
     star.style.cssText = `
       position:absolute;
       left:${x}%; top:${y}%;
@@ -124,7 +124,7 @@ document.querySelectorAll('.service-card, .why-item, .testi-card, .faq-item, .ab
 /* ── FAQ Toggle ───────────────────────────────────── */
 function toggleFAQ(btn) {
   const answer = btn.nextElementSibling;
-  const icon   = btn.querySelector('.faq-icon');
+  const icon = btn.querySelector('.faq-icon');
   const isOpen = answer.classList.contains('open');
 
   // Close all
@@ -145,10 +145,26 @@ function toggleFAQ(btn) {
 const modal = document.getElementById('bookingModal');
 
 function openBooking(service) {
+  modal.classList.add('open');
+  document.body.classList.add('modal-open');   // lock background scroll
+  modal.scrollTop = 0;                          // start from top
+  if (typeof lenis !== 'undefined') lenis.stop();
   if (service) {
-    window.location.href = `/booking.html?service=${encodeURIComponent(service)}`;
-  } else {
-    window.location.href = '/booking.html';
+    const sel = document.getElementById('bService');
+    if (sel) {
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].text === service) {
+          sel.selectedIndex = i;
+          break;
+        }
+      }
+    }
+  }
+  // Set min date to today
+  const dateInput = document.getElementById('bDate');
+  if (dateInput) {
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.min = today;
   }
 }
 
@@ -181,13 +197,13 @@ async function submitBooking(e) {
   btn.disabled = true;
 
   const payload = {
-    name:         document.getElementById('bName').value,
-    email:        document.getElementById('bEmail').value,
-    phone:        document.getElementById('bPhone').value,
-    service:      document.getElementById('bService').value,
-    date:         document.getElementById('bDate').value,
-    time:         document.getElementById('bTime').value,
-    message:      document.getElementById('bMessage').value,
+    name: document.getElementById('bName').value,
+    email: document.getElementById('bEmail').value,
+    phone: document.getElementById('bPhone').value,
+    service: document.getElementById('bService').value,
+    date: document.getElementById('bDate').value,
+    time: document.getElementById('bTime').value,
+    message: document.getElementById('bMessage').value,
     session_mode: document.getElementById('bMode').value,
   };
 
@@ -223,9 +239,9 @@ async function submitContact(e) {
   btn.disabled = true;
 
   const payload = {
-    name:    document.getElementById('cName').value,
-    email:   document.getElementById('cEmail').value,
-    phone:   document.getElementById('cPhone').value,
+    name: document.getElementById('cName').value,
+    email: document.getElementById('cEmail').value,
+    phone: document.getElementById('cPhone').value,
     message: document.getElementById('cMessage').value,
   };
 
@@ -308,7 +324,7 @@ window.addEventListener('scroll', () => {
   const hero = document.querySelector('.hero-content');
   if (hero && scrolled < window.innerHeight) {
     hero.style.transform = `translateY(${scrolled * 0.15}px)`;
-    hero.style.opacity   = 1 - scrolled / (window.innerHeight * 0.8);
+    hero.style.opacity = 1 - scrolled / (window.innerHeight * 0.8);
   }
 });
 
@@ -328,12 +344,12 @@ window.addEventListener('scroll', () => {
     const count = 120;
     for (let i = 0; i < count; i++) {
       const star = document.createElement('div');
-      const size  = Math.random() * 2.2 + 0.4;
-      const x     = Math.random() * 100;
-      const y     = Math.random() * 100;
+      const size = Math.random() * 2.2 + 0.4;
+      const x = Math.random() * 100;
+      const y = Math.random() * 100;
       const delay = Math.random() * 5;
-      const dur   = 2 + Math.random() * 4;
-      
+      const dur = 2 + Math.random() * 4;
+
       // Randomize star color: 60% white/light-blue, 35% gold/orange, 5% soft purple
       let color = 'rgba(255,255,255,';
       const randType = Math.random();
@@ -344,9 +360,9 @@ window.addEventListener('scroll', () => {
       } else if (randType > 0.4) {
         color = 'rgba(173,216,230,'; // light blue
       }
-      
+
       const opacity = 0.25 + Math.random() * 0.75;
-      
+
       star.style.cssText = `
         position:absolute;
         left:${x}%; top:${y}%;
