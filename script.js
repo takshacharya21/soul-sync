@@ -394,3 +394,13 @@ window.addEventListener('scroll', () => {
 
   }, 7000); // 7 seconds duration
 })();
+
+// ── Image Copy & Save Protection ───────────────────
+function protectImages() {
+  document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('contextmenu', e => e.preventDefault());
+    img.addEventListener('dragstart', e => e.preventDefault());
+  });
+}
+protectImages();
+document.addEventListener('DOMContentLoaded', protectImages);

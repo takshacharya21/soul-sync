@@ -67,7 +67,16 @@ body {
   overflow-x: hidden;
 }
 a { text-decoration: none; color: inherit; }
-img { max-width: 100%; display: block; }
+img {
+  max-width: 100%;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  pointer-events: none;
+}
 button { cursor: pointer; font-family: var(--font-body); }
 
 /* ── Custom Cursor ─────────────────────────────────── */
