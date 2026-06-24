@@ -634,9 +634,31 @@ button { cursor: pointer; font-family: var(--font-body); }
   color: var(--gold-light); margin-bottom: 20px; line-height: 1.5;
 }
 .about-body { color: var(--text-muted); margin-bottom: 16px; font-size: .95rem; }
+.about-credentials {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 20px 0 16px;
+}
+.credential-item {
+  background: rgba(212,175,120,.05);
+  border: 1px solid rgba(212,175,120,.18);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: .82rem;
+  color: var(--text-muted);
+  transition: var(--transition);
+  line-height: 1.5;
+}
+.credential-item:hover {
+  border-color: rgba(212,175,120,.4);
+  color: var(--gold-light);
+  background: rgba(212,175,120,.08);
+}
+.credential-item strong { color: var(--gold); }
 .about-values {
   display: flex; flex-wrap: wrap; gap: 10px;
-  margin: 24px 0 32px;
+  margin: 20px 0 32px;
 }
 .value-pill {
   background: var(--gold-dim);
