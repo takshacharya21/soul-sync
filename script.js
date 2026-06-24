@@ -173,9 +173,17 @@ function closeBooking() {
   document.body.classList.remove('modal-open'); // unlock background scroll
   document.body.style.overflow = '';
   if (typeof lenis !== 'undefined') lenis.start();
-  document.getElementById('bookingSuccess').style.display = 'none';
-  document.getElementById('bookingForm').style.display = '';
-  document.getElementById('bookingForm').reset();
+  
+  const successEl = document.getElementById('bookingSuccess');
+  successEl.style.display = 'none';
+  successEl.classList.remove('animate-in');
+  
+  const formEl = document.getElementById('bookingForm');
+  formEl.style.display = '';
+  formEl.style.opacity = '';
+  formEl.style.transform = '';
+  formEl.reset();
+  
   // Reset session mode toggle
   selectMode('online');
 }
@@ -215,9 +223,20 @@ async function submitBooking(e) {
     });
     const d = await r.json();
     if (d.success) {
-      document.getElementById('bookingForm').style.display = 'none';
-      document.getElementById('bookingSuccess').style.display = 'block';
-      showToast('Booking confirmed! ✦');
+      const formEl = document.getElementById('bookingForm');
+      formEl.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      formEl.style.opacity = '0';
+      formEl.style.transform = 'scale(0.96)';
+      
+      setTimeout(() => {
+        formEl.style.display = 'none';
+        
+        const successEl = document.getElementById('bookingSuccess');
+        successEl.style.display = 'block';
+        successEl.classList.add('animate-in');
+        
+        showToast('Booking confirmed! ✦');
+      }, 300);
     } else {
       showToast(d.message || 'Something went wrong');
       btn.innerHTML = orig;
