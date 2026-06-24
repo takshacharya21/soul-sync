@@ -12,33 +12,271 @@
     rel="stylesheet" />
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <style>
-    .session-toggle {
-      display: flex;
-      gap: 8px;
-      margin-top: 6px;
+    /* ── Booking Modal Premium Redesign ── */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+    /* Overlay */
+    #bookingModal {
+      background: rgba(5, 4, 12, 0.92);
+      backdrop-filter: blur(18px);
     }
 
-    .session-btn {
-      flex: 1;
-      padding: 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(212, 175, 120, 0.2);
-      background: rgba(255, 255, 255, 0.03);
-      color: rgba(240, 236, 230, 0.5);
-      font-size: .85rem;
+    /* Modal Card */
+    .modal {
+      background: linear-gradient(160deg, #12152B 0%, #0D0F1A 100%);
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      border-radius: 28px;
+      padding: 52px 44px 44px;
+      max-width: 580px;
+      box-shadow:
+        0 0 0 1px rgba(201,168,76,0.06) inset,
+        0 32px 80px rgba(0,0,0,0.6),
+        0 0 60px rgba(201,168,76,0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle top shimmer bar */
+    .modal::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.5), transparent);
+      border-radius: 50%;
+    }
+
+    /* Background constellation glow */
+    .modal::after {
+      content: '';
+      position: absolute;
+      top: -120px; right: -120px;
+      width: 340px; height: 340px;
+      background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 65%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* Close button */
+    .modal-close {
+      position: absolute;
+      top: 18px; right: 18px;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(201,168,76,0.15);
+      color: rgba(232,228,217,0.4);
+      font-size: 1rem;
       cursor: pointer;
       transition: all 0.25s;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 10;
+    }
+    .modal-close:hover {
+      background: rgba(201,168,76,0.12);
+      border-color: rgba(201,168,76,0.5);
+      color: #C9A84C;
+      transform: rotate(90deg);
+    }
+
+    /* Header */
+    .modal-header {
+      text-align: center;
+      margin-bottom: 36px;
+      position: relative;
+      z-index: 1;
+    }
+    .modal-symbol {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: #C9A84C;
+      margin-bottom: 14px;
+      animation: symbolPulse 2.5s ease-in-out infinite;
+      text-shadow: 0 0 20px rgba(201,168,76,0.6);
+    }
+    @keyframes symbolPulse {
+      0%,100% { transform: scale(1); opacity: 1; text-shadow: 0 0 20px rgba(201,168,76,0.6); }
+      50%      { transform: scale(1.15); opacity: 0.8; text-shadow: 0 0 40px rgba(201,168,76,0.9); }
+    }
+    .modal-header h3 {
+      font-family: 'Playfair Display', 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      background: linear-gradient(135deg, #E2B96A 0%, #C9A84C 50%, #e8d4a8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+    .modal-header p {
+      color: #7A7A9A;
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* Form inputs */
+    .modal .form-group label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #7A7A9A;
+      font-weight: 500;
+    }
+    .modal .form-group input,
+    .modal .form-group select,
+    .modal .form-group textarea {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid #2A2D45;
+      border-radius: 10px;
+      padding: 13px 16px;
+      color: #E8E4D9;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+      width: 100%;
+    }
+    .modal .form-group input::placeholder,
+    .modal .form-group textarea::placeholder {
+      color: rgba(122,122,154,0.6);
+    }
+    .modal .form-group input:focus,
+    .modal .form-group select:focus,
+    .modal .form-group textarea:focus {
+      outline: none;
+      border-color: #C9A84C;
+      background: rgba(201,168,76,0.04);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.1), 0 0 16px rgba(201,168,76,0.06);
+    }
+    .modal .form-group select option { background: #0D0F1A; color: #E8E4D9; }
+
+    /* Date input calendar icon color fix */
+    .modal .form-group input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(80%) sepia(30%) saturate(500%) hue-rotate(5deg);
+      opacity: 0.6;
+      cursor: pointer;
+    }
+
+    /* Session Toggle */
+    .session-toggle {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .session-btn {
+      flex: 1;
+      padding: 11px 10px;
+      border-radius: 12px;
+      border: 1px solid #2A2D45;
+      background: rgba(255,255,255,0.025);
+      color: #7A7A9A;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.25,0.46,0.45,0.94);
       font-family: 'DM Sans', sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 7px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+    .session-btn:hover:not(.active) {
+      border-color: rgba(201,168,76,0.3);
+      color: rgba(201,168,76,0.7);
+      background: rgba(201,168,76,0.04);
+    }
+    .session-btn.active {
+      background: linear-gradient(135deg, rgba(201,168,76,0.16), rgba(226,185,106,0.08));
+      border-color: #C9A84C;
+      color: #E2B96A;
+      box-shadow: 0 0 12px rgba(201,168,76,0.12);
+      font-weight: 500;
     }
 
-    .session-btn.active {
-      background: linear-gradient(135deg, rgba(212, 175, 120, 0.18), rgba(212, 175, 120, 0.08));
-      border-color: rgba(212, 175, 120, 0.6);
-      color: #d4af78;
+    /* Submit Button */
+    .modal #bSubmitBtn {
+      background: linear-gradient(135deg, #C9A84C 0%, #E2B96A 50%, #C9A84C 100%);
+      background-size: 200% 100%;
+      border: none;
+      border-radius: 12px;
+      color: #0D0F1A;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 15px 28px;
+      width: 100%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background-position 0.4s ease, transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+      margin-top: 8px;
+    }
+    .modal #bSubmitBtn:hover {
+      background-position: 100% 0;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(201,168,76,0.45);
+    }
+    .modal #bSubmitBtn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 12px rgba(201,168,76,0.3);
+    }
+
+    /* Form row responsive */
+    @media (max-width: 480px) {
+      .modal { padding: 40px 24px 32px; }
+      .modal-header h3 { font-size: 1.65rem; }
+      .form-row { grid-template-columns: 1fr !important; }
+    }
+
+    /* Success state */
+    .form-success {
+      text-align: center;
+      padding: 48px 20px;
+    }
+    .success-icon {
+      font-size: 2.8rem;
+      color: #C9A84C;
+      margin-bottom: 18px;
+      text-shadow: 0 0 30px rgba(201,168,76,0.6);
+      animation: symbolPulse 1.8s ease-in-out infinite;
+    }
+    .form-success h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      background: linear-gradient(135deg, #E2B96A, #C9A84C);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+    .form-success p { color: #7A7A9A; font-size: 0.9rem; }
+    .form-success .btn-primary {
+      margin-top: 24px;
+      background: linear-gradient(135deg, #C9A84C, #E2B96A);
+      color: #0D0F1A;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.88rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 4px 18px rgba(201,168,76,0.3);
+    }
+    .form-success .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(201,168,76,0.45);
     }
   </style>
 </head>
