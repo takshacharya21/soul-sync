@@ -116,7 +116,7 @@ const animObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.12 });
 
-document.querySelectorAll('.service-card, .why-item, .testi-card, .faq-item, .about-grid, .contact-grid').forEach(el => {
+document.querySelectorAll('.service-card, .why-item, .testi-card, .faq-item, .about-grid, .centre-about-grid, .contact-grid').forEach(el => {
   el.setAttribute('data-animate', '');
   animObserver.observe(el);
 });
