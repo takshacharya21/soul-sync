@@ -507,7 +507,13 @@ button { cursor: pointer; font-family: var(--font-body); }
 }
 .hero-sub {
   font-size: 1.05rem; color: var(--text-muted);
-  margin-bottom: 40px; line-height: 1.8;
+  margin-bottom: 16px; line-height: 1.8;
+}
+.hero-centre-info {
+  font-family: var(--font-cinzel);
+  font-size: 0.75rem; letter-spacing: .18em;
+  color: var(--gold); text-transform: uppercase;
+  margin-bottom: 40px;
 }
 .hero-actions {
   display: flex; align-items: center; gap: 16px;
@@ -553,8 +559,9 @@ button { cursor: pointer; font-family: var(--font-body); }
 .hero-title.reveal   { animation-delay: .25s; }
 .hero-tagline.reveal { animation-delay: .4s; }
 .hero-sub.reveal     { animation-delay: .5s; }
-.hero-actions.reveal { animation-delay: .65s; }
-.hero-badges.reveal  { animation-delay: .8s; }
+.hero-centre-info.reveal { animation-delay: .62s; }
+.hero-actions.reveal { animation-delay: .75s; }
+.hero-badges.reveal  { animation-delay: .9s; }
 
 /* ── Marquee ───────────────────────────────────────── */
 .marquee-wrap {
