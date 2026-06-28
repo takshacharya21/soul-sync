@@ -1536,11 +1536,13 @@ body.modal-open { overflow: hidden !important; }
   width: 80px; height: 80px;
   border-color: rgba(212,175,120,.4);
 }
-.geo-flower {
-  font-size: 2.2rem;
-  color: var(--gold);
+.geo-chakra-img {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
   z-index: 1;
   animation: geoPulse 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(143, 80, 255, 0.3));
 }
 .centre-stats {
   display: grid;
