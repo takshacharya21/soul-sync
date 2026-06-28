@@ -652,6 +652,32 @@ button { cursor: pointer; font-family: var(--font-body); }
   color: var(--gold-light); margin-bottom: 20px; line-height: 1.5;
 }
 .about-body { color: var(--text-muted); margin-bottom: 16px; font-size: .95rem; }
+.about-quote {
+  background: linear-gradient(135deg, rgba(212, 175, 120, 0.08) 0%, rgba(212, 175, 120, 0.02) 100%);
+  border-left: 3px solid var(--gold);
+  border-radius: 4px 12px 12px 4px;
+  padding: 16px 20px 16px 36px;
+  margin: 18px 0 22px;
+  position: relative;
+}
+.about-quote p {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 0;
+}
+.about-quote::before {
+  content: "“";
+  font-family: var(--font-display);
+  font-size: 4.5rem;
+  color: rgba(212, 175, 120, 0.12);
+  position: absolute;
+  top: -12px;
+  left: 10px;
+  line-height: 1;
+}
 .about-credentials {
   display: grid;
   grid-template-columns: 1fr 1fr;
