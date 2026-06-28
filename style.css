@@ -754,7 +754,18 @@ button { cursor: pointer; font-family: var(--font-body); }
   padding: 3px 10px; border-radius: 12px;
   font-weight: 500; letter-spacing: .05em; text-transform: uppercase;
 }
-.service-icon { font-size: 2.2rem; margin-bottom: 16px; }
+.service-icon {
+  margin-bottom: 16px;
+  color: var(--gold);
+}
+.service-svg-icon {
+  transition: transform .4s ease, filter .4s ease;
+  display: block;
+}
+.service-card:hover .service-svg-icon {
+  transform: scale(1.08) translateY(-2px);
+  filter: drop-shadow(0 0 6px rgba(212, 175, 120, 0.45));
+}
 .service-card h3 {
   font-family: var(--font-display);
   font-size: 1.35rem; font-weight: 400;
