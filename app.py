@@ -1,3 +1,4 @@
+# pyrefly: ignore [missing-import]
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from functools import wraps
 from flask_cors import CORS
@@ -288,7 +289,7 @@ def get_contacts():
                 d['created_at'] = d['created_at'].strftime('%Y-%m-%d %H:%M')
             result.append(d)
         return jsonify({'success': True, 'data': result})
-    except psycopg2.Error as e:
+    except psycopg2.Error:
         return jsonify({'success': False, 'data': []}), 500
     finally:
         if conn:
@@ -330,8 +331,8 @@ if __name__ == '__main__':
     except:
         local_ip = '0.0.0.0'
     print('\n' + '='*50)
-    print(f'  Soul Syync is running!')
-    print(f'  PC:    http://127.0.0.1:5000')
+    print('  Soul Syync is running!')
+    print('  PC:    http://127.0.0.1:5000')
     print(f'  Phone: http://{local_ip}:5000')
     print('='*50 + '\n')
     app.run(debug=True, host='0.0.0.0', port=5000)
