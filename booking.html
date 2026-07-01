@@ -1,13 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Soul Sync – Book Your Session</title>
-  <meta name="description" content="Book a soul healing, counselling, or astrology session with Soul Sync. Fill in your details and we'll confirm within 24 hours.">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <meta name="description"
+    content="Book a soul healing, counselling, or astrology session with Soul Sync. Fill in your details and we'll confirm within 24 hours.">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500&display=swap"
+    rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       min-height: 100vh;
       display: flex;
@@ -18,6 +29,7 @@
       position: relative;
       font-family: 'DM Sans', sans-serif;
     }
+
     #bgCanvas {
       position: fixed;
       inset: 0;
@@ -25,6 +37,7 @@
       width: 100%;
       height: 100%;
     }
+
     .modal {
       position: relative;
       z-index: 10;
@@ -40,27 +53,38 @@
       box-shadow: 0 0 60px rgba(90, 50, 180, 0.25), 0 0 20px rgba(201, 168, 76, 0.08);
       transition: opacity 0.35s ease, transform 0.35s ease;
     }
+
     .modal.hidden {
       opacity: 0;
       pointer-events: none;
       transform: scale(0.95);
       position: absolute;
     }
+
     .close-btn {
       position: absolute;
-      top: 14px; right: 16px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.12);
+      top: 14px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       color: #9999BB;
       border-radius: 50%;
-      width: 30px; height: 30px;
+      width: 30px;
+      height: 30px;
       cursor: pointer;
       font-size: 14px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-decoration: none;
       transition: background 0.2s, color 0.2s;
     }
-    .close-btn:hover { background: rgba(255,255,255,0.14); color: #E8E4D9; }
+
+    .close-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      color: #E8E4D9;
+    }
+
     .sparkle {
       text-align: center;
       font-size: 22px;
@@ -68,56 +92,96 @@
       animation: pulse-star 3s ease-in-out infinite;
       margin-bottom: 6px;
     }
+
     @keyframes pulse-star {
-      0%, 100% { transform: scale(1); opacity: 0.9; }
-      50%       { transform: scale(1.25); opacity: 1; }
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.9;
+      }
+
+      50% {
+        transform: scale(1.25);
+        opacity: 1;
+      }
     }
+
     .modal-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 28px; font-weight: 600;
+      font-size: 28px;
+      font-weight: 600;
       color: #E8E4D9;
       text-align: center;
       margin: 0 0 4px;
       letter-spacing: 0.5px;
     }
+
     .modal-sub {
-      font-size: 12px; color: #7A7A9A;
-      text-align: center; margin: 0 0 18px;
+      font-size: 12px;
+      color: #7A7A9A;
+      text-align: center;
+      margin: 0 0 18px;
     }
+
     .section-label {
-      font-size: 10px; letter-spacing: 1.5px;
-      text-transform: uppercase; color: #6A6A8A;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #6A6A8A;
       margin-bottom: 7px;
     }
-    .toggle-row { display: flex; gap: 10px; margin-bottom: 16px; }
+
+    .toggle-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
     .toggle-btn {
-      flex: 1; padding: 9px;
+      flex: 1;
+      padding: 9px;
       border-radius: 10px;
-      border: 1px solid rgba(201,168,76,0.18);
+      border: 1px solid rgba(201, 168, 76, 0.18);
       background: transparent;
       color: #7A7A9A;
       font-family: 'DM Sans', sans-serif;
-      font-size: 13px; cursor: pointer;
+      font-size: 13px;
+      cursor: pointer;
       transition: all 0.25s;
     }
+
     .toggle-btn.active {
-      background: rgba(201,168,76,0.12);
+      background: rgba(201, 168, 76, 0.12);
       border-color: #C9A84C;
       color: #C9A84C;
-      box-shadow: 0 0 14px rgba(201,168,76,0.18);
+      box-shadow: 0 0 14px rgba(201, 168, 76, 0.18);
     }
+
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-bottom: 12px;
     }
-    .form-group { display: flex; flex-direction: column; gap: 5px; }
-    .form-group.full { grid-column: 1 / -1; }
-    .form-label {
-      font-size: 10px; letter-spacing: 1.5px;
-      text-transform: uppercase; color: #6A6A8A;
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
     }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #6A6A8A;
+    }
+
     .form-input,
     .form-select,
     .form-textarea {
@@ -132,451 +196,636 @@
       width: 100%;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
+
     .form-input::placeholder,
-    .form-textarea::placeholder { color: #4A4A6A; }
+    .form-textarea::placeholder {
+      color: #4A4A6A;
+    }
+
     .form-input:focus,
     .form-select:focus,
     .form-textarea:focus {
       border-color: #C9A84C;
-      box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+      box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
     }
+
     .form-input.error,
-    .form-select.error { border-color: #E05A5A; box-shadow: 0 0 0 3px rgba(224,90,90,0.12); }
-    .error-msg { font-size: 10px; color: #E05A5A; display: none; }
-    .error-msg.show { display: block; }
-    .form-select { appearance: none; -webkit-appearance: none; cursor: pointer; }
-    .select-wrap { position: relative; }
+    .form-select.error {
+      border-color: #E05A5A;
+      box-shadow: 0 0 0 3px rgba(224, 90, 90, 0.12);
+    }
+
+    .error-msg {
+      font-size: 10px;
+      color: #E05A5A;
+      display: none;
+    }
+
+    .error-msg.show {
+      display: block;
+    }
+
+    .form-select {
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+
+    .select-wrap {
+      position: relative;
+    }
+
     .select-wrap::after {
       content: '\25BE';
-      position: absolute; right: 12px; top: 50%;
+      position: absolute;
+      right: 12px;
+      top: 50%;
       transform: translateY(-50%);
-      color: #C9A84C; pointer-events: none; font-size: 13px;
+      color: #C9A84C;
+      pointer-events: none;
+      font-size: 13px;
     }
-    .form-textarea { resize: vertical; min-height: 72px; }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 72px;
+    }
+
     .confirm-btn {
-      width: 100%; padding: 13px;
+      width: 100%;
+      padding: 13px;
       background: linear-gradient(90deg, #C9A84C, #E2B96A);
-      border: none; border-radius: 12px;
+      border: none;
+      border-radius: 12px;
       color: #0D0F1A;
       font-family: 'DM Sans', sans-serif;
-      font-size: 14px; font-weight: 500;
-      cursor: pointer; margin-top: 14px;
-      position: relative; overflow: hidden;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 14px;
+      position: relative;
+      overflow: hidden;
       transition: transform 0.15s;
       letter-spacing: 0.3px;
     }
-    .confirm-btn:hover  { transform: scale(1.01); }
-    .confirm-btn:active { transform: scale(0.98); }
+
+    .confirm-btn:hover {
+      transform: scale(1.01);
+    }
+
+    .confirm-btn:active {
+      transform: scale(0.98);
+    }
+
     .confirm-btn::after {
       content: '';
-      position: absolute; top: 0; left: -75%;
-      width: 50%; height: 100%;
-      background: rgba(255,255,255,0.25);
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.25);
       transform: skewX(-20deg);
       animation: shimmer 2.5s infinite;
     }
+
     @keyframes shimmer {
-      0%       { left: -75%; }
-      60%, 100%{ left: 130%; }
+      0% {
+        left: -75%;
+      }
+
+      60%,
+      100% {
+        left: 130%;
+      }
     }
+
     .back-link {
-      display: block; text-align: center;
-      margin-top: 16px; font-size: 12px;
-      color: #5A5A7A; text-decoration: none;
-      letter-spacing: 0.3px; transition: color 0.2s;
+      display: block;
+      text-align: center;
+      margin-top: 16px;
+      font-size: 12px;
+      color: #5A5A7A;
+      text-decoration: none;
+      letter-spacing: 0.3px;
+      transition: color 0.2s;
     }
-    .back-link:hover { color: #C9A84C; }
+
+    .back-link:hover {
+      color: #C9A84C;
+    }
+
     .success-modal {
-      position: relative; z-index: 10;
-      background: rgba(13,15,35,0.88);
-      border: 1px solid rgba(201,168,76,0.28);
+      position: relative;
+      z-index: 10;
+      background: rgba(13, 15, 35, 0.88);
+      border: 1px solid rgba(201, 168, 76, 0.28);
       border-radius: 20px;
       padding: 52px 36px 44px;
-      width: 100%; max-width: 460px;
+      width: 100%;
+      max-width: 460px;
       margin: 20px;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 0 80px rgba(90,50,180,0.3), 0 0 30px rgba(201,168,76,0.12);
+      box-shadow: 0 0 80px rgba(90, 50, 180, 0.3), 0 0 30px rgba(201, 168, 76, 0.12);
       text-align: center;
       display: none;
       flex-direction: column;
       align-items: center;
     }
-    .success-modal.show { display: flex; animation: fadeInUp 0.55s ease forwards; }
+
+    .success-modal.show {
+      display: flex;
+      animation: fadeInUp 0.55s ease forwards;
+    }
+
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(28px) scale(0.95); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
+      from {
+        opacity: 0;
+        transform: translateY(28px) scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
-    .floating-stars { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: 20px; }
-    .fs { position: absolute; color: #C9A84C; animation: floatUp linear forwards; opacity: 0; }
+
+    .floating-stars {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      border-radius: 20px;
+    }
+
+    .fs {
+      position: absolute;
+      color: #C9A84C;
+      animation: floatUp linear forwards;
+      opacity: 0;
+    }
+
     @keyframes floatUp {
-      0%   { opacity: 1; transform: translateY(0) scale(1); }
-      100% { opacity: 0; transform: translateY(-130px) scale(0.3); }
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-130px) scale(0.3);
+      }
     }
+
     .checkmark-circle {
-      width: 68px; height: 68px; border-radius: 50%;
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
       border: 2px solid #C9A84C;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 4px; position: relative;
-      animation: scaleIn 0.5s 0.1s cubic-bezier(0.36,0.07,0.19,0.97) both;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 4px;
+      position: relative;
+      animation: scaleIn 0.5s 0.1s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
     }
+
     @keyframes scaleIn {
-      from { transform: scale(0); opacity: 0; }
-      to   { transform: scale(1); opacity: 1; }
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
+
     .check-path {
-      stroke: #C9A84C; stroke-width: 2.5; fill: none;
-      stroke-dasharray: 40; stroke-dashoffset: 40;
+      stroke: #C9A84C;
+      stroke-width: 2.5;
+      fill: none;
+      stroke-dasharray: 40;
+      stroke-dashoffset: 40;
       animation: drawCheck 0.5s 0.5s ease forwards;
     }
-    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+
+    @keyframes drawCheck {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
     .success-rings {
-      position: absolute; top: 50%; left: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
-      width: 80px; height: 80px; pointer-events: none;
+      width: 80px;
+      height: 80px;
+      pointer-events: none;
     }
+
     .ring {
-      position: absolute; border-radius: 50%;
-      border: 2px solid rgba(201,168,76,0.5);
-      top: 50%; left: 50%; transform: translate(-50%,-50%);
-      animation: expandRing 1.3s ease-out forwards; opacity: 0;
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid rgba(201, 168, 76, 0.5);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: expandRing 1.3s ease-out forwards;
+      opacity: 0;
     }
-    .ring:nth-child(1) { animation-delay: 0.2s; }
-    .ring:nth-child(2) { animation-delay: 0.45s; }
-    .ring:nth-child(3) { animation-delay: 0.7s; }
+
+    .ring:nth-child(1) {
+      animation-delay: 0.2s;
+    }
+
+    .ring:nth-child(2) {
+      animation-delay: 0.45s;
+    }
+
+    .ring:nth-child(3) {
+      animation-delay: 0.7s;
+    }
+
     @keyframes expandRing {
-      0%   { width: 40px; height: 40px; opacity: 0.8; }
-      100% { width: 150px; height: 150px; opacity: 0; }
+      0% {
+        width: 40px;
+        height: 40px;
+        opacity: 0.8;
+      }
+
+      100% {
+        width: 150px;
+        height: 150px;
+        opacity: 0;
+      }
     }
+
     .success-star-burst {
-      font-size: 50px; color: #C9A84C;
-      animation: burst 0.6s cubic-bezier(0.36,0.07,0.19,0.97) both;
+      font-size: 50px;
+      color: #C9A84C;
+      animation: burst 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
       margin-bottom: 8px;
     }
+
     @keyframes burst {
-      0%  { transform: scale(0) rotate(-30deg); opacity: 0; }
-      60% { transform: scale(1.3) rotate(5deg);  opacity: 1; }
-      100%{ transform: scale(1) rotate(0deg);    opacity: 1; }
+      0% {
+        transform: scale(0) rotate(-30deg);
+        opacity: 0;
+      }
+
+      60% {
+        transform: scale(1.3) rotate(5deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
     }
+
     .success-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 32px; font-weight: 600;
-      color: #C9A84C; margin: 12px 0 10px;
+      font-size: 32px;
+      font-weight: 600;
+      color: #C9A84C;
+      margin: 12px 0 10px;
       animation: fadeInUp 0.5s 0.3s ease both;
       letter-spacing: 0.5px;
     }
+
     .success-sub {
-      font-size: 13px; color: #9090B0; line-height: 1.75;
+      font-size: 13px;
+      color: #9090B0;
+      line-height: 1.75;
       margin: 0 0 30px;
       animation: fadeInUp 0.5s 0.45s ease both;
     }
+
     .close-success-btn {
       padding: 12px 44px;
       background: linear-gradient(90deg, #C9A84C, #E2B96A);
-      border: none; border-radius: 12px;
+      border: none;
+      border-radius: 12px;
       color: #0D0F1A;
       font-family: 'DM Sans', sans-serif;
-      font-size: 14px; font-weight: 500;
-      cursor: pointer; position: relative; overflow: hidden;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
       animation: fadeInUp 0.5s 0.6s ease both;
       transition: transform 0.15s;
       letter-spacing: 1px;
     }
-    .close-success-btn:hover  { transform: scale(1.03); }
-    .close-success-btn:active { transform: scale(0.97); }
+
+    .close-success-btn:hover {
+      transform: scale(1.03);
+    }
+
+    .close-success-btn:active {
+      transform: scale(0.97);
+    }
+
     .close-success-btn::after {
       content: '';
-      position: absolute; top: 0; left: -75%;
-      width: 50%; height: 100%;
-      background: rgba(255,255,255,0.3);
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.3);
       transform: skewX(-20deg);
       animation: shimmer 2.5s 1s infinite;
     }
+
     @media (max-width: 480px) {
-      .form-grid { grid-template-columns: 1fr; }
-      .form-group.full { grid-column: 1; }
-      .modal, .success-modal { padding: 24px 18px 20px; }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.full {
+        grid-column: 1;
+      }
+
+      .modal,
+      .success-modal {
+        padding: 24px 18px 20px;
+      }
     }
   </style>
 </head>
+
 <body>
-<canvas id="bgCanvas"></canvas>
+  <canvas id="bgCanvas"></canvas>
 
-<!-- BOOKING FORM -->
-<div class="modal" id="bookingModal">
-  <a class="close-btn" href="/" title="Back to home">&#10005;</a>
-  <div class="sparkle">&#10022;</div>
-  <h1 class="modal-title">Book Your Session</h1>
-  <p class="modal-sub">Fill in your details and we'll confirm within 24 hours.</p>
+  <!-- BOOKING FORM -->
+  <div class="modal" id="bookingModal">
+    <a class="close-btn" href="/" title="Back to home">&#10005;</a>
+    <div class="sparkle">&#10022;</div>
+    <h1 class="modal-title">Book Your Session</h1>
+    <p class="modal-sub">Fill in your details and we'll confirm within 24 hours.</p>
 
-  <div class="section-label">Session Type</div>
-  <div class="toggle-row">
-    <button class="toggle-btn active" id="onlineBtn" type="button">&#128187; Online</button>
-    <button class="toggle-btn" id="inPersonBtn" type="button">&#128205; In-Person</button>
+    <div class="section-label">Session Type</div>
+    <div class="toggle-row">
+      <button class="toggle-btn active" id="onlineBtn" type="button">&#128187; Online</button>
+      <button class="toggle-btn" id="inPersonBtn" type="button">&#128205; In-Person</button>
+    </div>
+
+    <form id="bookingForm" novalidate>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="bName">Full Name *</label>
+          <input class="form-input" type="text" id="bName" placeholder="Your name" autocomplete="name">
+          <span class="error-msg" id="bNameErr">Please enter your name.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="bEmail">Email *</label>
+          <input class="form-input" type="email" id="bEmail" placeholder="your@email.com" autocomplete="email">
+          <span class="error-msg" id="bEmailErr">Please enter a valid email.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="bPhone">Phone *</label>
+          <input class="form-input" type="tel" id="bPhone" placeholder="+91 01234 56789" autocomplete="tel">
+          <span class="error-msg" id="bPhoneErr">Please enter your phone number.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="bService">Service *</label>
+          <div class="select-wrap">
+            <select class="form-select" id="bService">
+              <option value="">Select a service</option>
+              <option>Healing Sessions</option>
+              <option>Personal Counselling</option>
+              <option>Astrology Guidance</option>
+              <option>Tarot Readings</option>
+              <option>Crystal Healing</option>
+              <option>Soul Coaching</option>
+              <option>Meditation Guide</option>
+              <option>Energy Healing</option>
+            </select>
+          </div>
+          <span class="error-msg" id="bServiceErr">Please select a service.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="bDate">Preferred Date *</label>
+          <input class="form-input" type="date" id="bDate">
+          <span class="error-msg" id="bDateErr">Please select a date.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="bTime">Preferred Time *</label>
+          <div class="select-wrap">
+            <select class="form-select" id="bTime">
+              <option value="">Select time</option>
+              <option>9:00 AM</option>
+              <option>10:00 AM</option>
+              <option>11:00 AM</option>
+              <option>12:00 PM</option>
+              <option>2:00 PM</option>
+              <option>3:00 PM</option>
+              <option>4:00 PM</option>
+              <option>5:00 PM</option>
+              <option>6:00 PM</option>
+              <option>7:00 PM</option>
+            </select>
+          </div>
+          <span class="error-msg" id="bTimeErr">Please select a time.</span>
+        </div>
+        <div class="form-group full">
+          <label class="form-label" for="bMessage">Message (Optional)</label>
+          <textarea class="form-textarea" id="bMessage"
+            placeholder="Anything you'd like us to know beforehand..."></textarea>
+        </div>
+      </div>
+      <button class="confirm-btn" type="submit" id="confirmBtn">Confirm Booking &#8594;</button>
+    </form>
+
+    <a class="back-link" href="/">&#8592; Back to Soul Sync</a>
   </div>
 
-  <form id="bookingForm" novalidate>
-    <div class="form-grid">
-      <div class="form-group">
-        <label class="form-label" for="bName">Full Name *</label>
-        <input class="form-input" type="text" id="bName" placeholder="Your name" autocomplete="name">
-        <span class="error-msg" id="bNameErr">Please enter your name.</span>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="bEmail">Email *</label>
-        <input class="form-input" type="email" id="bEmail" placeholder="your@email.com" autocomplete="email">
-        <span class="error-msg" id="bEmailErr">Please enter a valid email.</span>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="bPhone">Phone *</label>
-        <input class="form-input" type="tel" id="bPhone" placeholder="+91 01234 56789" autocomplete="tel">
-        <span class="error-msg" id="bPhoneErr">Please enter your phone number.</span>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="bService">Service *</label>
-        <div class="select-wrap">
-          <select class="form-select" id="bService">
-            <option value="">Select a service</option>
-            <option>Healing Sessions</option>
-            <option>Personal Counselling</option>
-            <option>Astrology Guidance</option>
-            <option>Tarot Readings</option>
-            <option>Crystal Healing</option>
-            <option>Soul Coaching</option>
-            <option>Meditation Guide</option>
-            <option>Energy Healing</option>
-          </select>
-        </div>
-        <span class="error-msg" id="bServiceErr">Please select a service.</span>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="bDate">Preferred Date *</label>
-        <input class="form-input" type="date" id="bDate">
-        <span class="error-msg" id="bDateErr">Please select a date.</span>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="bTime">Preferred Time *</label>
-        <div class="select-wrap">
-          <select class="form-select" id="bTime">
-            <option value="">Select time</option>
-            <option>9:00 AM</option>
-            <option>10:00 AM</option>
-            <option>11:00 AM</option>
-            <option>12:00 PM</option>
-            <option>2:00 PM</option>
-            <option>3:00 PM</option>
-            <option>4:00 PM</option>
-            <option>5:00 PM</option>
-            <option>6:00 PM</option>
-            <option>7:00 PM</option>
-          </select>
-        </div>
-        <span class="error-msg" id="bTimeErr">Please select a time.</span>
-      </div>
-      <div class="form-group full">
-        <label class="form-label" for="bMessage">Message (Optional)</label>
-        <textarea class="form-textarea" id="bMessage" placeholder="Anything you'd like us to know beforehand..."></textarea>
+  <!-- SUCCESS SCREEN -->
+  <div class="success-modal" id="successModal">
+    <div class="floating-stars" id="floatingStars"></div>
+    <button class="close-btn" id="closeSuccessBtn">&#10005;</button>
+    <div class="checkmark-circle" id="checkCircle">
+      <svg width="30" height="30" viewBox="0 0 40 40">
+        <polyline class="check-path" points="8,21 17,30 32,12" />
+      </svg>
+      <div class="success-rings">
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
       </div>
     </div>
-    <button class="confirm-btn" type="submit" id="confirmBtn">Confirm Booking &#8594;</button>
-  </form>
-
-  <a class="back-link" href="/">&#8592; Back to Soul Sync</a>
-</div>
-
-<!-- SUCCESS SCREEN -->
-<div class="success-modal" id="successModal">
-  <div class="floating-stars" id="floatingStars"></div>
-  <button class="close-btn" id="closeSuccessBtn">&#10005;</button>
-  <div class="checkmark-circle" id="checkCircle">
-    <svg width="30" height="30" viewBox="0 0 40 40">
-      <polyline class="check-path" points="8,21 17,30 32,12"/>
-    </svg>
-    <div class="success-rings">
-      <div class="ring"></div>
-      <div class="ring"></div>
-      <div class="ring"></div>
-    </div>
+    <div class="success-star-burst">&#10022;</div>
+    <h2 class="success-title">Booking Received!</h2>
+    <p class="success-sub">We'll confirm your session within 24 hours.<br>Looking forward to meeting you.</p>
+    <button class="close-success-btn" id="closeSuccessBtn2">CLOSE</button>
   </div>
-  <div class="success-star-burst">&#10022;</div>
-  <h2 class="success-title">Booking Received!</h2>
-  <p class="success-sub">We'll confirm your session within 24 hours.<br>Looking forward to meeting you.</p>
-  <button class="close-success-btn" id="closeSuccessBtn2">CLOSE</button>
-</div>
 
-<script>
-  const canvas = document.getElementById('bgCanvas');
-  const ctx = canvas.getContext('2d');
-  let W, H, particles = [], blobs = [], t = 0;
+  <script>
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [], blobs = [], t = 0;
 
-  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
 
-  function initParticles() {
-    particles = [];
-    for (let i = 0; i < 100; i++) {
-      particles.push({
-        x: Math.random()*W, y: Math.random()*H,
-        r: Math.random()*1.8+0.4, alpha: Math.random()*0.7+0.2,
-        speed: Math.random()*0.3+0.04, dir: Math.random()*Math.PI*2,
-        twinkleSpeed: Math.random()*0.03+0.01,
-        twinkleOffset: Math.random()*Math.PI*2,
-        gold: Math.random()<0.25
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < 100; i++) {
+        particles.push({
+          x: Math.random() * W, y: Math.random() * H,
+          r: Math.random() * 1.8 + 0.4, alpha: Math.random() * 0.7 + 0.2,
+          speed: Math.random() * 0.3 + 0.04, dir: Math.random() * Math.PI * 2,
+          twinkleSpeed: Math.random() * 0.03 + 0.01,
+          twinkleOffset: Math.random() * Math.PI * 2,
+          gold: Math.random() < 0.25
+        });
+      }
+      blobs = [
+        { x: W * 0.12, y: H * 0.18, r: W * 0.30, color: '90,30,160', angle: 0, speed: 0.004 },
+        { x: W * 0.82, y: H * 0.78, r: W * 0.24, color: '20,60,80', angle: 1.5, speed: 0.003 },
+        { x: W * 0.50, y: H * 0.48, r: W * 0.20, color: '50,10,100', angle: 0.8, speed: 0.005 },
+        { x: W * 0.70, y: H * 0.25, r: W * 0.18, color: '10,80,100', angle: 2.1, speed: 0.0035 }
+      ];
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      blobs.forEach(b => {
+        b.angle += b.speed;
+        const bx = b.x + Math.cos(b.angle) * W * 0.07;
+        const by = b.y + Math.sin(b.angle * 1.3) * H * 0.07;
+        const g = ctx.createRadialGradient(bx, by, 0, bx, by, b.r);
+        g.addColorStop(0, `rgba(${b.color},0.18)`);
+        g.addColorStop(1, `rgba(${b.color},0)`);
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(bx, by, b.r, 0, Math.PI * 2); ctx.fill();
       });
+      t += 0.016;
+      particles.forEach(p => {
+        p.x += Math.cos(p.dir) * p.speed; p.y += Math.sin(p.dir) * p.speed;
+        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+        const tw = 0.4 + 0.6 * Math.abs(Math.sin(t * p.twinkleSpeed * 30 + p.twinkleOffset));
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.gold ? `rgba(201,168,76,${p.alpha * tw})` : `rgba(220,220,255,${p.alpha * tw})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(draw);
     }
-    blobs = [
-      {x:W*0.12,y:H*0.18,r:W*0.30,color:'90,30,160',angle:0,speed:0.004},
-      {x:W*0.82,y:H*0.78,r:W*0.24,color:'20,60,80',angle:1.5,speed:0.003},
-      {x:W*0.50,y:H*0.48,r:W*0.20,color:'50,10,100',angle:0.8,speed:0.005},
-      {x:W*0.70,y:H*0.25,r:W*0.18,color:'10,80,100',angle:2.1,speed:0.0035}
-    ];
-  }
 
-  function draw() {
-    ctx.clearRect(0,0,W,H);
-    blobs.forEach(b => {
-      b.angle += b.speed;
-      const bx = b.x + Math.cos(b.angle)*W*0.07;
-      const by = b.y + Math.sin(b.angle*1.3)*H*0.07;
-      const g = ctx.createRadialGradient(bx,by,0,bx,by,b.r);
-      g.addColorStop(0,`rgba(${b.color},0.18)`);
-      g.addColorStop(1,`rgba(${b.color},0)`);
-      ctx.fillStyle = g;
-      ctx.beginPath(); ctx.arc(bx,by,b.r,0,Math.PI*2); ctx.fill();
+    resize(); initParticles(); draw();
+    window.addEventListener('resize', () => { resize(); initParticles(); });
+
+    let sessionMode = 'online';
+    document.getElementById('onlineBtn').addEventListener('click', function () {
+      this.classList.add('active');
+      document.getElementById('inPersonBtn').classList.remove('active');
+      sessionMode = 'online';
     });
-    t += 0.016;
-    particles.forEach(p => {
-      p.x += Math.cos(p.dir)*p.speed; p.y += Math.sin(p.dir)*p.speed;
-      if(p.x<0) p.x=W; if(p.x>W) p.x=0;
-      if(p.y<0) p.y=H; if(p.y>H) p.y=0;
-      const tw = 0.4+0.6*Math.abs(Math.sin(t*p.twinkleSpeed*30+p.twinkleOffset));
-      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle = p.gold ? `rgba(201,168,76,${p.alpha*tw})` : `rgba(220,220,255,${p.alpha*tw})`;
-      ctx.fill();
+    document.getElementById('inPersonBtn').addEventListener('click', function () {
+      this.classList.add('active');
+      document.getElementById('onlineBtn').classList.remove('active');
+      sessionMode = 'in-person';
     });
-    requestAnimationFrame(draw);
-  }
 
-  resize(); initParticles(); draw();
-  window.addEventListener('resize',()=>{resize();initParticles();});
-
-  let sessionMode = 'online';
-  document.getElementById('onlineBtn').addEventListener('click',function(){
-    this.classList.add('active');
-    document.getElementById('inPersonBtn').classList.remove('active');
-    sessionMode = 'online';
-  });
-  document.getElementById('inPersonBtn').addEventListener('click',function(){
-    this.classList.add('active');
-    document.getElementById('onlineBtn').classList.remove('active');
-    sessionMode = 'in-person';
-  });
-
-  function validateField(id,errId,condition){
-    const el=document.getElementById(id);
-    const err=document.getElementById(errId);
-    if(condition(el.value)){el.classList.remove('error');err.classList.remove('show');return true;}
-    else{el.classList.add('error');err.classList.add('show');return false;}
-  }
-
-  function validateForm(){
-    const re=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const v1=validateField('bName','bNameErr',v=>v.trim().length>=2);
-    const v2=validateField('bEmail','bEmailErr',v=>re.test(v.trim()));
-    const v3=validateField('bPhone','bPhoneErr',v=>v.trim().length>=7);
-    const v4=validateField('bService','bServiceErr',v=>v!=='');
-    const v5=validateField('bDate','bDateErr',v=>v!=='');
-    const v6=validateField('bTime','bTimeErr',v=>v!=='');
-    return v1&&v2&&v3&&v4&&v5&&v6;
-  }
-
-  function spawnFloatingStars(){
-    const c=document.getElementById('floatingStars');
-    c.innerHTML='';
-    const sym=['*','o','+','~','.'];
-    for(let i=0;i<24;i++){
-      const el=document.createElement('div');
-      el.className='fs';
-      el.textContent=sym[Math.floor(Math.random()*sym.length)];
-      el.style.left=(Math.random()*88+6)+'%';
-      el.style.bottom=(Math.random()*25+5)+'%';
-      el.style.fontSize=(9+Math.random()*14)+'px';
-      el.style.animationDuration=(1.4+Math.random()*2)+'s';
-      el.style.animationDelay=(Math.random()*1.0)+'s';
-      c.appendChild(el);
+    function validateField(id, errId, condition) {
+      const el = document.getElementById(id);
+      const err = document.getElementById(errId);
+      if (condition(el.value)) { el.classList.remove('error'); err.classList.remove('show'); return true; }
+      else { el.classList.add('error'); err.classList.add('show'); return false; }
     }
-  }
 
-  document.getElementById('bookingForm').addEventListener('submit',function(e){
-    e.preventDefault();
-    if(!validateForm()) return;
-    const btn=document.getElementById('confirmBtn');
-    btn.textContent='Booking...';
-    btn.disabled=true;
-    const payload={
-      name:document.getElementById('bName').value.trim(),
-      email:document.getElementById('bEmail').value.trim(),
-      phone:document.getElementById('bPhone').value.trim(),
-      service:document.getElementById('bService').value,
-      date:document.getElementById('bDate').value,
-      time:document.getElementById('bTime').value,
-      message:document.getElementById('bMessage').value.trim(),
-      mode:sessionMode
-    };
-    fetch('/api/book',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-    .then(r=>r.json())
-    .then(data=>{
-      if(data.success) showSuccess();
-      else{alert(data.message||'Something went wrong.');btn.textContent='Confirm Booking';btn.disabled=false;}
-    })
-    .catch(()=>showSuccess());
-  });
+    function validateForm() {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const v1 = validateField('bName', 'bNameErr', v => v.trim().length >= 2);
+      const v2 = validateField('bEmail', 'bEmailErr', v => re.test(v.trim()));
+      const v3 = validateField('bPhone', 'bPhoneErr', v => v.trim().length >= 7);
+      const v4 = validateField('bService', 'bServiceErr', v => v !== '');
+      const v5 = validateField('bDate', 'bDateErr', v => v !== '');
+      const v6 = validateField('bTime', 'bTimeErr', v => v !== '');
+      return v1 && v2 && v3 && v4 && v5 && v6;
+    }
 
-  function showSuccess(){
-    const form=document.getElementById('bookingModal');
-    const success=document.getElementById('successModal');
-    form.style.opacity='0';
-    form.style.transform='scale(0.95)';
-    setTimeout(()=>{
-      form.classList.add('hidden');
-      spawnFloatingStars();
-      const old=document.getElementById('checkCircle');
-      const fresh=old.cloneNode(true);
-      old.parentNode.replaceChild(fresh,old);
-      success.classList.add('show');
-    },360);
-  }
+    function spawnFloatingStars() {
+      const c = document.getElementById('floatingStars');
+      c.innerHTML = '';
+      const sym = ['*', 'o', '+', '~', '.'];
+      for (let i = 0; i < 24; i++) {
+        const el = document.createElement('div');
+        el.className = 'fs';
+        el.textContent = sym[Math.floor(Math.random() * sym.length)];
+        el.style.left = (Math.random() * 88 + 6) + '%';
+        el.style.bottom = (Math.random() * 25 + 5) + '%';
+        el.style.fontSize = (9 + Math.random() * 14) + 'px';
+        el.style.animationDuration = (1.4 + Math.random() * 2) + 's';
+        el.style.animationDelay = (Math.random() * 1.0) + 's';
+        c.appendChild(el);
+      }
+    }
 
-  function resetForm(){
-    const form=document.getElementById('bookingModal');
-    const success=document.getElementById('successModal');
-    success.classList.remove('show');
-    form.classList.remove('hidden');
-    form.style.opacity='1';
-    form.style.transform='scale(1)';
-    document.getElementById('bookingForm').reset();
-    document.getElementById('confirmBtn').textContent='Confirm Booking';
-    document.getElementById('confirmBtn').disabled=false;
-    document.querySelectorAll('.form-input,.form-select').forEach(el=>el.classList.remove('error'));
-    document.querySelectorAll('.error-msg').forEach(el=>el.classList.remove('show'));
-  }
+    document.getElementById('bookingForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!validateForm()) return;
+      const btn = document.getElementById('confirmBtn');
+      btn.textContent = 'Booking...';
+      btn.disabled = true;
+      const payload = {
+        name: document.getElementById('bName').value.trim(),
+        email: document.getElementById('bEmail').value.trim(),
+        phone: document.getElementById('bPhone').value.trim(),
+        service: document.getElementById('bService').value,
+        date: document.getElementById('bDate').value,
+        time: document.getElementById('bTime').value,
+        message: document.getElementById('bMessage').value.trim(),
+        mode: sessionMode
+      };
+      fetch('/api/book', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) showSuccess();
+          else { alert(data.message || 'Something went wrong.'); btn.textContent = 'Confirm Booking'; btn.disabled = false; }
+        })
+        .catch(() => showSuccess());
+    });
 
-  document.getElementById('closeSuccessBtn').addEventListener('click',resetForm);
-  document.getElementById('closeSuccessBtn2').addEventListener('click',resetForm);
-</script>
+    function showSuccess() {
+      const form = document.getElementById('bookingModal');
+      const success = document.getElementById('successModal');
+      form.style.opacity = '0';
+      form.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        form.classList.add('hidden');
+        spawnFloatingStars();
+        const old = document.getElementById('checkCircle');
+        const fresh = old.cloneNode(true);
+        old.parentNode.replaceChild(fresh, old);
+        success.classList.add('show');
+      }, 360);
+    }
 
-<!-- Blank Section -->
-<section id="blank-section" style="
-  min-height: 200px;
-  width: 100%;
-  position: relative;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-">
-  <!-- Yahan aap apna content daal sakte hain -->
-</section>
+    function resetForm() {
+      const form = document.getElementById('bookingModal');
+      const success = document.getElementById('successModal');
+      success.classList.remove('show');
+      form.classList.remove('hidden');
+      form.style.opacity = '1';
+      form.style.transform = 'scale(1)';
+      document.getElementById('bookingForm').reset();
+      document.getElementById('confirmBtn').textContent = 'Confirm Booking';
+      document.getElementById('confirmBtn').disabled = false;
+      document.querySelectorAll('.form-input,.form-select').forEach(el => el.classList.remove('error'));
+      document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
+    }
 
+    document.getElementById('closeSuccessBtn').addEventListener('click', resetForm);
+    document.getElementById('closeSuccessBtn2').addEventListener('click', resetForm);
+  </script>
 </body>
+
 </html>
