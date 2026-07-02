@@ -66,10 +66,13 @@ def admin():
             username = request.form.get('username')
             password = request.form.get('password')
             
-            # Superadmin check (uses env variables in production)
-            admin_user = os.environ.get('ADMIN_USERNAME', 'taksh')
-            admin_pass = os.environ.get('ADMIN_PASSWORD', 'taksh2006')
-            if username == admin_user and password == admin_pass:
+            # Superadmin check (supports two env-based admins)
+            admin_user  = os.environ.get('ADMIN_USERNAME',   'taksh')
+            admin_pass  = os.environ.get('ADMIN_PASSWORD',   'taksh2006')
+            admin_user2 = os.environ.get('ADMIN_USERNAME_2', 'soulsyync')
+            admin_pass2 = os.environ.get('ADMIN_PASSWORD_2', 'helly@12')
+            if (username == admin_user and password == admin_pass) or \
+               (username == admin_user2 and password == admin_pass2):
                 session['logged_in'] = True
                 session['role'] = 'admin'
                 return redirect(url_for('admin'))
