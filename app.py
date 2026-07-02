@@ -7,7 +7,7 @@ import psycopg2.extras
 from datetime import datetime
 import os
 import socket
-from dotenv import load_dotenv
+from dotenv import load_dotenv  # pyrefly: ignore [missing-import]
 
 load_dotenv()
 
