@@ -2277,6 +2277,26 @@ body.modal-open {
     width: 2.5px !important;
     height: 2.5px !important;
   }
+
+  /* ── Mobile: darken hero background blobs ── */
+  .blob-1 {
+    opacity: 0.2 !important;
+    background: radial-gradient(circle, rgba(212, 175, 120, .04) 0%, transparent 70%) !important;
+  }
+
+  .blob-2 {
+    opacity: 0.15 !important;
+    background: radial-gradient(circle, rgba(184, 168, 200, .03) 0%, transparent 70%) !important;
+  }
+
+  .blob-3 {
+    opacity: 0.1 !important;
+    background: radial-gradient(circle, rgba(212, 175, 120, .02) 0%, transparent 70%) !important;
+  }
+
+  .cursor-aura {
+    display: none;
+  }
 }
 
 /* ── Intro Splash Screen ────────────────────────────── */
