@@ -153,7 +153,17 @@ def book_session():
 
     conn = get_db()
     if not conn:
-        return jsonify({'success': False, 'message': 'Database unavailable'}), 503
+        err_msg = "Database unavailable"
+        try:
+            database_url = os.environ.get('DATABASE_URL')
+            if not database_url:
+                err_msg = "DATABASE_URL environment variable is missing"
+            else:
+                import psycopg2
+                psycopg2.connect(database_url)
+        except Exception as ex:
+            err_msg = f"DB Connection Failed: {str(ex)}"
+        return jsonify({'success': False, 'message': err_msg}), 503
 
     try:
         cur = conn.cursor()
