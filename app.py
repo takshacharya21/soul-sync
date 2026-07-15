@@ -142,6 +142,18 @@ def logout():
 def index():
     return render_template('index.html')
 
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
+
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
+
+@app.route('/refund')
+def refund():
+    return render_template('refund.html')
+
 # ─── API: Booking ─────────────────────────────────────────────────────────────
 
 @app.route('/api/book', methods=['POST'])
