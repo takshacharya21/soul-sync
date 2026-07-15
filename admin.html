@@ -477,26 +477,39 @@ async function loadBookings() {
       body.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><p>No bookings yet</p></div>';
       return;
     }
-    body.innerHTML = `<table>
+    body.innerHTML = `<table style="table-layout:fixed;width:100%">
       <thead><tr>
-        <th>#</th><th>Name</th><th>Service</th><th>Date &amp; Time</th>
-        <th>Phone</th><th>Mode</th><th>Payment</th><th>Status</th><th>Actions</th>
+        <th style="width:40px">#</th>
+        <th style="width:180px">Name</th>
+        <th style="width:130px">Service</th>
+        <th style="width:110px">Date &amp; Time</th>
+        <th style="width:130px">Phone</th>
+        <th style="width:80px">Mode</th>
+        <th style="width:110px">Payment</th>
+        <th style="width:110px">Status</th>
+        <th style="width:160px">Actions</th>
       </tr></thead>
       <tbody>${rows.map(b => `
         <tr id="row-${b.id}">
-          <td style="color:var(--text-muted)">${b.id}</td>
-          <td><strong>${esc(b.name)}</strong><br/><small style="color:var(--text-muted)">${esc(b.email)}</small></td>
-          <td>${esc(b.service)}</td>
-          <td>${esc(b.preferred_date)} <br/><small style="color:var(--text-muted)">${esc(b.preferred_time)}</small></td>
-          <td>${esc(b.phone)}</td>
-          <td><span style="font-size:.75rem;padding:3px 8px;border-radius:10px;background:${b.session_mode==='offline'?'rgba(212,175,120,0.12)':'rgba(0,188,212,0.1)'};color:${b.session_mode==='offline'?'#d4af78':'#00bcd4'};border:1px solid ${b.session_mode==='offline'?'rgba(212,175,120,0.3)':'rgba(0,188,212,0.2)'}">${b.session_mode==='offline'?'📍 Offline':'💻 Online'}</span></td>
-          <td>${b.payment_id ? `<span style="font-size:.72rem;padding:3px 8px;border-radius:10px;background:rgba(143,170,156,0.15);color:#8faa9c;border:1px solid rgba(143,170,156,0.3)">💳 Paid</span><br/><small style="color:var(--text-muted);font-size:.65rem">${esc(b.payment_id)}</small>` : '<span style="color:var(--text-muted);font-size:.75rem">— Unpaid</span>'}</td>
-          <td><span class="status-badge ${b.status}">${b.status === 'rescheduled' ? '📅 Rescheduled' : b.status === 'confirmed' ? '✓ Confirmed' : b.status === 'cancelled' ? '✕ Cancelled' : '⏳ Pending'}</span></td>
+          <td style="color:var(--text-muted);font-size:.75rem">${b.id}</td>
+          <td>
+            <strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.name)}</strong>
+            <small style="color:var(--text-muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.email)}</small>
+          </td>
+          <td style="font-size:.8rem">${esc(b.service)}</td>
+          <td style="font-size:.8rem">${esc(b.preferred_date)}<br/><small style="color:var(--text-muted)">${esc(b.preferred_time)}</small></td>
+          <td style="font-size:.8rem;white-space:nowrap">${esc(b.phone)}</td>
+          <td><span style="font-size:.72rem;padding:3px 7px;border-radius:10px;background:${b.session_mode==='offline'?'rgba(212,175,120,0.12)':'rgba(0,188,212,0.1)'};color:${b.session_mode==='offline'?'#d4af78':'#00bcd4'};border:1px solid ${b.session_mode==='offline'?'rgba(212,175,120,0.3)':'rgba(0,188,212,0.2)'}">${b.session_mode==='offline'?'📍 Off':'💻 On'}</span></td>
+          <td>${b.payment_id
+            ? `<span style="font-size:.72rem;padding:3px 8px;border-radius:10px;background:rgba(143,170,156,0.15);color:#8faa9c;border:1px solid rgba(143,170,156,0.3);display:inline-block">💳 Paid</span><br/><small style="color:var(--text-muted);font-size:.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:100px">${esc(b.name)}</small>`
+            : '<span style="color:var(--text-muted);font-size:.75rem">— Unpaid</span>'}
+          </td>
+          <td><span class="status-badge ${b.status}" style="white-space:nowrap">${b.status === 'rescheduled' ? '📅 Rescheduled' : b.status === 'confirmed' ? '✓ Confirmed' : b.status === 'cancelled' ? '✕ Cancelled' : '⏳ Pending'}</span></td>
           <td>
             <div class="action-btns">
-              <button class="act-btn confirm" onclick="confirmBookingAction(${b.id},'confirmed','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}'))">✓ Confirm</button>
-              <button class="act-btn" onclick="confirmBookingAction(${b.id},'cancelled','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}'))">✕ Cancel</button>
-              <button class="act-btn danger" onclick="deleteBooking(${b.id})">🗑</button>
+              <button class="act-btn confirm" onclick="confirmBookingAction(${b.id},'confirmed','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')" title="Confirm">✓ Confirm</button>
+              <button class="act-btn" onclick="confirmBookingAction(${b.id},'cancelled','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')" title="Cancel">✕ Cancel</button>
+              <button class="act-btn danger" onclick="deleteBooking(${b.id})" title="Delete">🗑</button>
             </div>
           </td>
         </tr>`).join('')}
