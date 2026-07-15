@@ -480,7 +480,7 @@ async function loadBookings() {
     body.innerHTML = `<table>
       <thead><tr>
         <th>#</th><th>Name</th><th>Service</th><th>Date &amp; Time</th>
-        <th>Phone</th><th>Mode</th><th>Status</th><th>Actions</th>
+        <th>Phone</th><th>Mode</th><th>Payment</th><th>Status</th><th>Actions</th>
       </tr></thead>
       <tbody>${rows.map(b => `
         <tr id="row-${b.id}">
@@ -490,11 +490,12 @@ async function loadBookings() {
           <td>${esc(b.preferred_date)} <br/><small style="color:var(--text-muted)">${esc(b.preferred_time)}</small></td>
           <td>${esc(b.phone)}</td>
           <td><span style="font-size:.75rem;padding:3px 8px;border-radius:10px;background:${b.session_mode==='offline'?'rgba(212,175,120,0.12)':'rgba(0,188,212,0.1)'};color:${b.session_mode==='offline'?'#d4af78':'#00bcd4'};border:1px solid ${b.session_mode==='offline'?'rgba(212,175,120,0.3)':'rgba(0,188,212,0.2)'}">${b.session_mode==='offline'?'📍 Offline':'💻 Online'}</span></td>
+          <td>${b.payment_id ? `<span style="font-size:.72rem;padding:3px 8px;border-radius:10px;background:rgba(143,170,156,0.15);color:#8faa9c;border:1px solid rgba(143,170,156,0.3)">💳 Paid</span><br/><small style="color:var(--text-muted);font-size:.65rem">${esc(b.payment_id)}</small>` : '<span style="color:var(--text-muted);font-size:.75rem">— Unpaid</span>'}</td>
           <td><span class="status-badge ${b.status}">${b.status === 'rescheduled' ? '📅 Rescheduled' : b.status === 'confirmed' ? '✓ Confirmed' : b.status === 'cancelled' ? '✕ Cancelled' : '⏳ Pending'}</span></td>
           <td>
             <div class="action-btns">
-              <button class="act-btn confirm" onclick="confirmBookingAction(${b.id},'confirmed','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')">✓ Confirm</button>
-              <button class="act-btn" onclick="confirmBookingAction(${b.id},'cancelled','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')">✕ Cancel</button>
+              <button class="act-btn confirm" onclick="confirmBookingAction(${b.id},'confirmed','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}'))">✓ Confirm</button>
+              <button class="act-btn" onclick="confirmBookingAction(${b.id},'cancelled','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}'))">✕ Cancel</button>
               <button class="act-btn danger" onclick="deleteBooking(${b.id})">🗑</button>
             </div>
           </td>

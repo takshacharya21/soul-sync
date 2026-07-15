@@ -54,6 +54,10 @@ def run_migrations():
             ALTER TABLE bookings
             ADD COLUMN IF NOT EXISTS session_mode VARCHAR(10) DEFAULT 'online';
         """)
+        cur.execute("""
+            ALTER TABLE bookings
+            ADD COLUMN IF NOT EXISTS payment_id VARCHAR(100) DEFAULT NULL;
+        """)
         conn.commit()
         print("✓ Migrations complete")
     except Exception as e:
@@ -222,20 +226,22 @@ def verify_payment():
         return jsonify({'success': False, 'message': 'Database unavailable'}), 503
     try:
         cur = conn.cursor()
+        # ── 24h limit per phone number ───────────────────────────────────────────
         cur.execute(
-            "SELECT COUNT(*) FROM bookings WHERE phone = %s AND preferred_date = %s AND status != 'cancelled'",
-            (booking['phone'], booking['date'])
+            "SELECT COUNT(*) FROM bookings WHERE phone = %s AND created_at > NOW() - INTERVAL '24 hours' AND status != 'cancelled'",
+            (booking['phone'],)
         )
         if cur.fetchone()[0] > 0:
-            return jsonify({'success': False, 'message': 'Booking already exists for this date.'}), 400
+            return jsonify({'success': False, 'message': 'This number already has a booking. Please wait 24 hours before booking again.'}), 400
 
         cur.execute("""
-            INSERT INTO bookings (name, email, phone, service, preferred_date, preferred_time, message, session_mode, status, created_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'confirmed', %s)
+            INSERT INTO bookings (name, email, phone, service, preferred_date, preferred_time, message, session_mode, status, payment_id, created_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'confirmed', %s, %s)
         """, (
             booking['name'], booking['email'], booking['phone'],
             booking['service'], booking['date'], booking['time'],
-            booking.get('message', ''), booking.get('session_mode', 'online'), datetime.now()
+            booking.get('message', ''), booking.get('session_mode', 'online'),
+            razorpay_payment_id, datetime.now()
         ))
         conn.commit()
         return jsonify({'success': True, 'message': 'Payment successful! Booking confirmed.', 'payment_id': razorpay_payment_id})
@@ -271,14 +277,15 @@ def book_session():
 
     try:
         cur = conn.cursor()
+        # ── 24h limit per phone number ─────────────────────────────────────────
         cur.execute(
-            "SELECT COUNT(*) FROM bookings WHERE phone = %s AND preferred_date = %s AND status != 'cancelled'",
-            (data['phone'], data['date'])
+            "SELECT COUNT(*) FROM bookings WHERE phone = %s AND created_at > NOW() - INTERVAL '24 hours' AND status != 'cancelled'",
+            (data['phone'],)
         )
         if cur.fetchone()[0] > 0:
             return jsonify({
                 'success': False,
-                'message': 'This phone number already has a booking for this date. Only one booking per day is allowed per number.'
+                'message': 'This number already has a booking. Please wait 24 hours before booking again.'
             }), 400
 
         cur.execute("""

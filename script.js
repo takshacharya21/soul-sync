@@ -216,6 +216,24 @@ async function submitBooking(e) {
   };
 
   try {
+    // ── 10-minute cancel cooldown check ─────────────────────────────────
+    const cancelKey  = `rzp_cancel_${booking.phone}`;
+    const cancelTime = localStorage.getItem(cancelKey);
+    if (cancelTime) {
+      const waitMs   = 10 * 60 * 1000; // 10 minutes
+      const elapsed  = Date.now() - parseInt(cancelTime);
+      if (elapsed < waitMs) {
+        const remaining = Math.ceil((waitMs - elapsed) / 60000);
+        showToast(`Payment was cancelled. Please try again in ${remaining} minute(s).`);
+        btn.innerHTML = orig;
+        btn.disabled = false;
+        return;
+      } else {
+        localStorage.removeItem(cancelKey);
+      }
+    }
+    // ───────────────────────────────────────────────────
+
     // Step 1: Create Razorpay order (₹499)
     const orderRes = await fetch(`${API}/api/create-order`, { method: 'POST' });
     const orderData = await orderRes.json();
@@ -285,7 +303,9 @@ async function submitBooking(e) {
 
       modal: {
         ondismiss: function() {
-          showToast('Payment cancelled');
+          // Start 10-min cooldown on dismiss
+          localStorage.setItem(`rzp_cancel_${booking.phone}`, Date.now().toString());
+          showToast('Payment cancelled. You can retry in 10 minutes.');
           btn.innerHTML = orig;
           btn.disabled = false;
         }
