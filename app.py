@@ -7,9 +7,24 @@ import psycopg2.extras
 from datetime import datetime
 import os
 import socket
+import hmac
+import hashlib
 from dotenv import load_dotenv  # pyrefly: ignore [missing-import]
 
 load_dotenv()
+
+# ─── Razorpay Client ─────────────────────────────────────────────────────────
+try:
+    import razorpay
+    RAZORPAY_KEY_ID     = os.environ.get('RAZORPAY_KEY_ID', '')
+    RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '')
+    rzp_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET)) if RAZORPAY_KEY_ID else None
+except ImportError:
+    rzp_client = None
+    RAZORPAY_KEY_ID = ''
+    RAZORPAY_KEY_SECRET = ''
+
+BOOKING_AMOUNT_PAISE = 49900  # ₹499
 
 app = Flask(__name__, template_folder='.', static_folder='.', static_url_path='')
 CORS(app)
@@ -154,7 +169,84 @@ def terms():
 def refund():
     return render_template('refund.html')
 
-# ─── API: Booking ─────────────────────────────────────────────────────────────
+# ─── API: Razorpay Order Create ──────────────────────────────────────────────
+
+@app.route('/api/create-order', methods=['POST'])
+def create_order():
+    if not rzp_client:
+        return jsonify({'success': False, 'message': 'Payment gateway not configured'}), 503
+    try:
+        order_data = {
+            'amount': BOOKING_AMOUNT_PAISE,
+            'currency': 'INR',
+            'payment_capture': 1
+        }
+        order = rzp_client.order.create(data=order_data)
+        return jsonify({
+            'success': True,
+            'order_id': order['id'],
+            'amount': BOOKING_AMOUNT_PAISE,
+            'currency': 'INR',
+            'key_id': RAZORPAY_KEY_ID
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+# ─── API: Razorpay Payment Verify + Save Booking ─────────────────────────────
+
+@app.route('/api/verify-payment', methods=['POST'])
+def verify_payment():
+    data = request.get_json()
+    razorpay_order_id   = data.get('razorpay_order_id', '')
+    razorpay_payment_id = data.get('razorpay_payment_id', '')
+    razorpay_signature  = data.get('razorpay_signature', '')
+
+    # ── Signature Verification ────────────────────────────────────────────────
+    msg = f"{razorpay_order_id}|{razorpay_payment_id}".encode()
+    expected_sig = hmac.new(
+        RAZORPAY_KEY_SECRET.encode(), msg, hashlib.sha256
+    ).hexdigest()
+    if not hmac.compare_digest(expected_sig, razorpay_signature):
+        return jsonify({'success': False, 'message': 'Payment verification failed'}), 400
+    # ─────────────────────────────────────────────────────────────────────────
+
+    # ── Save Booking to Database ──────────────────────────────────────────────
+    booking = data.get('booking', {})
+    required = ['name', 'email', 'phone', 'service', 'date', 'time']
+    if not all(k in booking for k in required):
+        return jsonify({'success': False, 'message': 'Booking details missing'}), 400
+
+    conn = get_db()
+    if not conn:
+        return jsonify({'success': False, 'message': 'Database unavailable'}), 503
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT COUNT(*) FROM bookings WHERE phone = %s AND preferred_date = %s AND status != 'cancelled'",
+            (booking['phone'], booking['date'])
+        )
+        if cur.fetchone()[0] > 0:
+            return jsonify({'success': False, 'message': 'Booking already exists for this date.'}), 400
+
+        cur.execute("""
+            INSERT INTO bookings (name, email, phone, service, preferred_date, preferred_time, message, session_mode, status, created_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'confirmed', %s)
+        """, (
+            booking['name'], booking['email'], booking['phone'],
+            booking['service'], booking['date'], booking['time'],
+            booking.get('message', ''), booking.get('session_mode', 'online'), datetime.now()
+        ))
+        conn.commit()
+        return jsonify({'success': True, 'message': 'Payment successful! Booking confirmed.', 'payment_id': razorpay_payment_id})
+    except psycopg2.Error as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        if conn:
+            conn.close()
+
+
+# ─── API: Booking (Direct - kept for internal use) ────────────────────────────
 
 @app.route('/api/book', methods=['POST'])
 def book_session():
@@ -179,8 +271,6 @@ def book_session():
 
     try:
         cur = conn.cursor()
-
-        # ── One booking per phone per day restriction ─────────────────────────
         cur.execute(
             "SELECT COUNT(*) FROM bookings WHERE phone = %s AND preferred_date = %s AND status != 'cancelled'",
             (data['phone'], data['date'])
@@ -190,7 +280,6 @@ def book_session():
                 'success': False,
                 'message': 'This phone number already has a booking for this date. Only one booking per day is allowed per number.'
             }), 400
-        # ─────────────────────────────────────────────────────────────────────
 
         cur.execute("""
             INSERT INTO bookings (name, email, phone, service, preferred_date, preferred_time, message, session_mode, status, created_at)

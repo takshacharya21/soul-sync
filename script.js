@@ -196,52 +196,105 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeBooking();
 });
 
-/* ── Booking Submission ───────────────────────────── */
+/* ── Booking Submission with Razorpay Payment ─────── */
 async function submitBooking(e) {
   e.preventDefault();
   const btn = document.getElementById('bSubmitBtn');
   const orig = btn.innerHTML;
-  btn.innerHTML = '<span>Sending…</span>';
+  btn.innerHTML = '<span>Processing…</span>';
   btn.disabled = true;
 
-  const payload = {
-    name: document.getElementById('bName').value,
-    email: document.getElementById('bEmail').value,
-    phone: document.getElementById('bPhone').value,
-    service: document.getElementById('bService').value,
-    date: document.getElementById('bDate').value,
-    time: document.getElementById('bTime').value,
-    message: document.getElementById('bMessage').value,
+  const booking = {
+    name:         document.getElementById('bName').value,
+    email:        document.getElementById('bEmail').value,
+    phone:        document.getElementById('bPhone').value,
+    service:      document.getElementById('bService').value,
+    date:         document.getElementById('bDate').value,
+    time:         document.getElementById('bTime').value,
+    message:      document.getElementById('bMessage').value,
     session_mode: document.getElementById('bMode').value,
   };
 
   try {
-    const r = await fetch(`${API}/api/book`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    const d = await r.json();
-    if (d.success) {
-      const formEl = document.getElementById('bookingForm');
-      formEl.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-      formEl.style.opacity = '0';
-      formEl.style.transform = 'scale(0.96)';
-      
-      setTimeout(() => {
-        formEl.style.display = 'none';
-        
-        const successEl = document.getElementById('bookingSuccess');
-        successEl.style.display = 'block';
-        successEl.classList.add('animate-in');
-        
-        showToast('Booking confirmed! ✦');
-      }, 300);
-    } else {
-      showToast(d.message || 'Something went wrong');
+    // Step 1: Create Razorpay order (₹499)
+    const orderRes = await fetch(`${API}/api/create-order`, { method: 'POST' });
+    const orderData = await orderRes.json();
+
+    if (!orderData.success) {
+      showToast(orderData.message || 'Could not initiate payment');
       btn.innerHTML = orig;
       btn.disabled = false;
+      return;
     }
+
+    // Step 2: Open Razorpay Payment Popup
+    const options = {
+      key:         orderData.key_id,
+      amount:      orderData.amount,
+      currency:    orderData.currency,
+      name:        'Soul Syync',
+      description: 'Session Booking Fee',
+      image:       '/logo.png.PNG',
+      order_id:    orderData.order_id,
+      prefill: {
+        name:    booking.name,
+        email:   booking.email,
+        contact: booking.phone,
+      },
+      theme: { color: '#C9A84C' },
+
+      handler: async function(response) {
+        // Step 3: Verify payment + save booking
+        btn.innerHTML = '<span>Confirming…</span>';
+        try {
+          const verifyRes = await fetch(`${API}/api/verify-payment`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({
+              razorpay_order_id:   response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature:  response.razorpay_signature,
+              booking:             booking,
+            })
+          });
+          const verifyData = await verifyRes.json();
+
+          if (verifyData.success) {
+            const formEl = document.getElementById('bookingForm');
+            formEl.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            formEl.style.opacity = '0';
+            formEl.style.transform = 'scale(0.96)';
+            setTimeout(() => {
+              formEl.style.display = 'none';
+              const successEl = document.getElementById('bookingSuccess');
+              successEl.style.display = 'block';
+              successEl.classList.add('animate-in');
+              showToast('Payment successful! Booking confirmed ✦');
+            }, 300);
+          } else {
+            showToast(verifyData.message || 'Payment verification failed');
+            btn.innerHTML = orig;
+            btn.disabled = false;
+          }
+        } catch(err) {
+          showToast('Could not verify payment');
+          btn.innerHTML = orig;
+          btn.disabled = false;
+        }
+      },
+
+      modal: {
+        ondismiss: function() {
+          showToast('Payment cancelled');
+          btn.innerHTML = orig;
+          btn.disabled = false;
+        }
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+
   } catch (err) {
     showToast('Could not connect to server');
     btn.innerHTML = orig;
