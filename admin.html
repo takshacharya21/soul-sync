@@ -641,31 +641,55 @@ async function loadOldData() {
     if (!oldB.length) {
       bookBody.innerHTML = '<div class="empty-state"><div class="empty-icon">🗄️</div><p>No past bookings yet</p></div>';
     } else {
-      bookBody.innerHTML = `<table style="table-layout:fixed;width:100%">
-        <thead><tr>
-          <th style="width:40px">#</th>
-          <th style="width:150px">Name</th>
-          <th style="width:120px">Service</th>
-          <th style="width:105px">Date &amp; Time</th>
-          <th style="width:115px">Phone</th>
-          <th style="width:70px">Mode</th>
-          <th style="width:85px">Payment</th>
-          <th style="width:95px">Status</th>
-          <th style="width:105px">Received</th>
-        </tr></thead>
-        <tbody>${oldB.map(b => `
-          <tr>
-            <td style="color:var(--text-muted);font-size:.75rem">${b.id}</td>
-            <td><strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.name)}</strong><small style="color:var(--text-muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.email)}</small></td>
-            <td style="font-size:.8rem">${esc(b.service)}</td>
-            <td style="font-size:.8rem">${esc(b.preferred_date)}<br/><small style="color:var(--text-muted)">${esc(b.preferred_time)}</small></td>
-            <td style="font-size:.8rem;white-space:nowrap">${esc(b.phone)}</td>
-            <td><span style="font-size:.72rem;padding:3px 7px;border-radius:10px;background:${b.session_mode==='offline'?'rgba(212,175,120,0.12)':'rgba(0,188,212,0.1)'};color:${b.session_mode==='offline'?'#d4af78':'#00bcd4'};border:1px solid ${b.session_mode==='offline'?'rgba(212,175,120,0.3)':'rgba(0,188,212,0.2)'}">${b.session_mode==='offline'?'📍 Off':'💻 On'}</span></td>
-            <td>${b.payment_id ? '<span style="font-size:.72rem;padding:3px 8px;border-radius:10px;background:rgba(143,170,156,0.15);color:#8faa9c;border:1px solid rgba(143,170,156,0.3)">💳 Paid</span>' : '<span style="color:var(--text-muted);font-size:.75rem">— Unpaid</span>'}</td>
-            <td><span class="status-badge ${b.status}" style="white-space:nowrap">${b.status==='rescheduled'?'📅 Rescheduled':b.status==='confirmed'?'✓ Confirmed':b.status==='cancelled'?'✕ Cancelled':'⏳ Pending'}</span></td>
-            <td style="color:var(--text-muted);font-size:.75rem;white-space:nowrap">${esc(b.created_at||'')}</td>
-          </tr>`).join('')}
-        </tbody></table>`;
+      // Group by created_at date (YYYY-MM-DD), sorted newest first
+      const byDate = {};
+      oldB.forEach(b => {
+        const day = (b.created_at || 'Unknown').slice(0, 10);
+        if (!byDate[day]) byDate[day] = [];
+        byDate[day].push(b);
+      });
+      const sortedDays = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
+
+      const formatDay = d => {
+        if (d === 'Unknown') return 'Unknown Date';
+        const dt = new Date(d + 'T00:00:00');
+        return dt.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      };
+
+      bookBody.innerHTML = sortedDays.map(day => `
+        <div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+            <span style="font-size:1rem">📅</span>
+            <span style="font-family:var(--font-display);font-size:1rem;color:var(--gold-light);font-weight:600">${formatDay(day)}</span>
+            <span style="margin-left:auto;background:rgba(212,175,120,0.15);border:1px solid rgba(212,175,120,0.3);color:var(--gold);padding:2px 10px;border-radius:20px;font-size:.72rem;letter-spacing:.05em">${byDate[day].length} booking${byDate[day].length !== 1 ? 's' : ''}</span>
+          </div>
+          <table style="table-layout:fixed;width:100%">
+            <thead><tr>
+              <th style="width:40px">#</th>
+              <th style="width:150px">Name</th>
+              <th style="width:120px">Service</th>
+              <th style="width:105px">Date &amp; Time</th>
+              <th style="width:115px">Phone</th>
+              <th style="width:70px">Mode</th>
+              <th style="width:85px">Payment</th>
+              <th style="width:95px">Status</th>
+              <th style="width:105px">Received</th>
+            </tr></thead>
+            <tbody>${byDate[day].map(b => `
+              <tr>
+                <td style="color:var(--text-muted);font-size:.75rem">${b.id}</td>
+                <td><strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.name)}</strong><small style="color:var(--text-muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.email)}</small></td>
+                <td style="font-size:.8rem">${esc(b.service)}</td>
+                <td style="font-size:.8rem">${esc(b.preferred_date)}<br/><small style="color:var(--text-muted)">${esc(b.preferred_time)}</small></td>
+                <td style="font-size:.8rem;white-space:nowrap">${esc(b.phone)}</td>
+                <td><span style="font-size:.72rem;padding:3px 7px;border-radius:10px;background:${b.session_mode==='offline'?'rgba(212,175,120,0.12)':'rgba(0,188,212,0.1)'};color:${b.session_mode==='offline'?'#d4af78':'#00bcd4'};border:1px solid ${b.session_mode==='offline'?'rgba(212,175,120,0.3)':'rgba(0,188,212,0.2)'}">${b.session_mode==='offline'?'📍 Off':'💻 On'}</span></td>
+                <td>${b.payment_id ? '<span style="font-size:.72rem;padding:3px 8px;border-radius:10px;background:rgba(143,170,156,0.15);color:#8faa9c;border:1px solid rgba(143,170,156,0.3)">💳 Paid</span>' : '<span style="color:var(--text-muted);font-size:.75rem">— Unpaid</span>'}</td>
+                <td><span class="status-badge ${b.status}" style="white-space:nowrap">${b.status==='rescheduled'?'📅 Rescheduled':b.status==='confirmed'?'✓ Confirmed':b.status==='cancelled'?'✕ Cancelled':'⏳ Pending'}</span></td>
+                <td style="color:var(--text-muted);font-size:.75rem;white-space:nowrap">${esc(b.created_at||'')}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>`).join('');
     }
   } catch(e) {
     bookBody.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load past bookings.</p></div>';
@@ -680,20 +704,44 @@ async function loadOldData() {
     if (!oldC.length) {
       contBody.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><p>No past messages yet</p></div>';
     } else {
-      contBody.innerHTML = `<table>
-        <thead><tr>
-          <th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Received</th>
-        </tr></thead>
-        <tbody>${oldC.map(c => `
-          <tr>
-            <td style="color:var(--text-muted)">${c.id}</td>
-            <td><strong>${esc(c.name)}</strong></td>
-            <td><a href="mailto:${esc(c.email)}" style="color:var(--gold)">${esc(c.email)}</a></td>
-            <td>${esc(c.phone||'—')}</td>
-            <td style="max-width:260px;white-space:pre-wrap;word-break:break-word">${esc(c.message)}</td>
-            <td style="color:var(--text-muted);white-space:nowrap">${esc(c.created_at||'')}</td>
-          </tr>`).join('')}
-        </tbody></table>`;
+      // Group by date, sorted newest first
+      const byDateC = {};
+      oldC.forEach(c => {
+        const day = (c.created_at || 'Unknown').slice(0, 10);
+        if (!byDateC[day]) byDateC[day] = [];
+        byDateC[day].push(c);
+      });
+      const sortedDaysC = Object.keys(byDateC).sort((a, b) => b.localeCompare(a));
+
+      const formatDayC = d => {
+        if (d === 'Unknown') return 'Unknown Date';
+        const dt = new Date(d + 'T00:00:00');
+        return dt.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      };
+
+      contBody.innerHTML = sortedDaysC.map(day => `
+        <div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+            <span style="font-size:1rem">💬</span>
+            <span style="font-family:var(--font-display);font-size:1rem;color:var(--gold-light);font-weight:600">${formatDayC(day)}</span>
+            <span style="margin-left:auto;background:rgba(212,175,120,0.15);border:1px solid rgba(212,175,120,0.3);color:var(--gold);padding:2px 10px;border-radius:20px;font-size:.72rem;letter-spacing:.05em">${byDateC[day].length} message${byDateC[day].length !== 1 ? 's' : ''}</span>
+          </div>
+          <table>
+            <thead><tr>
+              <th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Received</th>
+            </tr></thead>
+            <tbody>${byDateC[day].map(c => `
+              <tr>
+                <td style="color:var(--text-muted)">${c.id}</td>
+                <td><strong>${esc(c.name)}</strong></td>
+                <td><a href="mailto:${esc(c.email)}" style="color:var(--gold)">${esc(c.email)}</a></td>
+                <td>${esc(c.phone||'—')}</td>
+                <td style="max-width:260px;white-space:pre-wrap;word-break:break-word">${esc(c.message)}</td>
+                <td style="color:var(--text-muted);white-space:nowrap">${esc(c.created_at||'')}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>`).join('');
     }
   } catch(e) {
     contBody.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load past messages.</p></div>';
