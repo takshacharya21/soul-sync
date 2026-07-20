@@ -591,7 +591,7 @@
         </div>
         <div class="form-group">
           <label class="form-label" for="bPhone">Phone *</label>
-          <input class="form-input" type="tel" id="bPhone" placeholder="97379 67609" autocomplete="tel">
+          <input class="form-input" type="tel" id="bPhone" placeholder="+91 98765 43210" autocomplete="tel">
           <span class="error-msg" id="bPhoneErr">Please enter your phone number.</span>
         </div>
         <div class="form-group">
@@ -641,7 +641,7 @@
             placeholder="Anything you'd like us to know beforehand..."></textarea>
         </div>
       </div>
-      <button class="confirm-btn" type="submit" id="confirmBtn">Confirm Booking &#8594;</button>
+      <button class="confirm-btn" type="submit" id="confirmBtn">Pay ₹499 &#8594;</button>
     </form>
 
     <a class="back-link" href="/">&#8592; Back to Soul Sync</a>
@@ -789,7 +789,7 @@
         .then(r => r.json())
         .then(data => {
           if (data.success) showSuccess();
-          else { alert(data.message || 'Something went wrong.'); btn.textContent = 'Confirm Booking'; btn.disabled = false; }
+          else { alert(data.message || 'Something went wrong.'); btn.textContent = 'Pay ₹499'; btn.disabled = false; }
         })
         .catch(() => showSuccess());
     });
@@ -817,7 +817,7 @@
       form.style.opacity = '1';
       form.style.transform = 'scale(1)';
       document.getElementById('bookingForm').reset();
-      document.getElementById('confirmBtn').textContent = 'Confirm Booking';
+      document.getElementById('confirmBtn').textContent = 'Pay ₹499';
       document.getElementById('confirmBtn').disabled = false;
       document.querySelectorAll('.form-input,.form-select').forEach(el => el.classList.remove('error'));
       document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
