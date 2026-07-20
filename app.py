@@ -24,7 +24,7 @@ except ImportError:
     RAZORPAY_KEY_ID = ''
     RAZORPAY_KEY_SECRET = ''
 
-BOOKING_AMOUNT_PAISE = 100  # ₹1 (TESTING - change to 49900 for live)
+BOOKING_AMOUNT_PAISE = 49900  # ₹499 (live amount)
 
 app = Flask(__name__, template_folder='.', static_folder='.', static_url_path='')
 CORS(app)
