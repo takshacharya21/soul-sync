@@ -59,7 +59,7 @@ def run_migrations():
             ADD COLUMN IF NOT EXISTS payment_id VARCHAR(100) DEFAULT NULL;
         """)
         conn.commit()
-        print("✓ Migrations complete")
+        print("[OK] Migrations complete")
     except Exception as e:
         print(f"Migration warning: {e}")
     finally:
