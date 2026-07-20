@@ -295,6 +295,9 @@ select.status-select{background:var(--surface2);border:1px solid var(--border);c
     <button class="nav-item" onclick="showTab('contacts',this)">
       <span class="icon">💬</span><span>Messages</span>
     </button>
+    <button class="nav-item" id="nav-olddata" onclick="showTab('olddata',this)">
+      <span class="icon">🗄️</span><span>Old Data</span>
+    </button>
     <div class="nav-section">Quick Actions</div>
     <a class="nav-item" href="/" target="_blank">
       <span class="icon">🌐</span><span>View Website</span>
@@ -344,6 +347,7 @@ select.status-select{background:var(--surface2);border:1px solid var(--border);c
     <div class="tab-row">
       <button class="tab-btn active" id="tab-bookings" onclick="showTab('bookings',null)">📅 Bookings</button>
       <button class="tab-btn" id="tab-contacts" onclick="showTab('contacts',null)">💬 Messages</button>
+      <button class="tab-btn" id="tab-olddata" onclick="showTab('olddata',null)">🗄️ Old Data</button>
     </div>
 
     <!-- Bookings Table -->
@@ -364,6 +368,24 @@ select.status-select{background:var(--surface2);border:1px solid var(--border);c
           <span class="table-count" id="contactCount">Loading…</span>
         </div>
         <div id="contactsBody"><div class="loading">Loading messages…</div></div>
+      </div>
+    </div>
+
+    <!-- Old Data Panel -->
+    <div id="panel-olddata" style="display:none">
+      <div class="table-wrap" style="margin-bottom:24px">
+        <div class="table-header">
+          <h3>🗄️ Past Bookings</h3>
+          <span class="table-count" id="oldBookingCount">–</span>
+        </div>
+        <div id="oldBookingsBody"><div class="loading">Loading past bookings…</div></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3>💬 Past Messages</h3>
+          <span class="table-count" id="oldContactCount">–</span>
+        </div>
+        <div id="oldContactsBody"><div class="loading">Loading past messages…</div></div>
       </div>
     </div>
   </div>
@@ -439,12 +461,20 @@ const API = '';
 function showTab(tab, btn) {
   document.getElementById('panel-bookings').style.display = tab === 'bookings' ? 'block' : 'none';
   document.getElementById('panel-contacts').style.display  = tab === 'contacts'  ? 'block' : 'none';
+  document.getElementById('panel-olddata').style.display   = tab === 'olddata'   ? 'block' : 'none';
   document.getElementById('tab-bookings').classList.toggle('active', tab === 'bookings');
   document.getElementById('tab-contacts').classList.toggle('active',  tab === 'contacts');
+  document.getElementById('tab-olddata').classList.toggle('active',   tab === 'olddata');
   
+  // Sync sidebar active state
+  document.querySelectorAll('.sidebar-nav .nav-item').forEach(el => el.classList.remove('active'));
+  const sideTarget = document.querySelector(`.sidebar-nav .nav-item[onclick*="'${tab}'"]`);
+  if (sideTarget) sideTarget.classList.add('active');
   let title = 'Bookings';
   if (tab === 'contacts') title = 'Messages';
+  if (tab === 'olddata')  title = 'Old Data';
   document.getElementById('pageTitle').textContent = title;
+  if (tab === 'olddata') loadOldData();
 }
 
 function toast(msg) {
@@ -454,15 +484,18 @@ function toast(msg) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-async function loadStats() {
-  try {
-    const r = await fetch(`${API}/api/stats`);
-    const d = await r.json();
-    document.getElementById('statBookings').textContent  = d.bookings  ?? 0;
-    document.getElementById('statPending').textContent   = d.pending   ?? 0;
-    document.getElementById('statConfirmed').textContent = d.confirmed ?? 0;
-    document.getElementById('statContacts').textContent  = d.contacts  ?? 0;
-  } catch(e) { console.log('Stats error', e); }
+// ── Today filtering helpers ────────────────────────────────────────────────
+let _allBookings = [];
+let _allContacts = [];
+function getTodayStr() { return new Date().toLocaleDateString('en-CA'); }
+function isToday(dt)   { return !!dt && dt.startsWith(getTodayStr()); }
+function updateTodayStats() {
+  const todayB = _allBookings.filter(b => isToday(b.created_at));
+  const todayC = _allContacts.filter(c => isToday(c.created_at));
+  document.getElementById('statBookings').textContent  = todayB.length;
+  document.getElementById('statPending').textContent   = todayB.filter(b => b.status === 'pending').length;
+  document.getElementById('statConfirmed').textContent = todayB.filter(b => b.status === 'confirmed').length;
+  document.getElementById('statContacts').textContent  = todayC.length;
 }
 
 async function loadBookings() {
@@ -472,9 +505,11 @@ async function loadBookings() {
     const r = await fetch(`${API}/api/bookings`);
     const d = await r.json();
     const rows = d.data || [];
-    document.getElementById('bookingCount').textContent = `${rows.length} records`;
-    if (!rows.length) {
-      body.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><p>No bookings yet</p></div>';
+    _allBookings = rows;
+    const todayRows = rows.filter(b => isToday(b.created_at));
+    document.getElementById('bookingCount').textContent = `${todayRows.length} today`;
+    if (!todayRows.length) {
+      body.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><p>No bookings today — check <strong>Old Data</strong> for previous entries</p></div>';
       return;
     }
     body.innerHTML = `<table style="table-layout:fixed;width:100%">
@@ -489,7 +524,7 @@ async function loadBookings() {
         <th style="width:110px">Status</th>
         <th style="width:160px">Actions</th>
       </tr></thead>
-      <tbody>${rows.map(b => `
+      <tbody>${todayRows.map(b => `
         <tr id="row-${b.id}">
           <td style="color:var(--text-muted);font-size:.75rem">${b.id}</td>
           <td>
@@ -560,16 +595,18 @@ async function loadContacts() {
     const r = await fetch(`${API}/api/contacts`);
     const d = await r.json();
     const rows = d.data || [];
-    document.getElementById('contactCount').textContent = `${rows.length} records`;
-    if (!rows.length) {
-      body.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><p>No messages yet</p></div>';
+    _allContacts = rows;
+    const todayRows = rows.filter(c => isToday(c.created_at));
+    document.getElementById('contactCount').textContent = `${todayRows.length} today`;
+    if (!todayRows.length) {
+      body.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><p>No messages today — check <strong>Old Data</strong> for previous entries</p></div>';
       return;
     }
     body.innerHTML = `<table>
       <thead><tr>
         <th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Received</th><th>Action</th>
       </tr></thead>
-      <tbody>${rows.map(c => `
+      <tbody>${todayRows.map(c => `
         <tr>
           <td style="color:var(--text-muted)">${c.id}</td>
           <td><strong>${esc(c.name)}</strong></td>
@@ -585,6 +622,81 @@ async function loadContacts() {
     </table>`;
   } catch(e) {
     body.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load messages. Is the Flask server running?</p></div>';
+  }
+}
+
+async function loadOldData() {
+  const bookBody = document.getElementById('oldBookingsBody');
+  const contBody = document.getElementById('oldContactsBody');
+  if (!bookBody || !contBody) return;
+  bookBody.innerHTML = '<div class="loading">Loading past bookings…</div>';
+  contBody.innerHTML = '<div class="loading">Loading past messages…</div>';
+
+  // ── Past Bookings ──────────────────────────────────────────────────────────
+  try {
+    const rb = await fetch(`${API}/api/bookings`);
+    const db = await rb.json();
+    const oldB = (db.data || []).filter(b => !isToday(b.created_at));
+    document.getElementById('oldBookingCount').textContent = `${oldB.length} records`;
+    if (!oldB.length) {
+      bookBody.innerHTML = '<div class="empty-state"><div class="empty-icon">🗄️</div><p>No past bookings yet</p></div>';
+    } else {
+      bookBody.innerHTML = `<table style="table-layout:fixed;width:100%">
+        <thead><tr>
+          <th style="width:40px">#</th>
+          <th style="width:150px">Name</th>
+          <th style="width:120px">Service</th>
+          <th style="width:105px">Date &amp; Time</th>
+          <th style="width:115px">Phone</th>
+          <th style="width:70px">Mode</th>
+          <th style="width:85px">Payment</th>
+          <th style="width:95px">Status</th>
+          <th style="width:105px">Received</th>
+        </tr></thead>
+        <tbody>${oldB.map(b => `
+          <tr>
+            <td style="color:var(--text-muted);font-size:.75rem">${b.id}</td>
+            <td><strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.name)}</strong><small style="color:var(--text-muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.email)}</small></td>
+            <td style="font-size:.8rem">${esc(b.service)}</td>
+            <td style="font-size:.8rem">${esc(b.preferred_date)}<br/><small style="color:var(--text-muted)">${esc(b.preferred_time)}</small></td>
+            <td style="font-size:.8rem;white-space:nowrap">${esc(b.phone)}</td>
+            <td><span style="font-size:.72rem;padding:3px 7px;border-radius:10px;background:${b.session_mode==='offline'?'rgba(212,175,120,0.12)':'rgba(0,188,212,0.1)'};color:${b.session_mode==='offline'?'#d4af78':'#00bcd4'};border:1px solid ${b.session_mode==='offline'?'rgba(212,175,120,0.3)':'rgba(0,188,212,0.2)'}">${b.session_mode==='offline'?'📍 Off':'💻 On'}</span></td>
+            <td>${b.payment_id ? '<span style="font-size:.72rem;padding:3px 8px;border-radius:10px;background:rgba(143,170,156,0.15);color:#8faa9c;border:1px solid rgba(143,170,156,0.3)">💳 Paid</span>' : '<span style="color:var(--text-muted);font-size:.75rem">— Unpaid</span>'}</td>
+            <td><span class="status-badge ${b.status}" style="white-space:nowrap">${b.status==='rescheduled'?'📅 Rescheduled':b.status==='confirmed'?'✓ Confirmed':b.status==='cancelled'?'✕ Cancelled':'⏳ Pending'}</span></td>
+            <td style="color:var(--text-muted);font-size:.75rem;white-space:nowrap">${esc(b.created_at||'')}</td>
+          </tr>`).join('')}
+        </tbody></table>`;
+    }
+  } catch(e) {
+    bookBody.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load past bookings.</p></div>';
+  }
+
+  // ── Past Contacts ──────────────────────────────────────────────────────────
+  try {
+    const rc = await fetch(`${API}/api/contacts`);
+    const dc = await rc.json();
+    const oldC = (dc.data || []).filter(c => !isToday(c.created_at));
+    document.getElementById('oldContactCount').textContent = `${oldC.length} records`;
+    if (!oldC.length) {
+      contBody.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><p>No past messages yet</p></div>';
+    } else {
+      contBody.innerHTML = `<table>
+        <thead><tr>
+          <th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Received</th>
+        </tr></thead>
+        <tbody>${oldC.map(c => `
+          <tr>
+            <td style="color:var(--text-muted)">${c.id}</td>
+            <td><strong>${esc(c.name)}</strong></td>
+            <td><a href="mailto:${esc(c.email)}" style="color:var(--gold)">${esc(c.email)}</a></td>
+            <td>${esc(c.phone||'—')}</td>
+            <td style="max-width:260px;white-space:pre-wrap;word-break:break-word">${esc(c.message)}</td>
+            <td style="color:var(--text-muted);white-space:nowrap">${esc(c.created_at||'')}</td>
+          </tr>`).join('')}
+        </tbody></table>`;
+    }
+  } catch(e) {
+    contBody.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load past messages.</p></div>';
   }
 }
 
@@ -759,7 +871,10 @@ function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function loadAll() { loadStats(); loadBookings(); loadContacts(); }
+async function loadAll() {
+  await Promise.all([loadBookings(), loadContacts()]);
+  updateTodayStats();
+}
 
 // Particle Background Animation
 (function () {
@@ -828,6 +943,10 @@ setInterval(loadAll, 30000);
   <button class="mobile-nav-item" id="mnav-contacts" onclick="showTab('contacts',null);setMobileNav('contacts')">
     <span class="icon">💬</span>
     <span>Messages</span>
+  </button>
+  <button class="mobile-nav-item" id="mnav-olddata" onclick="showTab('olddata',null);setMobileNav('olddata')">
+    <span class="icon">🗄️</span>
+    <span>Old Data</span>
   </button>
   <a class="mobile-nav-item" href="/" target="_blank">
     <span class="icon">🌐</span>
