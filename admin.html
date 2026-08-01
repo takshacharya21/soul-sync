@@ -382,6 +382,9 @@ select.status-select{background:var(--surface2);border:1px solid var(--border);c
         <h3>Session Bookings</h3>
         <div style="display:flex;align-items:center;gap:10px">
           <span class="table-count" id="bookingCount">Loading…</span>
+          <button onclick="openAddBookingModal()" style="display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:8px;border:none;background:linear-gradient(135deg,rgba(212,175,120,0.2),rgba(212,175,120,0.1));color:var(--gold);font-size:.78rem;font-weight:600;cursor:pointer;border:1px solid rgba(212,175,120,0.35);transition:.2s" title="Manually add a confirmed booking">
+            <span style="font-size:1rem">+</span> Add Booking
+          </button>
         </div>
       </div>
       <!-- Search bar -->
@@ -447,6 +450,107 @@ select.status-select{background:var(--surface2);border:1px solid var(--border);c
 <div class="toast-admin" id="toast"></div>
 
 <!-- WhatsApp Notification Modal -->
+<!-- Manual Add Booking Modal -->
+<div id="addBookingModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:16px;overflow-y:auto">
+  <div style="background:var(--surface);border:1px solid rgba(212,175,120,0.4);border-radius:16px;width:100%;max-width:560px;overflow:hidden;box-shadow:0 0 60px rgba(212,175,120,0.12);margin:auto">
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,rgba(212,175,120,0.15),rgba(212,175,120,0.05));border-bottom:1px solid rgba(212,175,120,0.2);padding:20px 24px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:1.6rem">📋</span>
+        <div>
+          <div style="color:var(--gold-light);font-weight:600;font-size:1rem;font-family:var(--font-display)">Manually Add Confirmed Booking</div>
+          <div style="color:var(--text-muted);font-size:.74rem;margin-top:2px">Payment captured but booking not saved? Add it here.</div>
+        </div>
+      </div>
+      <button onclick="closeAddBookingModal()" style="background:rgba(255,255,255,0.07);border:1px solid var(--border);color:var(--text-muted);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center">&times;</button>
+    </div>
+    <!-- Body -->
+    <div style="padding:24px;display:flex;flex-direction:column;gap:14px">
+      <!-- Payment ID notice -->
+      <div style="background:rgba(143,170,156,0.08);border:1px solid rgba(143,170,156,0.25);border-radius:10px;padding:12px 16px;display:flex;align-items:flex-start;gap:10px">
+        <span style="font-size:1.1rem;margin-top:1px">💳</span>
+        <div style="font-size:.78rem;color:var(--text-muted);line-height:1.6">
+          Payment already captured on Razorpay? Fill in the details below and the booking will be saved as <strong style="color:#8faa9c">Confirmed</strong> with the payment ID.
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-size:.7rem;color:var(--text-muted);letter-spacing:.07em;text-transform:uppercase;display:block;margin-bottom:5px">👤 Full Name *</label>
+          <input id="ab_name" type="text" placeholder="Client name" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:.84rem;font-family:var(--font-body);outline:none">
+        </div>
+        <div>
+          <label style="font-size:.7rem;color:var(--text-muted);letter-spacing:.07em;text-transform:uppercase;display:block;margin-bottom:5px">📞 Phone *</label>
+          <input id="ab_phone" type="tel" placeholder="10-digit number" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:.84rem;font-family:var(--font-body);outline:none">
+        </div>
+      </div>
+
+      <div>
+        <label style="font-size:.7rem;color:var(--text-muted);letter-spacing:.07em;text-transform:uppercase;display:block;margin-bottom:5px">📧 Email *</label>
+        <input id="ab_email" type="email" placeholder="client@email.com" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:.84rem;font-family:var(--font-body);outline:none">
+      </div>
+
+      <div>
+        <label style="font-size:.7rem;color:var(--text-muted);letter-spacing:.07em;text-transform:uppercase;display:block;margin-bottom:5px">🌿 Service *</label>
+        <select id="ab_service" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:.84rem;font-family:var(--font-body);outline:none;cursor:pointer">
+          <option value="">Select service…</option>
+          <option>Tarot Card Reading</option>
+          <option>Reiki Healing</option>
+          <option>Counselling Session</option>
+          <option>Crystal Healing</option>
+          <option>Angel Card Reading</option>
+          <option>Chakra Balancing</option>
+          <option>Past Life Regression</option>
+          <option>Mediumship Reading</option>
+          <option>Soul Realignment</option>
+        </select>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-size:.7rem;color:var(--text-muted);letter-spacing:.07em;text-transform:uppercase;display:block;margin-bottom:5px">🗓 Preferred Date *</label>
+          <input id="ab_date" type="date" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:.84rem;font-family:var(--font-body);outline:none;cursor:pointer">
+        </div>
+        <div>
+          <label style="font-size:.7rem;color:var(--text-muted);letter-spacing:.07em;text-transform:uppercase;display:block;margin-bottom:5px">⏰ Preferred Time *</label>
+          <input id="ab_time" type="time" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:.84rem;font-family:var(--font-body);outline:none;cursor:pointer">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-size:.7rem;color:var(--text-muted);letter-spacing:.07em;text-transform:uppercase;display:block;margin-bottom:5px">💳 Razorpay Payment ID</label>
+          <input id="ab_payment_id" type="text" placeholder="pay_XXXXXXXXXX (optional)" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:.82rem;font-family:var(--font-body);outline:none;letter-spacing:.03em">
+        </div>
+        <div>
+          <label style="font-size:.7rem;color:var(--text-muted);letter-spacing:.07em;text-transform:uppercase;display:block;margin-bottom:5px">📱 Session Mode</label>
+          <select id="ab_mode" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:.84rem;font-family:var(--font-body);outline:none;cursor:pointer">
+            <option value="online">💻 Online</option>
+            <option value="offline">📍 In-Person</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label style="font-size:.7rem;color:var(--text-muted);letter-spacing:.07em;text-transform:uppercase;display:block;margin-bottom:5px">🗒 Booking Date (when they booked)</label>
+        <input id="ab_created_at" type="date" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:.84rem;font-family:var(--font-body);outline:none;cursor:pointer">
+        <p style="font-size:.7rem;color:var(--text-muted);margin-top:5px">Leave blank for today. Set to 2026-07-31 for July 31 booking.</p>
+      </div>
+
+      <!-- Error -->
+      <div id="ab_error" style="display:none;background:rgba(201,160,160,0.1);border:1px solid rgba(201,160,160,0.3);border-radius:8px;padding:10px 14px;font-size:.8rem;color:var(--cancelled)"></div>
+
+      <!-- Buttons -->
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <button onclick="closeAddBookingModal()" style="flex:1;padding:11px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text-muted);cursor:pointer;font-size:.85rem">Cancel</button>
+        <button onclick="submitAddBooking()" id="ab_submitBtn" style="flex:2;padding:11px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--gold),#c49a50);color:#0d0b10;cursor:pointer;font-size:.9rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px">
+          <span>💾</span> Save Confirmed Booking
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="waModal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.78);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;overflow-y:auto">
   <div style="background:var(--surface);border:1px solid rgba(37,211,102,0.35);border-radius:16px;width:100%;max-width:500px;overflow:hidden;box-shadow:0 0 60px rgba(37,211,102,0.15);margin:auto">
     <!-- Header -->
@@ -1043,6 +1147,75 @@ function sendWhatsApp() {
 
 function closeWAModal() {
   document.getElementById('waModal').style.display = 'none';
+}
+
+// ── Manual Add Booking Modal ──────────────────────────────────────────────
+function openAddBookingModal() {
+  // Clear form
+  ['ab_name','ab_phone','ab_email','ab_payment_id'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('ab_service').value = '';
+  document.getElementById('ab_mode').value = 'online';
+  document.getElementById('ab_date').value = '';
+  document.getElementById('ab_time').value = '';
+  document.getElementById('ab_created_at').value = '';
+  document.getElementById('ab_error').style.display = 'none';
+  document.getElementById('addBookingModal').style.display = 'flex';
+}
+
+function closeAddBookingModal() {
+  document.getElementById('addBookingModal').style.display = 'none';
+}
+
+async function submitAddBooking() {
+  const errEl  = document.getElementById('ab_error');
+  const btnEl  = document.getElementById('ab_submitBtn');
+  errEl.style.display = 'none';
+
+  const name       = document.getElementById('ab_name').value.trim();
+  const phone      = document.getElementById('ab_phone').value.trim();
+  const email      = document.getElementById('ab_email').value.trim();
+  const service    = document.getElementById('ab_service').value;
+  const date       = document.getElementById('ab_date').value;
+  const time       = document.getElementById('ab_time').value;
+  const payment_id = document.getElementById('ab_payment_id').value.trim();
+  const mode       = document.getElementById('ab_mode').value;
+  const created_at = document.getElementById('ab_created_at').value;
+
+  if (!name || !phone || !email || !service || !date || !time) {
+    errEl.textContent = 'Please fill in all required fields (*)';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btnEl.textContent = 'Saving…';
+  btnEl.disabled = true;
+
+  try {
+    const body = { name, phone, email, service, date, time, payment_id, session_mode: mode };
+    if (created_at) body.created_at = created_at;
+    const r = await fetch(`${API}/api/admin/add-booking`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if (d.success) {
+      closeAddBookingModal();
+      toast('Booking saved successfully! ✓');
+      loadAll();
+    } else {
+      errEl.textContent = d.message || 'Failed to save booking';
+      errEl.style.display = 'block';
+    }
+  } catch(e) {
+    errEl.textContent = 'Network error. Check if server is running.';
+    errEl.style.display = 'block';
+  } finally {
+    btnEl.innerHTML = '<span>💾</span> Save Confirmed Booking';
+    btnEl.disabled = false;
+  }
 }
 
 async function deleteBooking(id) {

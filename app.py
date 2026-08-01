@@ -252,6 +252,41 @@ def verify_payment():
             conn.close()
 
 
+# ─── API: Admin Manual Booking (for payments captured but not saved) ──────────
+
+@app.route('/api/admin/add-booking', methods=['POST'])
+@login_required
+def admin_add_booking():
+    """Admin-only: manually add a confirmed booking (e.g. payment captured but booking lost)."""
+    data = request.get_json()
+    required = ['name', 'email', 'phone', 'service', 'date', 'time']
+    if not all(k in data for k in required):
+        return jsonify({'success': False, 'message': 'All fields are required'}), 400
+
+    conn = get_db()
+    if not conn:
+        return jsonify({'success': False, 'message': 'Database unavailable'}), 503
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO bookings (name, email, phone, service, preferred_date, preferred_time, message, session_mode, status, payment_id, created_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'confirmed', %s, %s)
+        """, (
+            data['name'], data['email'], data['phone'],
+            data['service'], data['date'], data['time'],
+            data.get('message', 'Manually added by admin'),
+            data.get('session_mode', 'online'),
+            data.get('payment_id', None),
+            data.get('created_at', datetime.now())
+        ))
+        conn.commit()
+        return jsonify({'success': True, 'message': 'Booking added successfully!'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        if conn:
+            conn.close()
+
 # ─── API: Booking (Direct - kept for internal use) ────────────────────────────
 
 @app.route('/api/book', methods=['POST'])
