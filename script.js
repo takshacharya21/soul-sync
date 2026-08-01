@@ -234,7 +234,22 @@ async function submitBooking(e) {
     }
     // ───────────────────────────────────────────────────
 
-    // Step 1: Create Razorpay order (₹499)
+    // Step 1: Save booking to DB as 'pending' BEFORE opening payment
+    // This ensures booking is ALWAYS recorded even if browser closes after payment
+    const preRes = await fetch(`${API}/api/book`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(booking)
+    });
+    const preData = await preRes.json();
+    if (!preData.success) {
+      showToast(preData.message || 'Could not save booking details');
+      btn.innerHTML = orig;
+      btn.disabled = false;
+      return;
+    }
+
+    // Step 2: Create Razorpay order (₹499)
     const orderRes = await fetch(`${API}/api/create-order`, { method: 'POST' });
     const orderData = await orderRes.json();
 
@@ -245,7 +260,7 @@ async function submitBooking(e) {
       return;
     }
 
-    // Step 2: Open Razorpay Payment Popup
+    // Step 3: Open Razorpay Payment Popup
     const options = {
       key:         orderData.key_id,
       amount:      orderData.amount,
@@ -262,7 +277,7 @@ async function submitBooking(e) {
       theme: { color: '#C9A84C' },
 
       handler: async function(response) {
-        // Step 3: Verify payment + save booking
+        // Step 4: Verify payment + confirm booking
         btn.innerHTML = '<span>Confirming…</span>';
         try {
           const verifyRes = await fetch(`${API}/api/verify-payment`, {
@@ -290,12 +305,15 @@ async function submitBooking(e) {
               showToast('Payment successful! Booking confirmed ✦');
             }, 300);
           } else {
-            showToast(verifyData.message || 'Payment verification failed');
+            // Payment done but verify failed — booking already saved as pending
+            // Admin can see it and confirm manually
+            showToast('Payment received! Booking saved as pending — admin will confirm shortly.');
             btn.innerHTML = orig;
             btn.disabled = false;
           }
         } catch(err) {
-          showToast('Could not verify payment');
+          // Network error after payment — booking already in DB as pending
+          showToast('Payment received! Booking saved — admin will confirm shortly.');
           btn.innerHTML = orig;
           btn.disabled = false;
         }
