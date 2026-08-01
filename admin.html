@@ -355,17 +355,17 @@ select.status-select{background:var(--surface2);border:1px solid var(--border);c
       <div class="stat-card">
         <div class="stat-icon">⏳</div>
         <div class="stat-val" id="statPending">–</div>
-        <div class="stat-label">Pending</div>
+        <div class="stat-label">Pending (All)</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">✅</div>
         <div class="stat-val" id="statConfirmed">–</div>
-        <div class="stat-label">Confirmed</div>
+        <div class="stat-label">Confirmed (All)</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">💬</div>
         <div class="stat-val" id="statContacts">–</div>
-        <div class="stat-label">Messages</div>
+        <div class="stat-label">Messages (All)</div>
       </div>
     </div>
 
@@ -537,18 +537,34 @@ function toast(msg) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// ── Today filtering helpers ────────────────────────────────────────────────
+// ── Today filtering helpers ──────────────────────────────────────────────
 let _allBookings = [];
 let _allContacts = [];
-function getTodayStr() { return new Date().toLocaleDateString('en-CA'); }
-function isToday(dt)   { return !!dt && dt.startsWith(getTodayStr()); }
-function updateTodayStats() {
-  const todayB = _allBookings.filter(b => isToday(b.created_at));
-  const todayC = _allContacts.filter(c => isToday(c.created_at));
-  document.getElementById('statBookings').textContent  = todayB.length;
-  document.getElementById('statPending').textContent   = todayB.filter(b => b.status === 'pending').length;
-  document.getElementById('statConfirmed').textContent = todayB.filter(b => b.status === 'confirmed').length;
-  document.getElementById('statContacts').textContent  = todayC.length;
+function getTodayStr()     { return new Date().toLocaleDateString('en-CA'); }
+function getYesterdayStr() {
+  const d = new Date(); d.setDate(d.getDate() - 1);
+  return d.toLocaleDateString('en-CA');
+}
+function isToday(dt)     { return !!dt && dt.startsWith(getTodayStr()); }
+function isYesterday(dt) { return !!dt && dt.startsWith(getYesterdayStr()); }
+function isRecent(dt)    { return isToday(dt) || isYesterday(dt); }
+
+async function updateTodayStats() {
+  // Use /api/stats for all-time real counts from DB
+  try {
+    const r = await fetch(`${API}/api/stats`);
+    const s = await r.json();
+    document.getElementById('statBookings').textContent  = s.bookings  ?? 0;
+    document.getElementById('statPending').textContent   = s.pending   ?? 0;
+    document.getElementById('statConfirmed').textContent = s.confirmed ?? 0;
+    document.getElementById('statContacts').textContent  = s.contacts  ?? 0;
+  } catch(e) {
+    // Fallback: count from local cache
+    document.getElementById('statBookings').textContent  = _allBookings.length;
+    document.getElementById('statPending').textContent   = _allBookings.filter(b => b.status === 'pending').length;
+    document.getElementById('statConfirmed').textContent = _allBookings.filter(b => b.status === 'confirmed').length;
+    document.getElementById('statContacts').textContent  = _allContacts.length;
+  }
 }
 
 async function loadBookings() {
@@ -557,61 +573,89 @@ async function loadBookings() {
     const d = await r.json();
     const rows = d.data || [];
     _allBookings = rows;
-    const todayRows = rows.filter(b => isToday(b.created_at));
-    _renderedBookings = todayRows;
-    document.getElementById('bookingCount').textContent = `${todayRows.length} today`;
+    // Show today + yesterday so no booking is ever missed
+    const recentRows = rows.filter(b => isRecent(b.created_at));
+    _renderedBookings = recentRows;
+    const todayCount = rows.filter(b => isToday(b.created_at)).length;
+    const yestCount  = rows.filter(b => isYesterday(b.created_at)).length;
+    let countLabel = `${todayCount} today`;
+    if (yestCount > 0) countLabel += `, ${yestCount} yesterday`;
+    document.getElementById('bookingCount').textContent = countLabel;
     // Preserve search if active
     const q = (document.getElementById('bookingSearch')?.value || '').trim();
-    if (q) { filterBookings(); } else { renderBookingTable(todayRows); }
+    if (q) { filterBookings(); } else { renderBookingTable(recentRows); }
   } catch(e) {
     document.getElementById('bookingsBody').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load bookings. Is the Flask server running?</p></div>';
   }
 }
 
-function renderBookingTable(todayRows) {
+function renderBookingTable(rows) {
   const body = document.getElementById('bookingsBody');
-  if (!todayRows.length) {
-    body.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><p>No bookings today — check <strong>Old Data</strong> for previous entries</p></div>';
+  if (!rows.length) {
+    body.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><p>No bookings found for today or yesterday — check <strong>Old Data</strong> for earlier entries</p></div>';
     return;
   }
-  body.innerHTML = `<table style="table-layout:fixed;width:100%">
-    <thead><tr>
-      <th style="width:40px">#</th>
-      <th style="width:180px">Name</th>
-      <th style="width:130px">Service</th>
-      <th style="width:110px">Date &amp; Time</th>
-      <th style="width:130px">Phone</th>
-      <th style="width:80px">Mode</th>
-      <th style="width:110px">Payment</th>
-      <th style="width:110px">Status</th>
-      <th style="width:160px">Actions</th>
-    </tr></thead>
-    <tbody>${todayRows.map(b => `
-      <tr id="row-${b.id}">
-        <td style="color:var(--text-muted);font-size:.75rem">${b.id}</td>
-        <td>
-          <strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.name)}</strong>
-          <small style="color:var(--text-muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.email)}</small>
-        </td>
-        <td style="font-size:.8rem">${esc(b.service)}</td>
-        <td style="font-size:.8rem">${esc(b.preferred_date)}<br/><small style="color:var(--text-muted)">${esc(b.preferred_time)}</small></td>
-        <td style="font-size:.8rem;white-space:nowrap">${esc(b.phone)}</td>
-        <td><span style="font-size:.72rem;padding:3px 7px;border-radius:10px;background:${b.session_mode==='offline'?'rgba(212,175,120,0.12)':'rgba(0,188,212,0.1)'};color:${b.session_mode==='offline'?'#d4af78':'#00bcd4'};border:1px solid ${b.session_mode==='offline'?'rgba(212,175,120,0.3)':'rgba(0,188,212,0.2)'}">${b.session_mode==='offline'?'📍 Off':'💻 On'}</span></td>
-        <td>${b.payment_id
-          ? `<span style="font-size:.72rem;padding:3px 8px;border-radius:10px;background:rgba(143,170,156,0.15);color:#8faa9c;border:1px solid rgba(143,170,156,0.3);display:inline-block">💳 Paid</span><br/><small style="color:var(--text-muted);font-size:.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:100px">${esc(b.name)}</small>`
-          : '<span style="color:var(--text-muted);font-size:.75rem">— Unpaid</span>'}
-        </td>
-        <td><span class="status-badge ${b.status}" style="white-space:nowrap">${b.status === 'rescheduled' ? '📅 Rescheduled' : b.status === 'confirmed' ? '✓ Confirmed' : b.status === 'cancelled' ? '✕ Cancelled' : '⏳ Pending'}</span></td>
-        <td>
-          <div class="action-btns">
-            <button class="act-btn confirm" onclick="confirmBookingAction(${b.id},'confirmed','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')" title="Confirm">✓ Confirm</button>
-            <button class="act-btn" onclick="confirmBookingAction(${b.id},'cancelled','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')" title="Cancel">✕ Cancel</button>
-            <button class="act-btn danger" onclick="deleteBooking(${b.id})" title="Delete">🗑</button>
-          </div>
-        </td>
-      </tr>`).join('')}
-    </tbody>
-  </table>`;
+  // Group by date: today vs yesterday
+  const todayStr = getTodayStr();
+  const yestStr  = getYesterdayStr();
+  const grouped = {};
+  rows.forEach(b => {
+    const dayKey = (b.created_at || '').slice(0, 10);
+    if (!grouped[dayKey]) grouped[dayKey] = [];
+    grouped[dayKey].push(b);
+  });
+  const sortedDays = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+  const dayLabel = d => {
+    if (d === todayStr) return '📅 Today';
+    if (d === yestStr)  return '🕐 Yesterday (' + new Date(d + 'T00:00:00').toLocaleDateString('en-IN', {day:'numeric',month:'short'}) + ')';
+    return d;
+  };
+  const tableRows = rows => rows.map(b => `
+    <tr id="row-${b.id}">
+      <td style="color:var(--text-muted);font-size:.75rem">${b.id}</td>
+      <td>
+        <strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.name)}</strong>
+        <small style="color:var(--text-muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.email)}</small>
+      </td>
+      <td style="font-size:.8rem">${esc(b.service)}</td>
+      <td style="font-size:.8rem">${esc(b.preferred_date)}<br/><small style="color:var(--text-muted)">${esc(b.preferred_time)}</small></td>
+      <td style="font-size:.8rem;white-space:nowrap">${esc(b.phone)}</td>
+      <td><span style="font-size:.72rem;padding:3px 7px;border-radius:10px;background:${b.session_mode==='offline'?'rgba(212,175,120,0.12)':'rgba(0,188,212,0.1)'};color:${b.session_mode==='offline'?'#d4af78':'#00bcd4'};border:1px solid ${b.session_mode==='offline'?'rgba(212,175,120,0.3)':'rgba(0,188,212,0.2)'}">${b.session_mode==='offline'?'📍 Off':'💻 On'}</span></td>
+      <td>${b.payment_id
+        ? `<span style="font-size:.72rem;padding:3px 8px;border-radius:10px;background:rgba(143,170,156,0.15);color:#8faa9c;border:1px solid rgba(143,170,156,0.3);display:inline-block">💳 Paid</span>`
+        : '<span style="color:var(--text-muted);font-size:.75rem">— Unpaid</span>'}
+      </td>
+      <td><span class="status-badge ${b.status}" style="white-space:nowrap">${b.status === 'rescheduled' ? '📅 Rescheduled' : b.status === 'confirmed' ? '✓ Confirmed' : b.status === 'cancelled' ? '✕ Cancelled' : '⏳ Pending'}</span></td>
+      <td>
+        <div class="action-btns">
+          <button class="act-btn confirm" onclick="confirmBookingAction(${b.id},'confirmed','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')" title="Confirm">✓ Confirm</button>
+          <button class="act-btn" onclick="confirmBookingAction(${b.id},'cancelled','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')" title="Cancel">✕ Cancel</button>
+          <button class="act-btn danger" onclick="deleteBooking(${b.id})" title="Delete">🗑</button>
+        </div>
+      </td>
+    </tr>`).join('');
+
+  body.innerHTML = sortedDays.map(day => `
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 20px;background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+        <span style="font-family:var(--font-display);font-size:.95rem;color:var(--gold-light);font-weight:600">${dayLabel(day)}</span>
+        <span style="margin-left:auto;background:rgba(212,175,120,0.12);border:1px solid rgba(212,175,120,0.25);color:var(--gold);padding:2px 9px;border-radius:20px;font-size:.7rem">${grouped[day].length} booking${grouped[day].length !== 1 ? 's' : ''}</span>
+      </div>
+      <table style="table-layout:fixed;width:100%">
+        <thead><tr>
+          <th style="width:40px">#</th>
+          <th style="width:170px">Name</th>
+          <th style="width:120px">Service</th>
+          <th style="width:110px">Date &amp; Time</th>
+          <th style="width:120px">Phone</th>
+          <th style="width:70px">Mode</th>
+          <th style="width:90px">Payment</th>
+          <th style="width:110px">Status</th>
+          <th style="width:150px">Actions</th>
+        </tr></thead>
+        <tbody>${tableRows(grouped[day])}</tbody>
+      </table>
+    </div>`).join('');
 }
 
 async function loadBookingMessages() {
