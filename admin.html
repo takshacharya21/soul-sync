@@ -677,11 +677,13 @@ async function loadBookings() {
     const d = await r.json();
     const rows = d.data || [];
     _allBookings = rows;
-    // Show today + yesterday so no booking is ever missed
-    const recentRows = rows.filter(b => isRecent(b.created_at));
+    // Only show paid bookings (have payment_id) OR manually added (confirmed/cancelled/rescheduled)
+    // Hide unpaid pre-saves (status=pending, no payment_id) — these are pre-payment saves not yet paid
+    const paidOrConfirmed = b => b.payment_id || b.status !== 'pending';
+    const recentRows = rows.filter(b => isRecent(b.created_at) && paidOrConfirmed(b));
     _renderedBookings = recentRows;
-    const todayCount = rows.filter(b => isToday(b.created_at)).length;
-    const yestCount  = rows.filter(b => isYesterday(b.created_at)).length;
+    const todayCount = rows.filter(b => isToday(b.created_at) && paidOrConfirmed(b)).length;
+    const yestCount  = rows.filter(b => isYesterday(b.created_at) && paidOrConfirmed(b)).length;
     let countLabel = `${todayCount} today`;
     if (yestCount > 0) countLabel += `, ${yestCount} yesterday`;
     document.getElementById('bookingCount').textContent = countLabel;
@@ -1382,8 +1384,10 @@ setInterval(tickCountdown, 1000);
 
 // ── Tab Badge Counters ────────────────────────────────────────────────────
 function updateTabBadges() {
-  // Pending bookings badge
-  const pendingCount = _allBookings.filter(b => isToday(b.created_at) && b.status === 'pending').length;
+  // Only count PAID pending bookings (have payment_id) — exclude unpaid pre-saves
+  const pendingCount = _allBookings.filter(b =>
+    isToday(b.created_at) && b.status === 'pending' && b.payment_id
+  ).length;
   const bBadge = document.getElementById('badge-bookings');
   if (bBadge) {
     if (pendingCount > 0) { bBadge.textContent = pendingCount; bBadge.style.display = 'inline-flex'; }
