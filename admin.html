@@ -614,8 +614,10 @@ select.status-select{background:var(--surface2);border:1px solid var(--border);c
 
 <script>
 const API = '';
+let _currentActiveTab = 'bookings';
 
 function showTab(tab, btn) {
+  _currentActiveTab = tab;
   document.getElementById('panel-bookings').style.display = tab === 'bookings' ? 'block' : 'none';
   document.getElementById('panel-contacts').style.display  = tab === 'contacts'  ? 'block' : 'none';
   document.getElementById('panel-olddata').style.display   = tab === 'olddata'   ? 'block' : 'none';
@@ -834,12 +836,14 @@ async function loadContacts() {
   }
 }
 
-async function loadOldData(filterDate) {
+async function loadOldData(filterDate, isSilent) {
   const bookBody = document.getElementById('oldBookingsBody');
   const contBody = document.getElementById('oldContactsBody');
   if (!bookBody || !contBody) return;
-  bookBody.innerHTML = '<div class="loading">Loading past bookings…</div>';
-  contBody.innerHTML = '<div class="loading">Loading past messages…</div>';
+  if (!isSilent) {
+    bookBody.innerHTML = '<div class="loading">Loading past bookings…</div>';
+    contBody.innerHTML = '<div class="loading">Loading past messages…</div>';
+  }
 
   // Update filter label
   const label = document.getElementById('oldDataFilterLabel');
@@ -1272,6 +1276,10 @@ async function loadAll() {
   await Promise.all([loadBookings(), loadContacts()]);
   updateTodayStats();
   updateTabBadges();
+  if (_currentActiveTab === 'olddata') {
+    const dateVal = document.getElementById('oldDataDatePicker').value;
+    await loadOldData(dateVal, true); // true for silent update to prevent flickering
+  }
 }
 
 // Particle Background Animation
