@@ -860,8 +860,10 @@ async function loadOldData(filterDate, isSilent) {
   try {
     const rb = await fetch(`${API}/api/bookings`);
     const db = await rb.json();
-    const oldBAll = (db.data || []).filter(b => !isToday(b.created_at));
-    const oldB = filterDate ? oldBAll.filter(b => (b.created_at || '').startsWith(filterDate)) : oldBAll;
+    const bookingsList = db.data || [];
+    const oldB = filterDate
+      ? bookingsList.filter(b => (b.created_at || '').startsWith(filterDate))
+      : bookingsList.filter(b => !isToday(b.created_at));
     document.getElementById('oldBookingCount').textContent = `${oldB.length} record${oldB.length !== 1 ? 's' : ''}`;
     if (!oldB.length) {
       bookBody.innerHTML = filterDate
@@ -953,8 +955,10 @@ async function loadOldData(filterDate, isSilent) {
   try {
     const rc = await fetch(`${API}/api/contacts`);
     const dc = await rc.json();
-    const oldCAll = (dc.data || []).filter(c => !isToday(c.created_at));
-    const oldC = filterDate ? oldCAll.filter(c => (c.created_at || '').startsWith(filterDate)) : oldCAll;
+    const contactsList = dc.data || [];
+    const oldC = filterDate
+      ? contactsList.filter(c => (c.created_at || '').startsWith(filterDate))
+      : contactsList.filter(c => !isToday(c.created_at));
     document.getElementById('oldContactCount').textContent = `${oldC.length} record${oldC.length !== 1 ? 's' : ''}`;
     if (!oldC.length) {
       contBody.innerHTML = filterDate
