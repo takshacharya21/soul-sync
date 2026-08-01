@@ -879,6 +879,7 @@ async function loadOldData(filterDate, isSilent) {
           <th style="width:85px">Payment</th>
           <th style="width:95px">Status</th>
           <th style="width:105px">Received</th>
+          <th style="width:160px">Actions</th>
         </tr></thead>
         <tbody>${oldB.map(b => `
           <tr>
@@ -891,6 +892,13 @@ async function loadOldData(filterDate, isSilent) {
             <td>${b.payment_id ? '<span style="font-size:.72rem;padding:3px 8px;border-radius:10px;background:rgba(143,170,156,0.15);color:#8faa9c;border:1px solid rgba(143,170,156,0.3)">💳 Paid</span>' : '<span style="color:var(--text-muted);font-size:.75rem">— Unpaid</span>'}</td>
             <td><span class="status-badge ${b.status}" style="white-space:nowrap">${b.status==='rescheduled'?'📅 Rescheduled':b.status==='confirmed'?'✓ Confirmed':b.status==='cancelled'?'✕ Cancelled':'⏳ Pending'}</span></td>
             <td style="color:var(--text-muted);font-size:.75rem;white-space:nowrap">${esc(b.created_at||'')}</td>
+            <td>
+              <div class="action-btns">
+                <button class="act-btn confirm" onclick="confirmBookingAction(${b.id},'confirmed','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')" title="Confirm">✓ Confirm</button>
+                <button class="act-btn" onclick="confirmBookingAction(${b.id},'cancelled','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')" title="Cancel">✕ Cancel</button>
+                <button class="act-btn danger" onclick="deleteBooking(${b.id})" title="Delete">🗑</button>
+              </div>
+            </td>
           </tr>`).join('')}
         </tbody></table>`;
     } else {
@@ -927,6 +935,7 @@ async function loadOldData(filterDate, isSilent) {
               <th style="width:85px">Payment</th>
               <th style="width:95px">Status</th>
               <th style="width:105px">Received</th>
+              <th style="width:160px">Actions</th>
             </tr></thead>
             <tbody>${byDate[day].map(b => `
               <tr>
@@ -939,6 +948,13 @@ async function loadOldData(filterDate, isSilent) {
                 <td>${b.payment_id ? '<span style="font-size:.72rem;padding:3px 8px;border-radius:10px;background:rgba(143,170,156,0.15);color:#8faa9c;border:1px solid rgba(143,170,156,0.3)">💳 Paid</span>' : '<span style="color:var(--text-muted);font-size:.75rem">— Unpaid</span>'}</td>
                 <td><span class="status-badge ${b.status}" style="white-space:nowrap">${b.status==='rescheduled'?'📅 Rescheduled':b.status==='confirmed'?'✓ Confirmed':b.status==='cancelled'?'✕ Cancelled':'⏳ Pending'}</span></td>
                 <td style="color:var(--text-muted);font-size:.75rem;white-space:nowrap">${esc(b.created_at||'')}</td>
+                <td>
+                  <div class="action-btns">
+                    <button class="act-btn confirm" onclick="confirmBookingAction(${b.id},'confirmed','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')" title="Confirm">✓ Confirm</button>
+                    <button class="act-btn" onclick="confirmBookingAction(${b.id},'cancelled','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')" title="Cancel">✕ Cancel</button>
+                    <button class="act-btn danger" onclick="deleteBooking(${b.id})" title="Delete">🗑</button>
+                  </div>
+                </td>
               </tr>`).join('')}
             </tbody>
           </table>
