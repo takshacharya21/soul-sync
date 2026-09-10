@@ -1175,6 +1175,54 @@
     </div>
   </div>
 
+  <!-- ░░ TAROT PRICING MODAL ░░ -->
+  <div class="modal-overlay" id="tarotPricingModal" onclick="closeTarotPricing(event)">
+    <div class="tarot-pricing-modal">
+      <button class="modal-close" onclick="closeTarotPricingBtn()">✕</button>
+      <div class="tarot-pricing-header">
+        <span class="modal-symbol">🌙</span>
+        <h3>Tarot Readings</h3>
+        <p>Choose the plan that resonates with your journey</p>
+      </div>
+      <div class="tarot-plans-grid">
+        <!-- Plan 1 -->
+        <div class="tarot-plan" onclick="selectTarotPlan('1 Question Tarot Reading', '₹500', '7 Min Video Call')">
+          <div class="tarot-plan-inner">
+            <div class="tarot-plan-title">1 QUESTION</div>
+            <div class="tarot-plan-subtitle">TAROT READING</div>
+            <div class="tarot-plan-duration">7 MIN VIDEO CALL</div>
+            <div class="tarot-plan-price">₹500</div>
+            <div class="tarot-plan-desc">Quick Clarity<br>For Your Immediate Concerns</div>
+            <button class="tarot-plan-btn">Select →</button>
+          </div>
+        </div>
+        <!-- Plan 2 -->
+        <div class="tarot-plan tarot-plan-featured" onclick="selectTarotPlan('3 Questions Tarot Reading', '₹1,000', '15 Min Video Call')">
+          <div class="tarot-plan-badge">MOST POPULAR</div>
+          <div class="tarot-plan-inner">
+            <div class="tarot-plan-title">3 QUESTIONS</div>
+            <div class="tarot-plan-subtitle">TAROT READING</div>
+            <div class="tarot-plan-duration">15 MIN VIDEO CALL</div>
+            <div class="tarot-plan-price">₹1,000</div>
+            <div class="tarot-plan-desc">Deeper Insights<br>For A Clearer Path</div>
+            <button class="tarot-plan-btn">Select →</button>
+          </div>
+        </div>
+        <!-- Plan 3 -->
+        <div class="tarot-plan" onclick="selectTarotPlan('Unlimited Questions Tarot Reading', '₹2,001', '25-30 Min Video Call')">
+          <div class="tarot-plan-inner">
+            <div class="tarot-plan-title">UNLIMITED</div>
+            <div class="tarot-plan-subtitle">QUESTIONS TAROT READING</div>
+            <div class="tarot-plan-duration">25-30 MIN VIDEO CALL</div>
+            <div class="tarot-plan-price">₹2,001</div>
+            <div class="tarot-plan-desc">Complete Guidance<br>For Your Life Journey</div>
+            <button class="tarot-plan-btn">Select →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ░░ TOAST ░░ -->
   <div class="toast" id="toast"></div>
 

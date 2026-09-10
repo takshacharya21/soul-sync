@@ -2795,3 +2795,201 @@ body.modal-open {
     gap: 48px;
   }
 }
+
+/* ═══════════════════════════════════════════════════
+   TAROT PRICING MODAL
+   ═══════════════════════════════════════════════════ */
+
+#tarotPricingModal {
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+#tarotPricingModal.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.tarot-pricing-modal {
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(145deg, #0d0b18 0%, #14102a 50%, #0d0b18 100%);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 24px;
+  padding: 36px 28px 32px;
+  width: 100%;
+  max-width: 700px;
+  margin: 20px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 0 80px rgba(90, 50, 180, 0.35), 0 0 30px rgba(201, 168, 76, 0.1);
+  transform: scale(0.95);
+  transition: transform 0.35s ease;
+}
+
+#tarotPricingModal.open .tarot-pricing-modal {
+  transform: scale(1);
+}
+
+.tarot-pricing-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.tarot-pricing-header .modal-symbol {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.tarot-pricing-header h3 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: var(--gold-light);
+  margin-bottom: 6px;
+}
+
+.tarot-pricing-header p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.tarot-plans-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.tarot-plan {
+  position: relative;
+  border-radius: 16px;
+  border: 1.5px solid rgba(201, 168, 76, 0.25);
+  background: linear-gradient(160deg, rgba(30, 20, 60, 0.9) 0%, rgba(15, 10, 35, 0.95) 100%);
+  padding: 20px 16px;
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  overflow: visible;
+}
+
+.tarot-plan:hover {
+  transform: translateY(-4px);
+  border-color: rgba(201, 168, 76, 0.6);
+  box-shadow: 0 12px 40px rgba(90, 50, 180, 0.4), 0 0 20px rgba(201, 168, 76, 0.15);
+}
+
+.tarot-plan-featured {
+  border-color: rgba(201, 168, 76, 0.6);
+  background: linear-gradient(160deg, rgba(60, 30, 100, 0.95) 0%, rgba(30, 15, 60, 0.98) 100%);
+  box-shadow: 0 8px 40px rgba(90, 50, 180, 0.5), 0 0 25px rgba(201, 168, 76, 0.15);
+}
+
+.tarot-plan-featured:hover {
+  transform: translateY(-6px);
+}
+
+.tarot-plan-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #c9a84c, #f0d080, #c9a84c);
+  color: #1a1020;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+  font-family: var(--font-body);
+}
+
+.tarot-plan-inner {
+  text-align: center;
+}
+
+.tarot-plan-title {
+  font-family: var(--font-cinzel), var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gold-light);
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+}
+
+.tarot-plan-subtitle {
+  font-family: var(--font-cinzel), var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  opacity: 0.85;
+}
+
+.tarot-plan-duration {
+  display: inline-block;
+  font-size: 0.65rem;
+  color: rgba(240, 236, 230, 0.6);
+  letter-spacing: 0.06em;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 20px;
+  padding: 3px 10px;
+  margin-bottom: 14px;
+  font-family: var(--font-body);
+}
+
+.tarot-plan-price {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold-light);
+  margin-bottom: 8px;
+  text-shadow: 0 0 20px rgba(212, 175, 120, 0.4);
+}
+
+.tarot-plan-desc {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 16px;
+  font-family: var(--font-body);
+}
+
+.tarot-plan-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, rgba(212, 175, 120, 0.15), rgba(212, 175, 120, 0.05));
+  border: 1px solid rgba(212, 175, 120, 0.4);
+  color: var(--gold-light);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 8px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  width: 100%;
+}
+
+.tarot-plan:hover .tarot-plan-btn,
+.tarot-plan-featured .tarot-plan-btn {
+  background: linear-gradient(135deg, rgba(212, 175, 120, 0.3), rgba(212, 175, 120, 0.1));
+  border-color: rgba(212, 175, 120, 0.7);
+  color: var(--gold-light);
+}
+
+@media (max-width: 640px) {
+  .tarot-plans-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .tarot-plan-featured {
+    order: -1;
+  }
+
+  .tarot-pricing-modal {
+    padding: 28px 18px 24px;
+  }
+}

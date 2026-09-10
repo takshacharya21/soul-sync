@@ -145,6 +145,16 @@ function toggleFAQ(btn) {
 const modal = document.getElementById('bookingModal');
 
 function openBooking(service) {
+  // If Tarot Readings selected, show pricing modal first
+  if (service === 'Tarot Readings') {
+    const tarotModal = document.getElementById('tarotPricingModal');
+    if (tarotModal) {
+      tarotModal.classList.add('open');
+      document.body.classList.add('modal-open');
+      if (typeof lenis !== 'undefined') lenis.stop();
+      return;
+    }
+  }
   modal.classList.add('open');
   document.body.classList.add('modal-open');   // lock background scroll
   modal.scrollTop = 0;                          // start from top
@@ -167,6 +177,56 @@ function openBooking(service) {
     dateInput.min = today;
   }
 }
+
+function closeTarotPricing(event) {
+  // Close only if clicking on overlay background
+  if (event && event.target !== document.getElementById('tarotPricingModal')) return;
+  closeTarotPricingBtn();
+}
+
+function closeTarotPricingBtn() {
+  const tarotModal = document.getElementById('tarotPricingModal');
+  if (tarotModal) tarotModal.classList.remove('open');
+  document.body.classList.remove('modal-open');
+  if (typeof lenis !== 'undefined') lenis.start();
+}
+
+function selectTarotPlan(planName, price, duration) {
+  // Close tarot pricing modal
+  const tarotModal = document.getElementById('tarotPricingModal');
+  if (tarotModal) tarotModal.classList.remove('open');
+
+  // Open booking modal with Tarot Readings pre-selected
+  modal.classList.add('open');
+  modal.scrollTop = 0;
+  document.body.classList.add('modal-open');
+  if (typeof lenis !== 'undefined') lenis.stop();
+
+  // Pre-select Tarot Readings in service dropdown
+  const sel = document.getElementById('bService');
+  if (sel) {
+    for (let i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].text === 'Tarot Readings') {
+        sel.selectedIndex = i;
+        break;
+      }
+    }
+  }
+
+  // Pre-fill message with selected plan info
+  const msgEl = document.getElementById('bMessage');
+  if (msgEl && !msgEl.value) {
+    msgEl.value = `Plan: ${planName} (${price} — ${duration})`;
+  }
+
+  // Set min date to today
+  const dateInput = document.getElementById('bDate');
+  if (dateInput) {
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.min = today;
+  }
+}
+
 
 function closeBooking() {
   modal.classList.remove('open');
