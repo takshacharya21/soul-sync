@@ -2980,16 +2980,86 @@ body.modal-open {
 }
 
 @media (max-width: 640px) {
-  .tarot-plans-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .tarot-plan-featured {
-    order: -1;
+  #tarotPricingModal {
+    align-items: flex-start;
+    padding: 16px 10px;
   }
 
   .tarot-pricing-modal {
-    padding: 28px 18px 24px;
+    padding: 20px 14px 18px;
+    margin: 0;
+    max-height: 92vh;
+    overflow-y: auto;
+    border-radius: 18px;
+  }
+
+  .tarot-pricing-header {
+    margin-bottom: 16px;
+  }
+
+  .tarot-pricing-header .modal-symbol {
+    font-size: 1.4rem;
+    margin-bottom: 4px;
+  }
+
+  .tarot-pricing-header h3 {
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+  }
+
+  .tarot-pricing-header p {
+    font-size: 0.78rem;
+  }
+
+  /* Keep 3 columns on mobile — compact cards */
+  .tarot-plans-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .tarot-plan {
+    padding: 14px 8px 12px;
+  }
+
+  .tarot-plan-badge {
+    font-size: 0.5rem;
+    padding: 3px 8px;
+    top: -10px;
+    letter-spacing: 0.06em;
+  }
+
+  .tarot-plan-title {
+    font-size: 0.7rem;
+    letter-spacing: 0.02em;
+  }
+
+  .tarot-plan-subtitle {
+    font-size: 0.5rem;
+    margin-bottom: 6px;
+    letter-spacing: 0.03em;
+  }
+
+  .tarot-plan-duration {
+    font-size: 0.5rem;
+    padding: 2px 6px;
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .tarot-plan-price {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+  }
+
+  .tarot-plan-desc {
+    font-size: 0.58rem;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .tarot-plan-btn {
+    font-size: 0.65rem;
+    padding: 6px 8px;
+    border-radius: 20px;
   }
 }
