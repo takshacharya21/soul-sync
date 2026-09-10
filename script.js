@@ -143,6 +143,7 @@ function toggleFAQ(btn) {
 
 /* ── Modal ────────────────────────────────────────── */
 const modal = document.getElementById('bookingModal');
+let selectedTarotAmountPaise = null; // stores tarot plan amount in paise
 
 function openBooking(service) {
   // If Tarot Readings selected, show pricing modal first
@@ -191,7 +192,17 @@ function closeTarotPricingBtn() {
   if (typeof lenis !== 'undefined') lenis.start();
 }
 
+// Tarot plan price → paise mapping
+const TAROT_PLAN_PRICES = {
+  '1 Question Tarot Reading':          50000,   // ₹500
+  '3 Questions Tarot Reading':         100000,  // ₹1,000
+  'Unlimited Questions Tarot Reading': 200100,  // ₹2,001
+};
+
 function selectTarotPlan(planName, price, duration) {
+  // Store selected amount in paise for payment
+  selectedTarotAmountPaise = TAROT_PLAN_PRICES[planName] || null;
+
   // Close tarot pricing modal
   const tarotModal = document.getElementById('tarotPricingModal');
   if (tarotModal) tarotModal.classList.remove('open');
@@ -213,9 +224,15 @@ function selectTarotPlan(planName, price, duration) {
     }
   }
 
+  // Show selected plan badge in booking modal header
+  const modalHeader = document.querySelector('#bookingModal .modal-header p');
+  if (modalHeader) {
+    modalHeader.innerHTML = `<span style="color:var(--gold);font-weight:600;">🌙 ${planName} — ${price}</span><br><small style="opacity:0.7">${duration}</small>`;
+  }
+
   // Pre-fill message with selected plan info
   const msgEl = document.getElementById('bMessage');
-  if (msgEl && !msgEl.value) {
+  if (msgEl) {
     msgEl.value = `Plan: ${planName} (${price} — ${duration})`;
   }
 
@@ -228,11 +245,17 @@ function selectTarotPlan(planName, price, duration) {
 }
 
 
+
 function closeBooking() {
   modal.classList.remove('open');
   document.body.classList.remove('modal-open'); // unlock background scroll
   document.body.style.overflow = '';
   if (typeof lenis !== 'undefined') lenis.start();
+
+  // Reset tarot plan selection
+  selectedTarotAmountPaise = null;
+  const modalHeader = document.querySelector('#bookingModal .modal-header p');
+  if (modalHeader) modalHeader.innerHTML = "Fill in your details and we'll confirm within 24 hours.";
   
   const successEl = document.getElementById('bookingSuccess');
   successEl.style.display = 'none';
@@ -309,8 +332,14 @@ async function submitBooking(e) {
       return;
     }
 
-    // Step 2: Create Razorpay order (₹499)
-    const orderRes = await fetch(`${API}/api/create-order`, { method: 'POST' });
+    // Step 2: Create Razorpay order (dynamic for Tarot, ₹499 for others)
+    const isTarot = booking.service === 'Tarot Readings' && selectedTarotAmountPaise;
+    const orderPayload = isTarot ? { amount_paise: selectedTarotAmountPaise } : {};
+    const orderRes = await fetch(`${API}/api/create-order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderPayload)
+    });
     const orderData = await orderRes.json();
 
     if (!orderData.success) {

@@ -180,8 +180,16 @@ def create_order():
     if not rzp_client:
         return jsonify({'success': False, 'message': 'Payment gateway not configured'}), 503
     try:
+        # Allow dynamic amount for Tarot plans; fallback to default booking fee
+        data = request.get_json(silent=True) or {}
+        custom_amount = data.get('amount_paise')
+        if custom_amount and isinstance(custom_amount, int) and custom_amount > 0:
+            charge_amount = custom_amount
+        else:
+            charge_amount = BOOKING_AMOUNT_PAISE
+
         order_data = {
-            'amount': BOOKING_AMOUNT_PAISE,
+            'amount': charge_amount,
             'currency': 'INR',
             'payment_capture': 1
         }
@@ -189,12 +197,13 @@ def create_order():
         return jsonify({
             'success': True,
             'order_id': order['id'],
-            'amount': BOOKING_AMOUNT_PAISE,
+            'amount': charge_amount,
             'currency': 'INR',
             'key_id': RAZORPAY_KEY_ID
         })
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
+
 
 
 # ─── API: Razorpay Payment Verify + Save Booking ─────────────────────────────
