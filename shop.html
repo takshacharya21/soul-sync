@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop – Soul Syync Crystals & Healing Tools</title>
+<meta name="description" content="Crystal bottles, pendulums, custom bracelets, Laxmi Yantra and crystal trees from Soul Syync.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f0d13;--bg2:#1a1625;--gold:#d4af78;--gold2:#e8d4a8;--lav:#b8a8c8;--text:#f0ece6;--mut:rgba(240,236,230,.62);--line:rgba(212,175,120,.18);--r:14px;--serif:'Cormorant Garamond',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:400 16px/1.6 var(--sans)}
+a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;z-index:20;background:rgba(15,13,19,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+.brand{display:flex;align-items:center;gap:10px;font:600 1.4rem var(--serif);color:var(--gold2)}
+.brand img{width:36px;height:36px;border-radius:50%;object-fit:cover}
+.nav-r{display:flex;align-items:center;gap:18px;font-size:.92rem}
+.nav-r a:hover{color:var(--gold)}
+.cart-btn{display:flex;gap:8px;align-items:center;border:1px solid var(--gold);color:var(--gold2);padding:8px 16px;border-radius:99px}
+.cart-btn b{background:var(--gold);color:#1a1208;border-radius:99px;min-width:22px;height:22px;display:grid;place-items:center;font-size:.78rem}
+.hero{padding:64px 0 36px;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.hero h1{font:400 clamp(2.4rem,5vw,4rem)/1.08 var(--serif);margin-bottom:16px}
+.hero p{color:var(--mut);max-width:46ch;margin-bottom:24px}
+.trust{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:.88rem;color:var(--mut)}
+.trust span::before{content:"✦ ";color:var(--gold)}
+.hero-img{border-radius:var(--r);overflow:hidden;aspect-ratio:4/3;border:1px solid var(--line)}
+.hero-img img{width:100%;height:100%;object-fit:cover}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:24px;padding:20px 0 70px}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;text-align:left;transition:border-color .25s,transform .25s}
+.card:hover{border-color:var(--gold);transform:translateY(-3px)}
+.card .ph{aspect-ratio:1/1;overflow:hidden;background:#e9e4de}
+.card .ph img{width:100%;height:100%;object-fit:cover;object-position:top}
+.card .bd{padding:18px 20px 22px;display:flex;flex-direction:column;gap:6px;flex:1}
+.card h3{font:600 1.55rem/1.15 var(--serif)}
+.card p{color:var(--mut);font-size:.92rem;flex:1}
+.card .row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.price{font:600 1.35rem var(--serif);color:var(--gold2)}
+.tag{font-size:.78rem;color:#1a1208;background:var(--gold);border-radius:99px;padding:2px 10px;align-self:flex-start;margin-bottom:4px}
+.btn{background:var(--gold);color:#1a1208;font-weight:500;border-radius:99px;padding:11px 22px;transition:background .2s}
+.btn:hover{background:var(--gold2)}.btn.full{width:100%;padding:14px}
+.btn.ghost{background:none;border:1px solid var(--gold);color:var(--gold2)}
+.info{border-top:1px solid var(--line);padding:46px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px}
+.info h4{font:600 1.25rem var(--serif);color:var(--gold2);margin-bottom:4px}.info p{color:var(--mut);font-size:.92rem}
+footer{border-top:1px solid var(--line);padding:26px 0;color:var(--mut);font-size:.88rem;text-align:center}
+.ov{position:fixed;inset:0;background:rgba(5,4,12,.8);backdrop-filter:blur(6px);z-index:40;display:none;align-items:center;justify-content:center;padding:16px}
+.ov.on{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--line);border-radius:20px;max-width:900px;width:100%;max-height:92vh;overflow:auto;position:relative;display:grid;grid-template-columns:1fr 1fr}
+.x{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:rgba(15,13,19,.85);border:1px solid var(--line);z-index:2;font-size:1.1rem}
+.m-img{background:#e9e4de;display:flex;align-items:center;justify-content:center;min-height:340px}
+.m-img img{width:100%;height:100%;max-height:92vh;object-fit:contain}
+.m-body{padding:30px 28px;display:flex;flex-direction:column;gap:14px}
+.m-body h2{font:600 2rem/1.1 var(--serif)}.m-body .d{color:var(--mut);font-size:.95rem}
+.m-body ul{list-style:none;color:var(--mut);font-size:.9rem}.m-body li::before{content:"✦ ";color:var(--gold)}
+label{font-size:.85rem;color:var(--lav);display:block;margin-bottom:6px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-size:.88rem}
+.opt[aria-pressed=true]{border-color:var(--gold);background:rgba(212,175,120,.16);color:var(--gold2)}
+input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:11px 12px;font:inherit}
+textarea{resize:vertical}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:99px}
+.qty button{width:36px;height:36px;font-size:1.1rem}.qty span{min-width:28px;text-align:center}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--bg2);border-left:1px solid var(--line);z-index:50;transform:translateX(100%);transition:transform .3s;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.drawer h2{font:600 1.7rem var(--serif);padding:20px 22px;border-bottom:1px solid var(--line)}
+.items{flex:1;overflow:auto;padding:8px 22px}
+.it{display:grid;grid-template-columns:64px 1fr auto;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.it img{width:64px;height:64px;border-radius:8px;object-fit:cover}.it small{color:var(--mut);display:block}
+.it .rm{color:var(--mut);font-size:.8rem;text-decoration:underline}
+.foot{padding:18px 22px;border-top:1px solid var(--line);display:grid;gap:10px}
+.tot{display:flex;justify-content:space-between;font:600 1.4rem var(--serif)}
+.empty{color:var(--mut);padding:40px 0;text-align:center}
+.co{display:none;gap:8px}.co.on{display:grid}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--gold);color:#1a1208;padding:10px 20px;border-radius:99px;z-index:60;transition:transform .3s}
+.toast.on{transform:translateX(-50%)}
+@media(max-width:760px){.hero{grid-template-columns:1fr;padding-top:36px}.modal{grid-template-columns:1fr}.m-img{min-height:260px;max-height:340px}.nav-r .lk{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.show{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center;padding:30px 0 50px;border-top:1px solid var(--line);overflow:hidden}
+.show ul{list-style:none;display:flex;flex-direction:column;gap:30px}
+.show li{display:flex;gap:18px;align-items:flex-start;cursor:pointer}
+.show .n{font:700 1.7rem var(--serif);color:#6b6578;margin-top:6px;transition:.4s}
+.show h2{font:700 clamp(2.3rem,5vw,3.6rem)/.9 var(--serif);text-transform:uppercase;letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1.5px #6b6578;opacity:.5;transition:.5s}
+.show li.on .n{color:var(--gold);transform:scale(1.1)}
+.show li.on h2{color:var(--text);-webkit-text-stroke:0;opacity:1;transform:translateX(14px)}
+.show .view{margin-top:26px}
+.show .art{position:relative;display:flex;justify-content:center}
+.show .art::before{content:"";position:absolute;inset:-10%;background:rgba(212,175,120,.08);filter:blur(90px);border-radius:50%}
+.show svg{position:relative;width:100%;max-width:500px;height:auto;filter:drop-shadow(0 0 40px rgba(0,0,0,.7))}
+@media(max-width:760px){.show{grid-template-columns:1fr}.show ul{gap:18px}}
+@media(prefers-reduced-motion:reduce){.show *{transition:none!important}}
+.fanw{padding:40px 0 20px;border-top:1px solid var(--line);text-align:center}
+.fanw h2{font:400 clamp(2rem,4vw,3rem)/1.1 var(--serif);margin-bottom:6px}.fanw>p{color:var(--mut);font-size:.95rem}
+.fan{position:relative;display:flex;justify-content:center;align-items:center;height:38rem;max-width:80rem;margin:0 auto}
+.fan-card{position:absolute;left:50%;top:50%;width:16rem;height:22rem;margin:-11rem 0 0 -8rem;border-radius:1.1rem;overflow:hidden;opacity:0;background:#e9e4de;box-shadow:0 14px 40px rgba(0,0,0,.55);border:1px solid rgba(212,175,120,.25)}
+.fan-card img{width:100%;height:100%;object-fit:cover;display:block}
+.fan-nav{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:6px}
+.fan-nav button{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--line);background:rgba(255,255,255,.05);display:grid;place-items:center;color:var(--gold2)}
+.fan-nav button:hover{border-color:var(--gold)}
+.fan-nav i{width:8px;height:8px;border-radius:50%;background:rgba(240,236,230,.18);display:inline-block;margin:0 4px;transition:.3s}
+.fan-nav i.on{background:var(--gold);transform:scale(1.3)}
+@media(max-width:1023px){.fan{height:34rem}.fan-card{width:14rem;height:20rem;margin:-10rem 0 0 -7rem}}
+@media(max-width:767px){.fan{height:28rem}.fan-card{width:12rem;height:17rem;margin:-8.5rem 0 0 -6rem}}
+@media(max-width:639px){.fan{height:26rem}.fan-card{width:11rem;height:16rem;margin:-8rem 0 0 -5.5rem}}
+@media(max-width:479px){.fan{height:22rem}.fan-card{width:9rem;height:13rem;margin:-6.5rem 0 0 -4.5rem}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="brand" href="/"><img src="/logo.png.PNG" alt="">Soul Syync</a>
+  <div class="nav-r"><a class="lk" href="/">Home</a><a class="lk" href="/#services">Sessions</a>
+    <button class="cart-btn" id="cartBtn" aria-label="Open cart">Cart <b id="cnt">0</b></button></div>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <h1>Crystals & tools for your daily practice</h1>
+      <p>Hand-picked crystal bottles, pendulums, bracelets, yantras and trees, chosen and energised by the Soul Syync team. Order in a few taps and we confirm on WhatsApp.</p>
+      <div class="trust"><span>Natural stones</span><span>Custom bracelets</span><span>Shipping across India</span><span>Order via WhatsApp</span></div>
+    </div>
+    <div class="hero-img"><img src="/static/images/shop/tr-table.jpg" alt="Crystal tree on a living room table"></div>
+  </section>
+
+  <section class="show" aria-label="Featured products">
+    <div>
+      <ul id="showList"></ul>
+      <button class="btn view" id="showView">View product</button>
+    </div>
+    <div class="art"><svg viewBox="0 0 500 500" role="img" aria-label="Product preview">
+      <defs>
+        <clipPath id="clip-original">
+          <path class="path" d="M480.6,235H19.4c-6,0-10.8-4.9-10.8-10.8v-9.5c0-6,4.9-10.8,10.8-10.8h461.1c6,0,10.8,4.9,10.8,10.8v9.5C491.4,230.2,486.6,235,480.6,235z"/>
+          <path class="path" d="M483.1,362.4H16.9c-4.6,0-8.3-3.7-8.3-8.3v-1.8c0-4.6,3.7-8.3,8.3-8.3h466.1c4.6,0,8.3,3.7,8.3,8.3v1.8C491.4,358.7,487.7,362.4,483.1,362.4z"/>
+          <path class="path" d="M460.3,336.3H39.7c-17.2,0-31.1-13.9-31.1-31.1v-31.5c0-17.2,13.9-31.1,31.1-31.1h420.7c17.2,0,31.1,13.9,31.1,31.1v31.5C491.4,322.4,477.5,336.3,460.3,336.3z"/>
+          <path class="path" d="M459.2,196.2H40.8v-35c0-47.5,38.5-86,86-86h246.5c47.5,0,86,38.5,86,86V196.2z"/>
+          <path class="path" d="M441.9,424.9H58.1c-9.6,0-17.3-7.8-17.3-17.3v-37.4h418.5v37.4C459.2,417.1,451.5,424.9,441.9,424.9z"/>
+        </clipPath>
+        <clipPath id="clip-hexagons">
+          <rect class="path" x="20" y="20" width="200" height="280" rx="12"/><rect class="path" x="20" y="320" width="200" height="160" rx="12"/>
+          <rect class="path" x="240" y="20" width="240" height="140" rx="12"/><rect class="path" x="240" y="180" width="110" height="160" rx="12"/>
+          <rect class="path" x="370" y="180" width="110" height="160" rx="12"/><rect class="path" x="240" y="360" width="240" height="120" rx="12"/>
+        </clipPath>
+        <clipPath id="clip-pixels"></clipPath>
+      </defs>
+      <g id="showG"><image id="showImg" width="500" height="500" preserveAspectRatio="xMidYMid slice"/></g>
+    </svg></div>
+  </section>
+
+  <section class="fanw" aria-label="Collection">
+    <h2>Browse the collection</h2><p>Hover a photo to bring it forward. Click to open the product.</p>
+    <div class="fan" id="fan"></div>
+    <div class="fan-nav"><button id="fanL" aria-label="Previous"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><span id="fanDots"></span><button id="fanR" aria-label="Next"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button></div>
+  </section>
+
+  <section class="grid" id="grid" aria-label="Products"></section>
+
+  <section class="info">
+    <div><h4>Bracelet customization</h4><p>Pick a purpose or send us your own stones, size and intention. We make it just for you.</p></div>
+    <div><h4>How ordering works</h4><p>Add items, enter your address, and your order opens in WhatsApp. We confirm price, payment and delivery there.</p></div>
+    <div><h4>Need guidance?</h4><p>Not sure which stone suits you? <a href="/#contact" style="color:var(--gold)">Talk to Jayshree</a> before you buy.</p></div>
+  </section>
+</main>
+<footer>© Soul Syync · <a href="/refund">Refund policy</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></footer>
+
+<div class="ov" id="ov"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+  <button class="x" id="mx" aria-label="Close">✕</button>
+  <div class="m-img"><img id="mi" alt=""></div>
+  <div class="m-body">
+    <h2 id="mt"></h2><div class="price" id="mp"></div><p class="d" id="md"></p><ul id="ml"></ul>
+    <div id="vWrap"><label id="vLab"></label><div class="opts" id="vOpts"></div></div>
+    <div id="cWrap" style="display:none"><label>Customization (stones, size, intention)</label>
+      <textarea id="note" rows="3" placeholder="e.g. Amethyst + rose quartz, wrist 6.5 in, for calm and self-love"></textarea></div>
+    <div><label>Quantity</label><div class="qty"><button id="qm" aria-label="Less">−</button><span id="q">1</span><button id="qp" aria-label="More">+</button></div></div>
+    <button class="btn full" id="add">Add to cart</button>
+  </div></div></div>
+
+<aside class="drawer" id="drawer" aria-label="Cart">
+  <h2>Your cart</h2>
+  <div class="items" id="items"></div>
+  <div class="foot">
+    <div class="tot"><span>Total</span><span id="tot">₹0</span></div>
+    <div class="co" id="co">
+      <input id="cn" placeholder="Full name" autocomplete="name">
+      <input id="cp" placeholder="Phone number" type="tel" autocomplete="tel">
+      <textarea id="ca" rows="2" placeholder="Full delivery address with pincode" autocomplete="street-address"></textarea>
+    </div>
+    <button class="btn full" id="go">Checkout</button>
+    <button class="btn ghost full" id="cc">Keep shopping</button>
+  </div>
+</aside>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const WA="919737967609", IMG="/static/images/shop/";
+/* Edit prices, names and photos here. Variant "img" changes the photo when selected. */
+const PRODUCTS=[
+{id:"crystal-bottle",name:"Crystal Bottle",price:899,tag:"Bestseller",img:"bottle-set.jpg",
+ desc:"Glass water bottle with a removable crystal point in the base. Fill it, wait, and drink crystal-infused water through the day.",
+ pts:["Borosilicate glass, steel cap and loop","Interchangeable crystal point","Gift-ready packing"],
+ vlabel:"Crystal",variants:[{n:"Seven Chakra",img:"bottle-chakra.jpg"},{n:"Rose Quartz"},{n:"Amethyst"},{n:"Clear Quartz"},{n:"Black Obsidian"},{n:"Citrine"}]},
+{id:"pendulum",name:"Pendulum",price:399,img:"pendulum.jpg",
+ desc:"Faceted gemstone pendulum on a metal chain for dowsing, chakra reading and yes/no guidance.",
+ pts:["Natural stone, hand finished","Comes with a pouch"],
+ vlabel:"Stone",variants:[{n:"Rose Quartz"},{n:"Sodalite"},{n:"Black Obsidian"},{n:"Amethyst"},{n:"Carnelian"},{n:"Seven Chakra"}]},
+{id:"bracelet",name:"Bracelet",price:499,tag:"Customization available",img:"br-charms.jpg",custom:true,
+ desc:"Beaded gemstone bracelets for a purpose. Choose a ready design or tell us your own stones, size and intention.",
+ pts:["Elastic, easy to wear","Each bracelet comes on an intention card","Custom orders take 3 to 5 days"],
+ vlabel:"Design",variants:[{n:"Self-love",img:"br-selflove.jpg"},{n:"Money Magnet",img:"br-money.jpg",p:599},{n:"Sleep",img:"br-sleep.jpg"},{n:"Anxiety Relief",img:"br-anxiety.jpg"},{n:"Emotional Balance",img:"br-balance.jpg"},{n:"Good Luck",img:"br-luck.jpg"},{n:"Custom (describe below)",img:"br-dishes.jpg",p:599}]},
+{id:"laxmi-yantra",name:"Laxmi Yantra",price:699,img:"yantra.jpg",
+ desc:"Shree Laxmi Yantra wealth and prosperity kit for your home, shop or office, with items for daily worship.",
+ pts:["Placement and how-to-use guide","Suitable for home, office or business"],variants:[]},
+{id:"crystal-tree",name:"Crystal Tree",price:1299,img:"tr-chakra.jpg",
+ desc:"A wire-wrapped tree of gemstone chips on a wooden base. Place it in your living room, desk or altar for positive energy.",
+ pts:["Hand wrapped, about 8 in tall","Choose your stone"],
+ vlabel:"Stone",variants:[{n:"Seven Chakra",img:"tr-chakra.jpg"},{n:"Green Aventurine",img:"tr-green.jpg"},{n:"Rose Quartz",img:"tr-rose.jpg"},{n:"Amethyst",img:"tr-amethyst.jpg"},{n:"Black Tourmaline",img:"tr-black.jpg"}]}
+];
+const $=s=>document.querySelector(s), inr=n=>"₹"+n.toLocaleString("en-IN");
+let cart=[]; try{cart=JSON.parse(localStorage.getItem("ss_cart")||"[]")}catch(e){}
+let cur=null,vi=0,qty=1;
+const save=()=>{try{localStorage.setItem("ss_cart",JSON.stringify(cart))}catch(e){}};
+const toast=t=>{const e=$("#toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),2000)};
+
+$("#grid").innerHTML=PRODUCTS.map(p=>`<button class="card" data-id="${p.id}"><div class="ph"><img src="${IMG+p.img}" alt="${p.name}" loading="lazy"></div><div class="bd">${p.tag?`<span class="tag">${p.tag}</span>`:""}<h3>${p.name}</h3><p>${p.desc}</p><div class="row"><span class="price">From ${inr(p.price)}</span><span class="btn">View</span></div></div></button>`).join("");
+$("#grid").onclick=e=>{const c=e.target.closest(".card");if(c)openP(c.dataset.id)};
+
+function price(){const v=cur.variants[vi];return (v&&v.p)||cur.price}
+function paint(){const v=cur.variants[vi];$("#mi").src=IMG+((v&&v.img)||cur.img);$("#mp").textContent=inr(price());$("#q").textContent=qty;
+  document.querySelectorAll("#vOpts .opt").forEach((b,i)=>b.setAttribute("aria-pressed",i===vi))}
+function openP(id){cur=PRODUCTS.find(p=>p.id===id);if(!cur)return;vi=0;qty=1;
+  $("#mt").textContent=cur.name;$("#md").textContent=cur.desc;$("#mi").alt=cur.name;
+  $("#ml").innerHTML=cur.pts.map(t=>`<li>${t}</li>`).join("");
+  $("#vWrap").style.display=cur.variants.length?"":"none";$("#vLab").textContent=cur.vlabel||"";
+  $("#vOpts").innerHTML=cur.variants.map((v,i)=>`<button class="opt" data-i="${i}">${v.n}</button>`).join("");
+  $("#cWrap").style.display=cur.custom?"":"none";$("#note").value="";
+  $("#ov").classList.add("on");history.replaceState(null,"","#"+id);paint();$("#mx").focus()}
+function closeP(){$("#ov").classList.remove("on");history.replaceState(null,"",location.pathname)}
+$("#vOpts").onclick=e=>{const b=e.target.closest(".opt");if(b){vi=+b.dataset.i;paint()}};
+$("#qm").onclick=()=>{qty=Math.max(1,qty-1);paint()};$("#qp").onclick=()=>{qty=Math.min(20,qty+1);paint()};
+$("#mx").onclick=closeP;$("#ov").onclick=e=>{if(e.target.id==="ov")closeP()};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeP();$("#drawer").classList.remove("on")}});
+$("#add").onclick=()=>{const v=cur.variants[vi],note=cur.custom?$("#note").value.trim():"";
+  if(cur.custom&&v&&v.n.startsWith("Custom")&&!note){$("#note").focus();toast("Describe your custom bracelet");return}
+  const key=[cur.id,v?v.n:"",note].join("|"),ex=cart.find(i=>i.key===key);
+  if(ex)ex.qty+=qty;else cart.push({key,id:cur.id,name:cur.name,opt:v?v.n:"",note,price:price(),qty,img:(v&&v.img)||cur.img});
+  save();render();closeP();toast("Added to cart")};
+
+function render(){$("#cnt").textContent=cart.reduce((s,i)=>s+i.qty,0);
+  $("#items").innerHTML=cart.length?cart.map((i,n)=>`<div class="it"><img src="${IMG+i.img}" alt=""><div><b>${i.name}</b><small>${i.opt}${i.note?" · "+i.note:""}</small><small>${inr(i.price)} × ${i.qty}</small><button class="rm" data-n="${n}">Remove</button></div><b>${inr(i.price*i.qty)}</b></div>`).join(""):`<p class="empty">Your cart is empty.</p>`;
+  $("#tot").textContent=inr(cart.reduce((s,i)=>s+i.price*i.qty,0));$("#go").style.display=cart.length?"":"none"}
+$("#items").onclick=e=>{const b=e.target.closest(".rm");if(b){cart.splice(+b.dataset.n,1);save();render()}};
+$("#cartBtn").onclick=()=>$("#drawer").classList.add("on");$("#cc").onclick=()=>$("#drawer").classList.remove("on");
+$("#go").onclick=()=>{const co=$("#co");
+  if(!co.classList.contains("on")){co.classList.add("on");$("#go").textContent="Send order on WhatsApp";$("#cn").focus();return}
+  const n=$("#cn").value.trim(),p=$("#cp").value.trim(),a=$("#ca").value.trim();
+  if(!n||!p||!a){toast("Fill name, phone and address");return}
+  const lines=cart.map(i=>`• ${i.name}${i.opt?" ("+i.opt+")":""}${i.note?" – "+i.note:""} × ${i.qty} = ${inr(i.price*i.qty)}`).join("\n");
+  const msg=`Hi Soul Syync, I'd like to order:\n\n${lines}\n\nTotal: ${$("#tot").textContent}\n\nName: ${n}\nPhone: ${p}\nAddress: ${a}`;
+  window.open(`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`,"_blank")};
+/* Featured showcase: hover a name, photo re-appears inside an animated shape (GSAP) */
+const SHOW=[
+{n:"Crystal Bottle",id:"crystal-bottle",clip:"clip-original",img:"bottle-chakra.jpg"},
+{n:"Crystal Tree",id:"crystal-tree",clip:"clip-hexagons",img:"tr-rose.jpg"},
+{n:"Custom Bracelet",id:"bracelet",clip:"clip-pixels",img:"br-sleep.jpg"},
+{n:"Laxmi Yantra",id:"laxmi-yantra",clip:"clip-hexagons",img:"yantra.jpg"},
+{n:"Healing Pendulum",id:"pendulum",clip:"clip-original",img:"pendulum.jpg"}];
+(function(){
+  const px=$("#clip-pixels");for(let i=0;i<9;i++){const r=document.createElementNS("http://www.w3.org/2000/svg","rect");
+    r.setAttribute("class","path");r.setAttribute("x",(i%3)*160+20);r.setAttribute("y",Math.floor(i/3)*160+20);r.setAttribute("width",140);r.setAttribute("height",140);r.setAttribute("rx",4);px.appendChild(r)}
+  const list=$("#showList");let act=-1,tl=null;
+  list.innerHTML=SHOW.map((x,i)=>{const w=x.n.split(" ");return `<li tabindex="0" data-i="${i}"><span class="n">0${i+1}</span><h2>${w[0]}<br>${w[1]||""}</h2></li>`}).join("");
+  function loop(i){const it=SHOW[i],sel="#"+it.clip+" .path";if(tl)tl.kill();
+    $("#showImg").setAttribute("href",IMG+it.img);$("#showG").setAttribute("clip-path","url(#"+it.clip+")");
+    if(!window.gsap){$("#showG").removeAttribute("clip-path");return}
+    gsap.set(sel,{scale:0,transformOrigin:"50% 50%"});
+    if(matchMedia("(prefers-reduced-motion:reduce)").matches){gsap.set(sel,{scale:1});return}
+    tl=gsap.timeline({repeat:-1,repeatDelay:1});
+    tl.to(sel,{scale:1,duration:.8,stagger:{amount:.4,from:"random"},ease:"expo.out"})
+      .to(sel,{scale:1.05,duration:1.5,yoyo:true,repeat:1,ease:"sine.inOut",stagger:{amount:.2,from:"center"}})
+      .to(sel,{scale:0,duration:.6,stagger:{amount:.3,from:"edges"},ease:"expo.in"})}
+  function set(i){if(i===act)return;act=i;list.querySelectorAll("li").forEach((l,k)=>l.classList.toggle("on",k===i));loop(i)}
+  list.addEventListener("mouseover",e=>{const l=e.target.closest("li");if(l)set(+l.dataset.i)});
+  list.addEventListener("focusin",e=>{const l=e.target.closest("li");if(l)set(+l.dataset.i)});
+  list.addEventListener("click",e=>{const l=e.target.closest("li");if(l){set(+l.dataset.i)}});
+  list.addEventListener("keydown",e=>{if(e.key==="Enter"&&act>-1)openP(SHOW[act].id)});
+  $("#showView").onclick=()=>openP(SHOW[act].id);
+  set(0);
+})();
+render();
+/* Fan carousel (GSAP): 10 photos, 7 visible, arrows rotate the fan */
+(function(){
+  const MAXV=7,HALF=3,reduced=matchMedia("(prefers-reduced-motion:reduce)").matches,T=reduced?0:1;
+  const FAN=[{rot:-21,scale:.7756,x:-30,y:7.3,z:1},{rot:-14,scale:.8498,x:-22,y:4,z:2},{rot:-7,scale:.9346,x:-11,y:1.3,z:3},{rot:0,scale:1,x:0,y:0,z:10},{rot:7,scale:.9346,x:11,y:1.3,z:3},{rot:14,scale:.8498,x:22,y:4,z:2},{rot:21,scale:.7756,x:30,y:7.3,z:1}];
+  const CARDS=[{img:"tr-green.jpg",alt:"Green aventurine crystal tree",id:"crystal-tree"},{img:"br-dishes.jpg",alt:"Gemstone bracelets",id:"bracelet"},{img:"pendulum.jpg",alt:"Gemstone pendulums",id:"pendulum"},{img:"bottle-chakra.jpg",alt:"Seven chakra crystal bottle",id:"crystal-bottle"},{img:"br-money.jpg",alt:"Money magnet bracelet",id:"bracelet"},{img:"yantra.jpg",alt:"Shree Laxmi Yantra kit",id:"laxmi-yantra"},{img:"tr-chakra.jpg",alt:"Seven chakra crystal tree",id:"crystal-tree"},{img:"bottle-set.jpg",alt:"Crystal bottle range",id:"crystal-bottle"},{img:"br-charms.jpg",alt:"Crystal charm bracelets",id:"bracelet"},{img:"tr-black.jpg",alt:"Black tourmaline crystal tree",id:"crystal-tree"}];
+  const box=$("#fan"),total=CARDS.length,pag=total>MAXV;
+  const mult=w=>w<480?.28:w<640?.38:w<768?.5:w<1024?.75:1;
+  const hmult=w=>{const ideal=(w<480?22:w<640?26:w<768?28:w<1024?34:38)*16,av=innerHeight*.7;return av>=ideal?1:av/ideal};
+  const cfg=(n,s)=>{if(n>=MAXV)return FAN[s];const c=n>>1,d=n>1?(s-c)/c:0,a=Math.abs(d);return{rot:d*21,scale:1-.2244*a*a,x:d*30,y:a*a*7.3,z:10-Math.abs(s-c)}};
+  box.innerHTML=CARDS.map(c=>`<a class="fan-card" href="#${c.id}" aria-label="${c.alt}"><img src="${IMG+c.img}" alt="${c.alt}" loading="lazy"></a>`).join("");
+  const els=[...box.querySelectorAll(".fan-card")];
+  let center=pag?HALF:total>>1,animating=false,entered=false,started=false,dir=null,prev=new Set(),cleanup=null;
+  $("#fanDots").innerHTML=pag?CARDS.map(()=>"<i></i>").join(""):"";
+  if(!pag){$("#fanL").style.display=$("#fanR").style.display="none"}
+  const vmap=c=>{const m=new Map();if(!pag){els.forEach((_,i)=>m.set(i,i));return m}for(let s=0;s<MAXV;s++)m.set((((c+s-HALF)%total)+total)%total,s);return m};
+  function run(){
+    if(cleanup)cleanup();
+    const vm=vmap(center),pv=prev,d=dir,first=!entered,m=mult(innerWidth),h=hmult(innerWidth),sc=pag?MAXV:total,C=s=>cfg(sc,s);
+    if(first)animating=true;
+    let done=0;const vc=vm.size,onDone=()=>{if(++done>=vc){animating=false;if(first)entered=true}};
+    els.forEach((card,i)=>{const slot=vm.get(i),was=pv.has(i);
+      if(slot!==undefined){const c=C(slot),tg={x:c.x*m+"rem",y:c.y*h+"rem",rotation:c.rot,scale:c.scale,opacity:1,zIndex:c.z};
+        if(first){gsap.set(card,{x:0,y:12*h+"rem",rotation:0,scale:.5,opacity:0});gsap.to(card,{...tg,duration:1.2*T,ease:"elastic.out(1.05,.78)",delay:(.2+slot*.06)*T,onComplete:onDone})}
+        else if(!was){gsap.set(card,{x:(d==="right"?40:-40)+"rem",y:c.y*h+"rem",rotation:d==="right"?30:-30,scale:.5,opacity:0});gsap.to(card,{...tg,duration:.6*T,ease:"power2.out",onComplete:onDone})}
+        else gsap.to(card,{...tg,duration:.5*T,ease:"power2.out",onComplete:onDone})}
+      else if(was)gsap.to(card,{x:(d==="right"?-40:40)+"rem",opacity:0,scale:.5,rotation:d==="right"?-30:30,duration:.4*T,ease:"power2.in",zIndex:0});
+      else if(first)gsap.set(card,{opacity:0,scale:.3,x:0,y:0,zIndex:0})});
+    prev=new Set(vm.keys());
+    document.querySelectorAll("#fanDots i").forEach((e,i)=>e.classList.toggle("on",i===center));
+    const ent=[];els.forEach((el,i)=>{const s=vm.get(i);if(s!==undefined)ent.push({el,slot:s})});ent.sort((a,b)=>a.slot-b.slot);
+    let act=null,lt=null;const cs=ent.length>>1;
+    const lay=hs=>{const mm=mult(innerWidth),hh=hmult(innerWidth);
+      ent.forEach(({el,slot})=>{const b=C(slot);let tx=b.x*mm,ty=b.y*hh,tr=b.rot,ts=b.scale,dl=0;
+        if(hs!==null){const dist=Math.abs(slot-hs);dl=dist*.02;
+          if(slot===hs){ty-=2.5*hh;ts*=1.08}
+          else{const nn=cs>0?(slot-cs)/cs:0,ps=8*(1-Math.abs(nn))*(1+.2*Math.max(0,3-dist));
+            if(slot<hs){tx-=ps*mm;tr-=3/(dist+1)}else{tx+=ps*mm;tr+=3/(dist+1)}
+            if(slot===ent.length-1&&hs<cs)ty-=hh;if(slot===0&&hs>cs)ty-=hh}}
+        else dl=Math.abs(slot-cs)*.02;
+        gsap.to(el,{x:tx+"rem",y:ty+"rem",rotation:tr,scale:ts,duration:.5*T,delay:dl*T,ease:"elastic.out(1,.75)",overwrite:"auto"});gsap.set(el,{zIndex:b.z})})};
+    const hs=ent.map(({el,slot})=>{const f=()=>{if(animating)return;if(lt){clearTimeout(lt);lt=null}if(act!==slot){act=slot;lay(slot)}};el.addEventListener("mouseenter",f);return{el,f}});
+    const ml=()=>{if(animating)return;if(lt)clearTimeout(lt);lt=setTimeout(()=>{act=null;lay(null)},50)};box.addEventListener("mouseleave",ml);
+    const rs=()=>{if(!animating)lay(act)};addEventListener("resize",rs);
+    cleanup=()=>{hs.forEach(({el,f})=>el.removeEventListener("mouseenter",f));box.removeEventListener("mouseleave",ml);removeEventListener("resize",rs);if(lt)clearTimeout(lt)};
+  }
+  function cycle(d){if(animating||!pag||!started)return;animating=true;dir=d;center=d==="right"?(center+1)%total:(center-1+total)%total;run()}
+  $("#fanL").onclick=()=>cycle("left");$("#fanR").onclick=()=>cycle("right");
+  if(!window.gsap){els.forEach(e=>{e.style.opacity=1;e.style.position="relative";e.style.margin="8px"});box.style.height="auto";box.style.flexWrap="wrap";return}
+  new IntersectionObserver((e,o)=>{if(e[0].isIntersecting){o.disconnect();started=true;run()}},{threshold:.25}).observe(box);
+})();
+if(location.hash)openP(location.hash.slice(1));
+addEventListener("hashchange",()=>{if(location.hash)openP(location.hash.slice(1))});
+</script>
+</body>
+</html>

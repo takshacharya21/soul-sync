@@ -1,6 +1,6 @@
 /**
- * Card Fan Carousel – Soul Syync Gallery
- * Integrates GSAP Fan Layout with 19 photos
+ * Card Fan Carousel – Soul Syync Product Showcase
+ * Integrates GSAP Fan Layout with product links (/shop#...)
  */
 (function () {
   function initFanCarousel() {
@@ -24,6 +24,9 @@
     var hasEntered = false;
     var direction = null;
     var prevVisible = new Set();
+    var hasDragged = false;
+    var startX = 0;
+    var startY = 0;
 
     var FAN_POSITIONS = [
       { rot: -21, scale: 0.7756, x: -30, y: 7.3, zIndex: 1 },
@@ -137,10 +140,20 @@
       cardElements.forEach(function (card, cardIndex) {
         var slot = visibleMap.get(cardIndex);
         var wasVisible = previouslyVisible.has(cardIndex);
+        var isActive = (cardIndex === centerIndex);
+
+        // Highlight active card class
+        if (isActive) {
+          card.classList.add("active-card");
+          card.setAttribute("aria-selected", "true");
+        } else {
+          card.classList.remove("active-card");
+          card.removeAttribute("aria-selected");
+        }
 
         if (slot !== undefined) {
           var cfg = getSlotConfig(slot);
-          var targetX = cfg.x * multiplier * 16; // convert rem to px relative to center
+          var targetX = cfg.x * multiplier * 16;
           var targetY = cfg.y * hMult * 16;
 
           var target = {
@@ -294,14 +307,63 @@
     if (prevBtn) prevBtn.onclick = function () { cycle("left"); };
     if (nextBtn) nextBtn.onclick = function () { cycle("right"); };
 
-    var touchStartX = 0;
+    // Drag / Swipe / Click detection
+    container.addEventListener("mousedown", function (e) {
+      hasDragged = false;
+      startX = e.clientX;
+      startY = e.clientY;
+    });
+
+    container.addEventListener("mousemove", function (e) {
+      if (Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6) {
+        hasDragged = true;
+      }
+    });
+
     container.addEventListener("touchstart", function (e) {
-      touchStartX = e.touches[0].clientX;
+      hasDragged = false;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
     }, { passive: true });
+
+    container.addEventListener("touchmove", function (e) {
+      if (Math.abs(e.touches[0].clientX - startX) > 8 || Math.abs(e.touches[0].clientY - startY) > 8) {
+        hasDragged = true;
+      }
+    }, { passive: true });
+
     container.addEventListener("touchend", function (e) {
-      var diff = touchStartX - e.changedTouches[0].clientX;
-      if (Math.abs(diff) > 40) cycle(diff > 0 ? "right" : "left");
+      var diffX = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diffX) > 40) {
+        cycle(diffX > 0 ? "right" : "left");
+      }
     }, { passive: true });
+
+    // Click handler on cards: Active card opens shop product, others rotate
+    cardElements.forEach(function (card) {
+      card.addEventListener("click", function (e) {
+        if (hasDragged) return;
+        var cardIdx = cardElements.indexOf(card);
+        if (cardIdx === centerIndex) {
+          var link = card.getAttribute("data-link");
+          if (link) {
+            window.open(link, "_blank", "noopener");
+          }
+        } else {
+          // If a non-center visible card is clicked, smoothly rotate it to the center
+          var visibleMap = getVisibleMap(centerIndex);
+          var slot = visibleMap.get(cardIdx);
+          if (slot !== undefined) {
+            var centerSlot = needsPagination ? HALF : (totalCards >> 1);
+            if (slot < centerSlot) {
+              cycle("left");
+            } else if (slot > centerSlot) {
+              cycle("right");
+            }
+          }
+        }
+      });
+    });
 
     document.addEventListener("keydown", function (e) {
       var rect = container.getBoundingClientRect();

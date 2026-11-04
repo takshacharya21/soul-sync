@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Refund & Cancellation Policy - Soul Syync</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <style>
+    body {
+      background-color: var(--bg, #0f0d13);
+      color: var(--text, #f0ece6);
+      font-family: var(--font-body, 'DM Sans', sans-serif);
+      line-height: 1.6;
+    }
+    .policy-container {
+      max-width: 800px;
+      margin: 120px auto 60px;
+      padding: 40px 24px;
+      background: var(--bg2, #14111c);
+      border: 1px solid var(--border, rgba(212, 175, 120, 0.12));
+      border-radius: var(--radius-lg, 24px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    h1, h2, h3 {
+      font-family: var(--font-display, 'Cormorant Garamond', serif);
+      color: var(--gold, #d4af78);
+      font-weight: 600;
+      margin-top: 30px;
+      margin-bottom: 15px;
+    }
+    h1 {
+      font-family: var(--font-cinzel, 'Cinzel', serif);
+      font-size: 2.5rem;
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, var(--gold-light, #e8d4a8) 0%, var(--gold, #d4af78) 50%, var(--rose, #c9b8b0) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .last-updated {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 40px;
+      font-style: italic;
+    }
+    p {
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+    ul {
+      margin-left: 20px;
+      margin-bottom: 20px;
+      color: var(--text-muted);
+    }
+    li {
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gold, #d4af78);
+      text-decoration: none;
+      font-family: var(--font-cinzel, 'Cinzel', serif);
+      font-size: 0.9rem;
+      margin-bottom: 30px;
+      transition: color var(--transition);
+    }
+    .back-btn:hover {
+      color: var(--gold-light, #e8d4a8);
+    }
+    .contact-card {
+      background: var(--bg3, #1a1625);
+      border: 1px solid var(--border-light, rgba(212, 175, 120, 0.06));
+      border-radius: var(--radius, 16px);
+      padding: 24px;
+      margin-top: 30px;
+    }
+    .contact-card p {
+      margin-bottom: 8px;
+    }
+    .contact-card strong {
+      color: var(--gold, #d4af78);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation bar -->
+  <nav class="nav" style="position: absolute; top: 0; width: 100%;">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <img src="/logo.png.PNG" alt="Soul Syync Logo" class="logo-img">
+        <span class="logo-text">Soul Syync</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="policy-container">
+    <a href="/" class="back-btn">
+      ← Back to Home
+    </a>
+    
+    <h1>Refund & Cancellation Policy</h1>
+    <div class="last-updated">Last Updated: July 15, 2026</div>
+
+    <p>Thank you for choosing <strong>Soul Syync</strong>. We strive to provide the best spiritual healing and counselling services. Please read our cancellation and refund policies carefully before booking.</p>
+
+    <h2>1. Booking Cancellation</h2>
+    <ul>
+      <li><strong>Cancellation 24 hours or more before session:</strong> You are eligible for a full refund of your session fee.</li>
+      <li><strong>Cancellation within 24 hours of session:</strong> Cancellations made less than 24 hours before the scheduled time will attract a cancellation fee of 50% of the session cost, or you may choose to reschedule without penalty.</li>
+      <li><strong>No-show:</strong> If you fail to attend the session (online or in-person) without notifying us in advance, no refund will be provided.</li>
+    </ul>
+
+    <h2>2. Rescheduling Policy</h2>
+    <p>You can reschedule your booked session up to 12 hours before the session time. Rescheduling requests can be made via email (maaecounselling@gmail.com) or WhatsApp (+91 97379 67609). Rescheduling is subject to slot availability.</p>
+
+    <h2>3. How Refunds are Processed</h2>
+    <p>Once a cancellation request is approved under our terms, the refund will be initiated to your original payment method:</p>
+    <ul>
+      <li>Refunds are processed automatically through our payment gateway provider (e.g. Razorpay or Stripe).</li>
+      <li>It generally takes <strong>5 to 7 business days</strong> for the refunded amount to reflect in your bank account, credit card, or UPI wallet, depending on your bank's processing cycles.</li>
+    </ul>
+
+    <h2>4. Special Circumstances</h2>
+    <p>In rare situations where Soul Syync has to cancel a session due to unforeseen personal emergencies, technical issues, or natural circumstances, you will be notified immediately. In such cases, you will receive a **100% full refund** or the option to reschedule at your convenience.</p>
+
+    <div class="contact-card">
+      <h3>Need Help?</h3>
+      <p>If you have any questions, wish to cancel a booking, or request a refund, please contact us:</p>
+      <p><strong>Entity Name:</strong> Soul Syync</p>
+      <p><strong>Proprietor:</strong> Jayshree Dixit</p>
+      <p><strong>Email:</strong> maaecounselling@gmail.com</p>
+      <p><strong>Phone / WhatsApp:</strong> +91 97379 67609</p>
+      <p><strong>Address:</strong> Vadodara, Gujarat, India</p>
+    </div>
+  </div>
+
+  <footer class="footer" style="margin-top: 60px;">
+    <div class="container" style="text-align: center; padding: 20px 0; border-top: 1px solid var(--border-light);">
+      <p>© 2025 Soul Syync · All rights reserved</p>
+    </div>
+  </footer>
+
+</body>
+</html>

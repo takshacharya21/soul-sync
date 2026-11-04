@@ -503,6 +503,9 @@ def get_stats():
         if conn:
             conn.close()
 
+from shop_module import init_shop
+init_shop(app, get_db)
+
 if __name__ == '__main__':
     try:
         local_ip = socket.gethostbyname(socket.gethostname())

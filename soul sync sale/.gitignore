@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.venv/
+venv/
+ENV/
+
+# Environment
+.env
+
+# Database (important - don't share private data)
+# Comment this line out if you WANT to include the DB
+# database.db
+
+# OS
+.DS_Store
+Thumbs.db

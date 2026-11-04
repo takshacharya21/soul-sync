@@ -3179,3 +3179,71 @@ body.modal-open {
   background: var(--gold);
   transform: scale(1.35);
 }
+
+/* Carousel CTA Button */
+.carousel-cta-wrap {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 35;
+  width: 100%;
+}
+
+.btn-shop-collection {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.85rem 2.4rem;
+  background: #0f0d13;
+  color: #e8d4a8;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(212, 175, 120, 0.45);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), 0 0 15px rgba(212, 175, 120, 0.12);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  cursor: pointer;
+}
+
+.btn-shop-collection:hover {
+  background: linear-gradient(135deg, #181420 0%, #0f0d13 100%);
+  color: #ffffff;
+  border-color: #d4af78;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.5), 0 0 25px rgba(212, 175, 120, 0.35);
+  transform: translateY(-2px);
+}
+
+.btn-shop-collection:focus-visible {
+  outline: 2px solid #e8d4a8;
+  outline-offset: 3px;
+}
+
+.btn-shop-collection:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 480px) {
+  .btn-shop-collection {
+    padding: 0.75rem 1.8rem;
+    font-size: 0.85rem;
+    min-height: 44px;
+  }
+}
+
+/* Active card clickable styling */
+.fan-card.active-card {
+  cursor: pointer;
+}
+.fan-card.active-card:hover {
+  box-shadow: 0 20px 60px rgba(212, 175, 120, 0.35), 0 8px 32px rgba(0, 0, 0, 0.6);
+  border-color: rgba(212, 175, 120, 0.45);
+}

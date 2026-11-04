@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Soul Syync · Admin Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0d0b10;
+  --surface: #13111a;
+  --surface2: #1a1725;
+  --border: rgba(212,175,120,0.15);
+  --gold: #d4af78;
+  --gold-light: #e8d4a8;
+  --rose: #c9a0a0;
+  --sage: #8faa9c;
+  --text: #f0ece6;
+  --text-muted: #8b8097;
+  --pending: #e8c77a;
+  --confirmed: #8faa9c;
+  --cancelled: #c9a0a0;
+  --radius: 12px;
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;display:flex}
+
+/* Sidebar */
+.sidebar{width:240px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid var(--border)}
+.sidebar-logo .logo-img{height:48px;width:auto;object-fit:contain}
+.sidebar-logo h2{font-family:var(--font-display);font-size:1.3rem;color:#ffffff;margin-top:8px}
+.sidebar-logo p{font-size:.7rem;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase}
+.sidebar-nav{flex:1;padding:20px 0}
+.nav-section{padding:8px 20px;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-top:12px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;color:var(--text-muted);text-decoration:none;font-size:.85rem;transition:.2s;cursor:pointer;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover,.nav-item.active{color:var(--gold);background:rgba(212,175,120,.07)}
+.nav-item .icon{width:18px;text-align:center;font-size:1rem}
+.sidebar-footer{padding:20px;border-top:1px solid var(--border)}
+.sidebar-footer a{color:var(--text-muted);text-decoration:none;font-size:.8rem;display:flex;align-items:center;gap:8px}
+.sidebar-footer a:hover{color:var(--gold)}
+
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:18px 32px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface)}
+.topbar h1{font-family:var(--font-display);font-size:1.6rem;color:var(--gold-light)}
+.topbar-meta{display:flex;align-items:center;gap:16px}
+.topbar-badge{background:rgba(212,175,120,.1);border:1px solid var(--border);color:var(--gold);padding:5px 12px;border-radius:20px;font-size:.75rem;letter-spacing:.05em}
+.refresh-btn{background:rgba(212,175,120,.1);border:1px solid var(--border);color:var(--gold);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:.8rem;transition:.2s}
+.refresh-btn:hover{background:rgba(212,175,120,.2)}
+
+.content{flex:1;overflow-y:auto;padding:32px}
+
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.stat-icon{font-size:1.8rem;margin-bottom:10px}
+.stat-val{font-family:var(--font-display);font-size:2.2rem;font-weight:600;color:var(--gold-light);line-height:1}
+.stat-label{font-size:.75rem;color:var(--text-muted);margin-top:4px;text-transform:uppercase;letter-spacing:.08em}
+
+/* Tabs */
+.tab-row{display:flex;gap:4px;margin-bottom:24px;background:var(--surface);border-radius:10px;padding:4px;border:1px solid var(--border);width:fit-content}
+.tab-btn{padding:8px 20px;border-radius:8px;border:none;background:none;color:var(--text-muted);cursor:pointer;font-size:.85rem;font-family:var(--font-body);transition:.2s}
+.tab-btn.active{background:var(--gold);color:#0d0b10;font-weight:500}
+
+/* Table */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.table-header{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.table-header h3{font-family:var(--font-display);font-size:1.1rem;color:var(--gold-light)}
+.table-count{font-size:.75rem;color:var(--text-muted);background:var(--surface2);padding:3px 10px;border-radius:20px}
+table{width:100%;border-collapse:collapse}
+th{padding:12px 20px;text-align:left;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);background:var(--surface2);font-weight:400;border-bottom:1px solid var(--border)}
+td{padding:14px 20px;font-size:.82rem;border-bottom:1px solid rgba(212,175,120,.06);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(212,175,120,.03)}
+.status-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:500}
+.status-badge.pending{background:rgba(232,199,122,.12);color:var(--pending);border:1px solid rgba(232,199,122,.2)}
+.status-badge.confirmed{background:rgba(143,170,156,.12);color:var(--confirmed);border:1px solid rgba(143,170,156,.2)}
+.status-badge.cancelled{background:rgba(201,160,160,.12);color:var(--cancelled);border:1px solid rgba(201,160,160,.2)}
+.status-badge.rescheduled{background:rgba(130,100,255,.12);color:#a080ff;border:1px solid rgba(130,100,255,.25)}
+.action-btns{display:flex;gap:6px}
+.act-btn{padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--text-muted);font-size:.72rem;cursor:pointer;transition:.2s}
+.act-btn:hover{color:var(--gold);border-color:var(--gold)}
+.act-btn.danger:hover{color:var(--rose);border-color:var(--rose)}
+.act-btn.confirm:hover{color:var(--sage);border-color:var(--sage)}
+.empty-state{padding:60px;text-align:center;color:var(--text-muted)}
+.empty-state .empty-icon{font-size:2.5rem;margin-bottom:12px;opacity:.4}
+.loading{padding:40px;text-align:center;color:var(--text-muted);font-size:.85rem}
+select.status-select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:6px;font-size:.75rem;cursor:pointer}
+.toast-admin{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--gold);color:var(--gold);padding:12px 20px;border-radius:10px;font-size:.85rem;transform:translateY(60px);opacity:0;transition:.3s;z-index:9999}
+.toast-admin.show{transform:translateY(0);opacity:1}
+#particles-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.55; }
+.sidebar, .main { position: relative; z-index: 1; }
+/* Hide mobile nav on desktop */
+.mobile-nav { display: none; }
+@media(max-width:768px){
+  body { flex-direction: column; }
+
+  /* Hide sidebar on mobile */
+  .sidebar { display: none; }
+
+  /* Full width main content */
+  .main { width: 100%; }
+
+  /* Compact topbar */
+  .topbar { padding: 12px 16px; }
+  .topbar h1 { font-size: 1.2rem; }
+  .topbar-badge { display: none; }
+
+  /* Stats grid: 2 columns */
+  .stats-row { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .stat-card  { padding: 14px 12px; }
+  .stat-val   { font-size: 1.5rem; }
+  .stat-label { font-size: .65rem; }
+
+  /* Content padding */
+  .content { padding: 16px; padding-bottom: 80px; }
+
+  /* Tab row: scrollable */
+  .tab-row { overflow-x: auto; white-space: nowrap; gap: 8px; margin-bottom: 16px; padding-bottom: 4px; }
+  .tab-btn  { padding: 8px 14px; font-size: .78rem; flex-shrink: 0; }
+
+  /* Tables: horizontal scroll */
+  .table-wrap { overflow-x: auto; border-radius: var(--radius); }
+  table       { min-width: 600px; font-size: .72rem; }
+  th, td      { padding: 8px 10px; }
+
+  /* Table header */
+  .table-header { flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px 16px; }
+  .table-count  { font-size: .7rem; }
+
+  /* Smaller action buttons */
+  .act-btn { padding: 3px 8px; font-size: .65rem; }
+
+  /* Status badges */
+  .status-badge { padding: 3px 8px; font-size: .65rem; }
+
+  /* Bottom mobile nav bar */
+  .mobile-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    z-index: 1000;
+    padding: 8px 0 env(safe-area-inset-bottom, 8px);
+  }
+  .mobile-nav-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 3px;
+    padding: 6px 4px;
+    color: var(--text-muted);
+    font-size: .6rem; letter-spacing: .05em;
+    text-transform: uppercase;
+    background: none; border: none;
+    cursor: pointer; transition: .2s;
+    text-decoration: none;
+  }
+  .mobile-nav-item .icon { font-size: 1.2rem; }
+  .mobile-nav-item.active,
+  .mobile-nav-item:hover { color: var(--gold); }
+
+  /* Reduce chakra on mobile */
+  .chakra-bg { opacity: 0.5; }
+  .ck-1,.ck-2,.ck-3,.ck-4,.ck-5,.ck-6,.ck-7 { transform: scale(0.5); }
+}
+
+@media(max-width:400px){
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .topbar h1 { font-size: 1rem; }
+}
+
+
+/* ── Chakra Background Animation ── */
+.chakra-bg { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+.chakra {
+  position: absolute;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  animation: chakraFloat 18s ease-in-out infinite, chakraSpin 25s linear infinite;
+  opacity: 0.07;
+  filter: blur(0.5px);
+}
+.chakra::before, .chakra::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  animation: chakraSpin 8s linear infinite reverse;
+}
+.chakra::before { inset: 15%; }
+.chakra::after  { inset: 30%; animation-direction: normal; }
+.chakra-inner {
+  width: 30%; height: 30%;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 20px currentColor;
+  animation: chakraPulse 3s ease-in-out infinite;
+}
+/* 7 chakra positions & colors */
+.ck-1{width:160px;height:160px;color:#ff3d3d;bottom:5%;left:5%;animation-delay:0s,0s}
+.ck-2{width:120px;height:120px;color:#ff8c00;bottom:15%;left:20%;animation-delay:3s,2s}
+.ck-3{width:180px;height:180px;color:#ffd700;bottom:25%;right:8%;animation-delay:6s,4s}
+.ck-4{width:200px;height:200px;color:#00c853;top:30%;left:50%;transform:translateX(-50%);animation-delay:2s,6s}
+.ck-5{width:140px;height:140px;color:#00bcd4;top:15%;right:12%;animation-delay:5s,3s}
+.ck-6{width:150px;height:150px;color:#651fff;top:8%;left:10%;animation-delay:1s,8s}
+.ck-7{width:220px;height:220px;color:#aa00ff;top:5%;right:30%;animation-delay:4s,1s}
+/* Chakra Labels */
+.ck-label {
+  position: absolute; bottom: -48px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  animation: chakraSpin 25s linear infinite reverse;
+  white-space: nowrap;
+}
+.ck-sym  { font-size:.9rem; color:currentColor; opacity:.9; line-height:1; }
+.ck-name { font-family:'Cormorant Garamond',serif; font-size:.62rem; font-style:italic; letter-spacing:.1em; color:currentColor; opacity:.8; }
+.ck-sub  { font-size:.48rem; letter-spacing:.18em; text-transform:uppercase; color:currentColor; opacity:.5; }
+@keyframes chakraFloat {
+  0%,100%{transform:translateY(0) scale(1)}
+  33%{transform:translateY(-45px) scale(1.1)}
+  66%{transform:translateY(25px) scale(0.95)}
+}
+@keyframes chakraSpin {
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+@keyframes chakraPulse {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:0.5;transform:scale(0.85)}
+}
+/* override transform for ck-4 since it uses translateX too */
+.ck-4 { animation: chakraFloat4 18s ease-in-out infinite, chakraSpin 25s linear infinite; }
+@keyframes chakraFloat4 {
+  0%,100%{transform:translateX(-50%) translateY(0) scale(1)}
+  33%{transform:translateX(-50%) translateY(-45px) scale(1.1)}
+  66%{transform:translateX(-50%) translateY(25px) scale(0.95)}
+}
+
+</style>
+</head>
+<body>
+
+<!-- Particle Background -->
+<canvas id="particles-canvas"></canvas>
+
+<!-- Chakra Background -->
+<div class="chakra-bg">
+  <div class="chakra ck-1">
+    <div class="chakra-inner"></div>
+    <div class="ck-label"><span class="ck-sym">☽</span><span class="ck-name">Muladhara</span><span class="ck-sub">Root</span></div>
+  </div>
+  <div class="chakra ck-2">
+    <div class="chakra-inner"></div>
+    <div class="ck-label"><span class="ck-sym">☿</span><span class="ck-name">Svadhisthana</span><span class="ck-sub">Sacral</span></div>
+  </div>
+  <div class="chakra ck-3">
+    <div class="chakra-inner"></div>
+    <div class="ck-label"><span class="ck-sym">☀</span><span class="ck-name">Manipura</span><span class="ck-sub">Solar Plexus</span></div>
+  </div>
+  <div class="chakra ck-4">
+    <div class="chakra-inner"></div>
+    <div class="ck-label"><span class="ck-sym">✦</span><span class="ck-name">Anahata</span><span class="ck-sub">Heart</span></div>
+  </div>
+  <div class="chakra ck-5">
+    <div class="chakra-inner"></div>
+    <div class="ck-label"><span class="ck-sym">◎</span><span class="ck-name">Vishuddha</span><span class="ck-sub">Throat</span></div>
+  </div>
+  <div class="chakra ck-6">
+    <div class="chakra-inner"></div>
+    <div class="ck-label"><span class="ck-sym">◉</span><span class="ck-name">Ajna</span><span class="ck-sub">Third Eye</span></div>
+  </div>
+  <div class="chakra ck-7">
+    <div class="chakra-inner"></div>
+    <div class="ck-label"><span class="ck-sym">✿</span><span class="ck-name">Sahasrara</span><span class="ck-sub">Crown</span></div>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <img src="/logo.png.PNG" alt="Soul Syync Logo" class="logo-img">
+    <h2>Soul Syync</h2>
+    <p>Admin Panel</p>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Overview</div>
+    <button class="nav-item active" onclick="showTab('bookings',this)">
+      <span class="icon">📅</span><span>Bookings</span>
+    </button>
+    <button class="nav-item" onclick="showTab('contacts',this)">
+      <span class="icon">💬</span><span>Messages</span>
+    </button>
+    <button class="nav-item" id="nav-olddata" onclick="showTab('olddata',this)">
+      <span class="icon">🗄️</span><span>Old Data</span>
+    </button>
+    <div class="nav-section">Quick Actions</div>
+    <a class="nav-item" href="/" target="_blank">
+      <span class="icon">🌐</span><span>View Website</span>
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="/"><span>← Back to Site</span></a>
+    <a href="/logout" style="margin-top:15px; color:var(--rose)"><span>🚪 Logout</span></a>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main">
+  <div class="topbar">
+    <h1 id="pageTitle">Bookings</h1>
+    <div class="topbar-meta">
+      <span class="topbar-badge" id="topbarDate"></span>
+      <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
+    </div>
+  </div>
+  <div class="content">
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-val" id="statBookings">–</div>
+        <div class="stat-label">Total Bookings</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-val" id="statPending">–</div>
+        <div class="stat-label">Pending</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-val" id="statConfirmed">–</div>
+        <div class="stat-label">Confirmed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💬</div>
+        <div class="stat-val" id="statContacts">–</div>
+        <div class="stat-label">Messages</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tab-row">
+      <button class="tab-btn active" id="tab-bookings" onclick="showTab('bookings',null)">📅 Bookings</button>
+      <button class="tab-btn" id="tab-contacts" onclick="showTab('contacts',null)">💬 Messages</button>
+      <button class="tab-btn" id="tab-olddata" onclick="showTab('olddata',null)">🗄️ Old Data</button>
+    </div>
+
+    <!-- Bookings Table -->
+    <div id="panel-bookings" class="table-wrap">
+      <div class="table-header">
+        <h3>Session Bookings</h3>
+        <span class="table-count" id="bookingCount">Loading…</span>
+      </div>
+      <div id="bookingsBody"><div class="loading">Loading bookings…</div></div>
+    </div>
+
+    <!-- Contacts Table -->
+    <div id="panel-contacts" style="display:none">
+      <!-- Contact Inquiries Only -->
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3>💬 Contact Inquiries</h3>
+          <span class="table-count" id="contactCount">Loading…</span>
+        </div>
+        <div id="contactsBody"><div class="loading">Loading messages…</div></div>
+      </div>
+    </div>
+
+    <!-- Old Data Panel -->
+    <div id="panel-olddata" style="display:none">
+
+      <!-- Filter Bar -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <span style="font-size:.8rem;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase">Filter by Date</span>
+        <input type="date" id="oldDataDatePicker"
+          style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:8px;font-size:.85rem;font-family:var(--font-body);outline:none;cursor:pointer"
+          onchange="applyOldDataFilter()">
+        <button id="btnDailyView" onclick="applyOldDataFilter()"
+          style="padding:7px 16px;border-radius:8px;border:none;background:var(--gold);color:#0d0b10;font-size:.82rem;font-weight:600;cursor:pointer;transition:.2s">
+          📅 Show Daily Data
+        </button>
+        <button id="btnShowAll" onclick="clearOldDataFilter()"
+          style="padding:7px 16px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text-muted);font-size:.82rem;cursor:pointer;transition:.2s">
+          🗄️ Show All
+        </button>
+        <span id="oldDataFilterLabel" style="margin-left:auto;font-size:.78rem;color:var(--gold);display:none"></span>
+      </div>
+
+      <div class="table-wrap" style="margin-bottom:24px">
+        <div class="table-header">
+          <h3>🗄️ Past Bookings</h3>
+          <span class="table-count" id="oldBookingCount">–</span>
+        </div>
+        <div id="oldBookingsBody"><div class="loading">Loading past bookings…</div></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <h3>💬 Past Messages</h3>
+          <span class="table-count" id="oldContactCount">–</span>
+        </div>
+        <div id="oldContactsBody"><div class="loading">Loading past messages…</div></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast-admin" id="toast"></div>
+
+<!-- WhatsApp Notification Modal -->
+<div id="waModal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.78);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;overflow-y:auto">
+  <div style="background:var(--surface);border:1px solid rgba(37,211,102,0.35);border-radius:16px;width:100%;max-width:500px;overflow:hidden;box-shadow:0 0 60px rgba(37,211,102,0.15);margin:auto">
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#128C7E,#25D366);padding:20px 24px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:1.6rem">📲</span>
+        <div>
+          <div id="waModalTitle" style="color:#fff;font-weight:600;font-size:1rem">Send WhatsApp Message</div>
+          <div style="color:rgba(255,255,255,0.75);font-size:.75rem;margin-top:2px">User ke number par message bhejein</div>
+        </div>
+      </div>
+      <button onclick="closeWAModal()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center">&times;</button>
+    </div>
+    <!-- Body -->
+    <div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+
+      <!-- Phone -->
+      <div>
+        <label style="font-size:.72rem;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:6px">📞 Phone Number</label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="background:var(--surface2);border:1px solid var(--border);padding:9px 12px;border-radius:8px;color:var(--text-muted);font-size:.85rem">🇮🇳 +91</span>
+          <input id="waPhone" type="tel" placeholder="Enter phone number" style="flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 14px;border-radius:8px;font-size:.85rem;font-family:var(--font-body);outline:none">
+        </div>
+      </div>
+
+      <!-- Suggest New Time (only for cancellations) -->
+      <div id="waSuggestSection" style="background:rgba(212,175,120,0.06);border:1px solid rgba(212,175,120,0.2);border-radius:12px;padding:16px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <span style="font-size:1rem">⏰</span>
+          <span style="font-size:.8rem;color:var(--gold);font-weight:500">Naya Time Suggest Karein (Optional)</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label style="font-size:.7rem;color:var(--text-muted);display:block;margin-bottom:5px">🗓️ Naya Date</label>
+            <input id="waNewDate" type="date" onchange="updateWAMsg()" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:8px;font-size:.82rem;font-family:var(--font-body);outline:none;cursor:pointer">
+          </div>
+          <div>
+            <label style="font-size:.7rem;color:var(--text-muted);display:block;margin-bottom:5px">⏱️ Naya Time</label>
+            <input id="waNewTime" type="time" onchange="updateWAMsg()" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:8px;font-size:.82rem;font-family:var(--font-body);outline:none;cursor:pointer">
+          </div>
+        </div>
+        <p style="font-size:.7rem;color:var(--text-muted);margin-top:8px;line-height:1.5">ℹ️ Date ya time bharo to message me automatically suggest ho jayega</p>
+      </div>
+
+      <!-- Message Preview -->
+      <div>
+        <label style="font-size:.72rem;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:6px">💬 WhatsApp Message</label>
+        <textarea id="waMsg" rows="8" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:8px;font-size:.82rem;font-family:var(--font-body);resize:vertical;outline:none;line-height:1.6"></textarea>
+      </div>
+
+      <!-- Buttons -->
+      <div style="display:flex;gap:10px">
+        <button onclick="closeWAModal()" style="flex:1;padding:11px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text-muted);cursor:pointer;font-size:.85rem">Skip</button>
+        <button onclick="sendWhatsApp()" style="flex:2;padding:11px;border-radius:8px;border:none;background:linear-gradient(135deg,#128C7E,#25D366);color:#fff;cursor:pointer;font-size:.9rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px">
+          <span>💬</span> Send on WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+
+function showTab(tab, btn) {
+  document.getElementById('panel-bookings').style.display = tab === 'bookings' ? 'block' : 'none';
+  document.getElementById('panel-contacts').style.display  = tab === 'contacts'  ? 'block' : 'none';
+  document.getElementById('panel-olddata').style.display   = tab === 'olddata'   ? 'block' : 'none';
+  document.getElementById('tab-bookings').classList.toggle('active', tab === 'bookings');
+  document.getElementById('tab-contacts').classList.toggle('active',  tab === 'contacts');
+  document.getElementById('tab-olddata').classList.toggle('active',   tab === 'olddata');
+  
+  // Sync sidebar active state
+  document.querySelectorAll('.sidebar-nav .nav-item').forEach(el => el.classList.remove('active'));
+  const sideTarget = document.querySelector(`.sidebar-nav .nav-item[onclick*="'${tab}'"]`);
+  if (sideTarget) sideTarget.classList.add('active');
+  let title = 'Bookings';
+  if (tab === 'contacts') title = 'Messages';
+  if (tab === 'olddata')  title = 'Old Data';
+  document.getElementById('pageTitle').textContent = title;
+  if (tab === 'olddata') loadOldData();
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── Today filtering helpers ────────────────────────────────────────────────
+let _allBookings = [];
+let _allContacts = [];
+function getTodayStr() { return new Date().toLocaleDateString('en-CA'); }
+function isToday(dt)   { return !!dt && dt.startsWith(getTodayStr()); }
+function updateTodayStats() {
+  const todayB = _allBookings.filter(b => isToday(b.created_at));
+  const todayC = _allContacts.filter(c => isToday(c.created_at));
+  document.getElementById('statBookings').textContent  = todayB.length;
+  document.getElementById('statPending').textContent   = todayB.filter(b => b.status === 'pending').length;
+  document.getElementById('statConfirmed').textContent = todayB.filter(b => b.status === 'confirmed').length;
+  document.getElementById('statContacts').textContent  = todayC.length;
+}
+
+async function loadBookings() {
+  const body = document.getElementById('bookingsBody');
+  body.innerHTML = '<div class="loading">Loading…</div>';
+  try {
+    const r = await fetch(`${API}/api/bookings`);
+    const d = await r.json();
+    const rows = d.data || [];
+    _allBookings = rows;
+    const todayRows = rows.filter(b => isToday(b.created_at));
+    document.getElementById('bookingCount').textContent = `${todayRows.length} today`;
+    if (!todayRows.length) {
+      body.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><p>No bookings today — check <strong>Old Data</strong> for previous entries</p></div>';
+      return;
+    }
+    body.innerHTML = `<table style="table-layout:fixed;width:100%">
+      <thead><tr>
+        <th style="width:40px">#</th>
+        <th style="width:180px">Name</th>
+        <th style="width:130px">Service</th>
+        <th style="width:110px">Date &amp; Time</th>
+        <th style="width:130px">Phone</th>
+        <th style="width:80px">Mode</th>
+        <th style="width:110px">Payment</th>
+        <th style="width:110px">Status</th>
+        <th style="width:160px">Actions</th>
+      </tr></thead>
+      <tbody>${todayRows.map(b => `
+        <tr id="row-${b.id}">
+          <td style="color:var(--text-muted);font-size:.75rem">${b.id}</td>
+          <td>
+            <strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.name)}</strong>
+            <small style="color:var(--text-muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.email)}</small>
+          </td>
+          <td style="font-size:.8rem">${esc(b.service)}</td>
+          <td style="font-size:.8rem">${esc(b.preferred_date)}<br/><small style="color:var(--text-muted)">${esc(b.preferred_time)}</small></td>
+          <td style="font-size:.8rem;white-space:nowrap">${esc(b.phone)}</td>
+          <td><span style="font-size:.72rem;padding:3px 7px;border-radius:10px;background:${b.session_mode==='offline'?'rgba(212,175,120,0.12)':'rgba(0,188,212,0.1)'};color:${b.session_mode==='offline'?'#d4af78':'#00bcd4'};border:1px solid ${b.session_mode==='offline'?'rgba(212,175,120,0.3)':'rgba(0,188,212,0.2)'}">${b.session_mode==='offline'?'📍 Off':'💻 On'}</span></td>
+          <td>${b.payment_id
+            ? `<span style="font-size:.72rem;padding:3px 8px;border-radius:10px;background:rgba(143,170,156,0.15);color:#8faa9c;border:1px solid rgba(143,170,156,0.3);display:inline-block">💳 Paid</span><br/><small style="color:var(--text-muted);font-size:.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:100px">${esc(b.name)}</small>`
+            : '<span style="color:var(--text-muted);font-size:.75rem">— Unpaid</span>'}
+          </td>
+          <td><span class="status-badge ${b.status}" style="white-space:nowrap">${b.status === 'rescheduled' ? '📅 Rescheduled' : b.status === 'confirmed' ? '✓ Confirmed' : b.status === 'cancelled' ? '✕ Cancelled' : '⏳ Pending'}</span></td>
+          <td>
+            <div class="action-btns">
+              <button class="act-btn confirm" onclick="confirmBookingAction(${b.id},'confirmed','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')" title="Confirm">✓ Confirm</button>
+              <button class="act-btn" onclick="confirmBookingAction(${b.id},'cancelled','${esc(b.phone)}','${esc(b.name)}','${esc(b.service)}','${esc(b.preferred_date)}','${esc(b.preferred_time)}','${esc(b.session_mode||'online')}')" title="Cancel">✕ Cancel</button>
+              <button class="act-btn danger" onclick="deleteBooking(${b.id})" title="Delete">🗑</button>
+            </div>
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+  } catch(e) {
+    body.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load bookings. Is the Flask server running?</p></div>';
+  }
+}
+
+async function loadBookingMessages() {
+  const body = document.getElementById('bookingMsgsBody');
+  body.innerHTML = '<div class="loading">Loading…</div>';
+  try {
+    const r = await fetch(`${API}/api/bookings`);
+    const d = await r.json();
+    const rows = d.data || [];
+    document.getElementById('bookingMsgCount').textContent = `${rows.length} records`;
+    if (!rows.length) {
+      body.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><p>No bookings yet</p></div>';
+      return;
+    }
+    body.innerHTML = `<table>
+      <thead><tr>
+        <th>#</th><th>Name</th><th>Service</th><th>Date & Time</th><th>Phone</th><th>Message</th><th>Status</th>
+      </tr></thead>
+      <tbody>${rows.map(b => `
+        <tr>
+          <td style="color:var(--text-muted)">${b.id}</td>
+          <td><strong>${esc(b.name)}</strong><br/><small style="color:var(--text-muted)">${esc(b.email)}</small></td>
+          <td>${esc(b.service)}</td>
+          <td>${esc(b.preferred_date)}<br/><small style="color:var(--text-muted)">${esc(b.preferred_time)}</small></td>
+          <td>${esc(b.phone)}</td>
+          <td style="max-width:260px;white-space:pre-wrap;word-break:break-word;color:${b.message && b.message.trim() ? 'inherit' : 'var(--text-muted)'}">${b.message && b.message.trim() ? esc(b.message) : '—'}</td>
+          <td><span class="status-badge ${b.status}">${b.status}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+  } catch(e) {
+    body.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load booking messages.</p></div>';
+  }
+}
+
+async function loadContacts() {
+  const body = document.getElementById('contactsBody');
+  body.innerHTML = '<div class="loading">Loading…</div>';
+  try {
+    const r = await fetch(`${API}/api/contacts`);
+    const d = await r.json();
+    const rows = d.data || [];
+    _allContacts = rows;
+    const todayRows = rows.filter(c => isToday(c.created_at));
+    document.getElementById('contactCount').textContent = `${todayRows.length} today`;
+    if (!todayRows.length) {
+      body.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><p>No messages today — check <strong>Old Data</strong> for previous entries</p></div>';
+      return;
+    }
+    body.innerHTML = `<table>
+      <thead><tr>
+        <th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Received</th><th>Action</th>
+      </tr></thead>
+      <tbody>${todayRows.map(c => `
+        <tr>
+          <td style="color:var(--text-muted)">${c.id}</td>
+          <td><strong>${esc(c.name)}</strong></td>
+          <td><a href="mailto:${esc(c.email)}" style="color:var(--gold)">${esc(c.email)}</a></td>
+          <td>${esc(c.phone||'—')}</td>
+          <td style="max-width:260px;white-space:pre-wrap;word-break:break-word">${esc(c.message)}</td>
+          <td style="color:var(--text-muted);white-space:nowrap">${esc(c.created_at||'')}</td>
+          <td>
+            ${c.phone && c.phone.trim() ? `<button class="act-btn" style="background:rgba(37,211,102,0.1);border-color:rgba(37,211,102,0.3);color:#25d366;white-space:nowrap" onclick="sendFeedbackThankYou('${esc(c.phone)}','${esc(c.name)}')">💬 Thank You</button>` : '<span style="color:var(--text-muted);font-size:.75rem">No phone</span>'}
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+  } catch(e) {
+    body.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load messages. Is the Flask server running?</p></div>';
+  }
+}
+
+async function loadOldData(filterDate) {
+  const bookBody = document.getElementById('oldBookingsBody');
+  const contBody = document.getElementById('oldContactsBody');
+  if (!bookBody || !contBody) return;
+  bookBody.innerHTML = '<div class="loading">Loading past bookings…</div>';
+  contBody.innerHTML = '<div class="loading">Loading past messages…</div>';
+
+  // Update filter label
+  const label = document.getElementById('oldDataFilterLabel');
+  if (filterDate) {
+    const dt = new Date(filterDate + 'T00:00:00');
+    const niceName = dt.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    label.textContent = 'Showing: ' + niceName;
+    label.style.display = 'inline';
+  } else {
+    label.style.display = 'none';
+  }
+
+  // ── Past Bookings ──────────────────────────────────────────────────────────
+  try {
+    const rb = await fetch(`${API}/api/bookings`);
+    const db = await rb.json();
+    const oldBAll = (db.data || []).filter(b => !isToday(b.created_at));
+    const oldB = filterDate ? oldBAll.filter(b => (b.created_at || '').startsWith(filterDate)) : oldBAll;
+    document.getElementById('oldBookingCount').textContent = `${oldB.length} record${oldB.length !== 1 ? 's' : ''}`;
+    if (!oldB.length) {
+      bookBody.innerHTML = filterDate
+        ? '<div class="empty-state"><div class="empty-icon">📅</div><p>No bookings found for this date</p></div>'
+        : '<div class="empty-state"><div class="empty-icon">🗄️</div><p>No past bookings yet</p></div>';
+    } else if (filterDate) {
+      // Single-day view: flat table, no date grouping header
+      bookBody.innerHTML = `<table style="table-layout:fixed;width:100%">
+        <thead><tr>
+          <th style="width:40px">#</th>
+          <th style="width:150px">Name</th>
+          <th style="width:120px">Service</th>
+          <th style="width:105px">Date &amp; Time</th>
+          <th style="width:115px">Phone</th>
+          <th style="width:70px">Mode</th>
+          <th style="width:85px">Payment</th>
+          <th style="width:95px">Status</th>
+          <th style="width:105px">Received</th>
+        </tr></thead>
+        <tbody>${oldB.map(b => `
+          <tr>
+            <td style="color:var(--text-muted);font-size:.75rem">${b.id}</td>
+            <td><strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.name)}</strong><small style="color:var(--text-muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.email)}</small></td>
+            <td style="font-size:.8rem">${esc(b.service)}</td>
+            <td style="font-size:.8rem">${esc(b.preferred_date)}<br/><small style="color:var(--text-muted)">${esc(b.preferred_time)}</small></td>
+            <td style="font-size:.8rem;white-space:nowrap">${esc(b.phone)}</td>
+            <td><span style="font-size:.72rem;padding:3px 7px;border-radius:10px;background:${b.session_mode==='offline'?'rgba(212,175,120,0.12)':'rgba(0,188,212,0.1)'};color:${b.session_mode==='offline'?'#d4af78':'#00bcd4'};border:1px solid ${b.session_mode==='offline'?'rgba(212,175,120,0.3)':'rgba(0,188,212,0.2)'}">${b.session_mode==='offline'?'📍 Off':'💻 On'}</span></td>
+            <td>${b.payment_id ? '<span style="font-size:.72rem;padding:3px 8px;border-radius:10px;background:rgba(143,170,156,0.15);color:#8faa9c;border:1px solid rgba(143,170,156,0.3)">💳 Paid</span>' : '<span style="color:var(--text-muted);font-size:.75rem">— Unpaid</span>'}</td>
+            <td><span class="status-badge ${b.status}" style="white-space:nowrap">${b.status==='rescheduled'?'📅 Rescheduled':b.status==='confirmed'?'✓ Confirmed':b.status==='cancelled'?'✕ Cancelled':'⏳ Pending'}</span></td>
+            <td style="color:var(--text-muted);font-size:.75rem;white-space:nowrap">${esc(b.created_at||'')}</td>
+          </tr>`).join('')}
+        </tbody></table>`;
+    } else {
+      // Group by created_at date (YYYY-MM-DD), sorted newest first
+      const byDate = {};
+      oldB.forEach(b => {
+        const day = (b.created_at || 'Unknown').slice(0, 10);
+        if (!byDate[day]) byDate[day] = [];
+        byDate[day].push(b);
+      });
+      const sortedDays = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
+
+      const formatDay = d => {
+        if (d === 'Unknown') return 'Unknown Date';
+        const dt = new Date(d + 'T00:00:00');
+        return dt.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      };
+
+      bookBody.innerHTML = sortedDays.map(day => `
+        <div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+            <span style="font-size:1rem">📅</span>
+            <span style="font-family:var(--font-display);font-size:1rem;color:var(--gold-light);font-weight:600">${formatDay(day)}</span>
+            <span style="margin-left:auto;background:rgba(212,175,120,0.15);border:1px solid rgba(212,175,120,0.3);color:var(--gold);padding:2px 10px;border-radius:20px;font-size:.72rem;letter-spacing:.05em">${byDate[day].length} booking${byDate[day].length !== 1 ? 's' : ''}</span>
+          </div>
+          <table style="table-layout:fixed;width:100%">
+            <thead><tr>
+              <th style="width:40px">#</th>
+              <th style="width:150px">Name</th>
+              <th style="width:120px">Service</th>
+              <th style="width:105px">Date &amp; Time</th>
+              <th style="width:115px">Phone</th>
+              <th style="width:70px">Mode</th>
+              <th style="width:85px">Payment</th>
+              <th style="width:95px">Status</th>
+              <th style="width:105px">Received</th>
+            </tr></thead>
+            <tbody>${byDate[day].map(b => `
+              <tr>
+                <td style="color:var(--text-muted);font-size:.75rem">${b.id}</td>
+                <td><strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.name)}</strong><small style="color:var(--text-muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.email)}</small></td>
+                <td style="font-size:.8rem">${esc(b.service)}</td>
+                <td style="font-size:.8rem">${esc(b.preferred_date)}<br/><small style="color:var(--text-muted)">${esc(b.preferred_time)}</small></td>
+                <td style="font-size:.8rem;white-space:nowrap">${esc(b.phone)}</td>
+                <td><span style="font-size:.72rem;padding:3px 7px;border-radius:10px;background:${b.session_mode==='offline'?'rgba(212,175,120,0.12)':'rgba(0,188,212,0.1)'};color:${b.session_mode==='offline'?'#d4af78':'#00bcd4'};border:1px solid ${b.session_mode==='offline'?'rgba(212,175,120,0.3)':'rgba(0,188,212,0.2)'}">${b.session_mode==='offline'?'📍 Off':'💻 On'}</span></td>
+                <td>${b.payment_id ? '<span style="font-size:.72rem;padding:3px 8px;border-radius:10px;background:rgba(143,170,156,0.15);color:#8faa9c;border:1px solid rgba(143,170,156,0.3)">💳 Paid</span>' : '<span style="color:var(--text-muted);font-size:.75rem">— Unpaid</span>'}</td>
+                <td><span class="status-badge ${b.status}" style="white-space:nowrap">${b.status==='rescheduled'?'📅 Rescheduled':b.status==='confirmed'?'✓ Confirmed':b.status==='cancelled'?'✕ Cancelled':'⏳ Pending'}</span></td>
+                <td style="color:var(--text-muted);font-size:.75rem;white-space:nowrap">${esc(b.created_at||'')}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>`).join('');
+    }
+  } catch(e) {
+    bookBody.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load past bookings.</p></div>';
+  }
+
+  // ── Past Contacts ──────────────────────────────────────────────────────────
+  try {
+    const rc = await fetch(`${API}/api/contacts`);
+    const dc = await rc.json();
+    const oldCAll = (dc.data || []).filter(c => !isToday(c.created_at));
+    const oldC = filterDate ? oldCAll.filter(c => (c.created_at || '').startsWith(filterDate)) : oldCAll;
+    document.getElementById('oldContactCount').textContent = `${oldC.length} record${oldC.length !== 1 ? 's' : ''}`;
+    if (!oldC.length) {
+      contBody.innerHTML = filterDate
+        ? '<div class="empty-state"><div class="empty-icon">💬</div><p>No messages found for this date</p></div>'
+        : '<div class="empty-state"><div class="empty-icon">💬</div><p>No past messages yet</p></div>';
+    } else if (filterDate) {
+      // Single-day flat table
+      contBody.innerHTML = `<table>
+        <thead><tr>
+          <th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Received</th>
+        </tr></thead>
+        <tbody>${oldC.map(c => `
+          <tr>
+            <td style="color:var(--text-muted)">${c.id}</td>
+            <td><strong>${esc(c.name)}</strong></td>
+            <td><a href="mailto:${esc(c.email)}" style="color:var(--gold)">${esc(c.email)}</a></td>
+            <td>${esc(c.phone||'—')}</td>
+            <td style="max-width:260px;white-space:pre-wrap;word-break:break-word">${esc(c.message)}</td>
+            <td style="color:var(--text-muted);white-space:nowrap">${esc(c.created_at||'')}</td>
+          </tr>`).join('')}
+        </tbody></table>`;
+    } else {
+      // Group by date, sorted newest first
+      const byDateC = {};
+      oldC.forEach(c => {
+        const day = (c.created_at || 'Unknown').slice(0, 10);
+        if (!byDateC[day]) byDateC[day] = [];
+        byDateC[day].push(c);
+      });
+      const sortedDaysC = Object.keys(byDateC).sort((a, b) => b.localeCompare(a));
+
+      const formatDayC = d => {
+        if (d === 'Unknown') return 'Unknown Date';
+        const dt = new Date(d + 'T00:00:00');
+        return dt.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      };
+
+      contBody.innerHTML = sortedDaysC.map(day => `
+        <div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+            <span style="font-size:1rem">💬</span>
+            <span style="font-family:var(--font-display);font-size:1rem;color:var(--gold-light);font-weight:600">${formatDayC(day)}</span>
+            <span style="margin-left:auto;background:rgba(212,175,120,0.15);border:1px solid rgba(212,175,120,0.3);color:var(--gold);padding:2px 10px;border-radius:20px;font-size:.72rem;letter-spacing:.05em">${byDateC[day].length} message${byDateC[day].length !== 1 ? 's' : ''}</span>
+          </div>
+          <table>
+            <thead><tr>
+              <th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Received</th>
+            </tr></thead>
+            <tbody>${byDateC[day].map(c => `
+              <tr>
+                <td style="color:var(--text-muted)">${c.id}</td>
+                <td><strong>${esc(c.name)}</strong></td>
+                <td><a href="mailto:${esc(c.email)}" style="color:var(--gold)">${esc(c.email)}</a></td>
+                <td>${esc(c.phone||'—')}</td>
+                <td style="max-width:260px;white-space:pre-wrap;word-break:break-word">${esc(c.message)}</td>
+                <td style="color:var(--text-muted);white-space:nowrap">${esc(c.created_at||'')}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>`).join('');
+    }
+  } catch(e) {
+    contBody.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load past messages.</p></div>';
+  }
+}
+
+async function updateBooking(id, status) {
+  try {
+    const r = await fetch(`${API}/api/bookings/${id}`, {
+      method: 'PATCH',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({status})
+    });
+    const d = await r.json();
+    if (d.success) { toast(`Booking ${status} ✓`); loadAll(); }
+    else toast('Update failed');
+  } catch(e) { toast('Error updating'); }
+}
+
+// WhatsApp Notification Flow
+function confirmBookingAction(id, status, phone, name, service, date, time, sessionMode) {
+  fetch(`${API}/api/bookings/${id}`, {
+    method: 'PATCH',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({status})
+  }).then(r => r.json()).then(d => {
+    if (!d.success) { toast('Update failed'); return; }
+    toast(`Booking ${status} ✓`);
+    loadAll();
+    showWAModal(phone, name, service, date, time, status, sessionMode, id);
+  }).catch(() => toast('Error updating'));
+}
+
+// Store modal context globally
+let _waContext = {};
+
+function showWAModal(phone, name, service, date, time, status, sessionMode, bookingId) {
+  const isCancelled = status === 'cancelled';
+  const cross  = '\u274C'; // ❌
+  const check  = '\u2705'; // ✅
+  const emoji  = isCancelled ? cross : check;
+
+  _waContext = { name, service, date, time, status, isCancelled, sessionMode, bookingId };
+
+  document.getElementById('waSuggestSection').style.display = isCancelled ? 'block' : 'none';
+  document.getElementById('waNewDate').value = '';
+  document.getElementById('waNewTime').value = '';
+
+  document.getElementById('waModal').style.display = 'flex';
+  document.getElementById('waModalTitle').textContent = isCancelled ? `${emoji} Cancellation Notice` : `${emoji} Booking Confirmed`;
+  document.getElementById('waPhone').value = phone;
+
+  buildWAMsg();
+}
+
+function buildWAMsg() {
+  const { name, service, date, time, isCancelled, sessionMode } = _waContext;
+  const newDate = document.getElementById('waNewDate').value;
+  const newTime = document.getElementById('waNewTime').value;
+
+  // Format new date nicely if provided
+  let newDateStr = '';
+  if (newDate) {
+    const d = new Date(newDate);
+    newDateStr = d.toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  }
+  let newTimeStr = '';
+  if (newTime) {
+    const [h, m] = newTime.split(':');
+    const hr = parseInt(h);
+    newTimeStr = `${hr > 12 ? hr-12 : hr || 12}:${m} ${hr >= 12 ? 'PM' : 'AM'}`;
+  }
+
+  // Emoji using explicit UTF-16 surrogate pairs (pure ASCII in source, safe from encoding corruption)
+  const pray    = '\uD83D\uDE4F'; // 🙏
+  const cal     = '\uD83D\uDCC5'; // 📅
+  const caldate = '\uD83D\uDDD3'; // 🗓
+  const clock   = '\u23F0';       // ⏰
+  const sparkle = '\u2728';       // ✨
+  const flower  = '\uD83C\uDF38'; // 🌸
+  const pin     = '\uD83D\uDCCD'; // 📍
+
+  let msg = '';
+  if (isCancelled) {
+    if (newDate || newTime) {
+      // Cancellation WITH new time suggestion
+      msg = `Namaste ${name} ji ${pray}\n\nAapki Soul Syync booking *cancel* kar di gayi hai.\n${cal} Service: ${service}\n${caldate} Date: ${date}\n${clock} Time: ${time || 'N/A'}\n\n${sparkle} *Humne aapke liye ek naya slot suggest kiya hai:*\n${newDateStr ? caldate+' Naya Date: ' + newDateStr + '\n' : ''}${newTimeStr ? clock+' Naya Time: ' + newTimeStr + '\n' : ''}\nAgar ye slot aapko theek lage to reply karein, hum confirm kar denge. ${pray}\n\nDhanyawad! ${flower} *Soul Syync*`;
+    } else {
+      // Plain cancellation
+      msg = `Namaste ${name} ji ${pray}\n\nAapki Soul Syync booking *cancel* kar di gayi hai.\n${cal} Service: ${service}\n${caldate} Date: ${date}\n${clock} Time: ${time || 'N/A'}\n\nKoi sawaal ho to humse sampark karein.\nDhanyawad! ${flower} *Soul Syync*`;
+    }
+  } else {
+    if (sessionMode === 'offline') {
+      msg = `Namaste ${name} ji ${pray}\n\nAapki Soul Syync *In-Person* booking *confirm* ho gayi hai! ${sparkle}\n${cal} Service: ${service}\n${caldate} Date: ${date}\n${clock} Time: ${time || 'N/A'}\n\n${pin} *Location:*\nJayshree Dixit - Soul Syync\nVadodara, Gujarat, India\n(Exact address will be shared by the counsellor)\n\nHum aapka intezaar karenge. ${pray}\nDhanyawad! ${flower} *Soul Syync*`;
+    } else {
+      msg = `Namaste ${name} ji ${pray}\n\nAapki Soul Syync booking *confirm* ho gayi hai! ${sparkle}\n${cal} Service: ${service}\n${caldate} Date: ${date}\n${clock} Time: ${time || 'N/A'}\n\nHum aapka intezaar karenge. ${pray}\nDhanyawad! ${flower} *Soul Syync*`;
+    }
+  }
+  document.getElementById('waMsg').value = msg;
+}
+
+function updateWAMsg() {
+  buildWAMsg();
+}
+
+function sendWhatsApp() {
+  let phone = document.getElementById('waPhone').value.trim();
+  const msg  = document.getElementById('waMsg').value.trim();
+  if (!phone || !msg) { toast('Phone ya message empty hai!'); return; }
+  // Clean phone: remove spaces, dashes, +
+  phone = phone.replace(/[\s\-\(\)]/g, '');
+  if (!phone.startsWith('+')) {
+    if (phone.length === 10) phone = '91' + phone;
+    else phone = phone.replace(/^0/, '91');
+  } else {
+    phone = phone.replace('+', '');
+  }
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+
+  // If cancelled with new date/time → upgrade status to 'rescheduled'
+  if (_waContext.isCancelled && _waContext.bookingId) {
+    const newDate = document.getElementById('waNewDate').value;
+    const newTime = document.getElementById('waNewTime').value;
+    if (newDate || newTime) {
+      fetch(`${API}/api/bookings/${_waContext.bookingId}`, {
+        method: 'PATCH',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({status: 'rescheduled'})
+      }).then(() => { loadAll(); });
+    }
+  }
+
+  closeWAModal();
+}
+
+function closeWAModal() {
+  document.getElementById('waModal').style.display = 'none';
+}
+
+async function deleteBooking(id) {
+  if (!confirm('Delete this booking?')) return;
+  try {
+    const r = await fetch(`${API}/api/bookings/${id}`, {method:'DELETE'});
+    const d = await r.json();
+    if (d.success) { toast('Booking deleted'); loadAll(); }
+    else toast('Delete failed');
+  } catch(e) { toast('Error deleting'); }
+}
+
+function sendFeedbackThankYou(phone, name) {
+  // Clean phone number
+  let p = phone.replace(/[\s\-\(\)]/g, '');
+  if (!p.startsWith('+')) {
+    if (p.length === 10) p = '91' + p;
+    else p = p.replace(/^0/, '91');
+  } else {
+    p = p.replace('+', '');
+  }
+
+  const pray    = '\uD83D\uDE4F'; // 🙏
+  const sparkle = '\u2728';       // ✨
+  const flower  = '\uD83C\uDF38'; // 🌸
+  const heart   = '\uD83D\uDC9C'; // 💜
+  const star    = '\u2B50';       // ⭐
+
+  const msg = `Dear ${name}, ${pray}\n\nThank you so much for sharing your feedback with us! ${sparkle}\n\nYour thoughts and words truly mean a lot to us. ${heart} They inspire us to keep growing and serve you even better on your healing journey.\n\nWe will get back to you shortly. ${star}\n\nWith gratitude & love, ${flower}\n*Jayshree Dixit*\n*Soul Syync — Healing & Wellness*`;
+
+  const url = `https://wa.me/${p}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+}
+
+function esc(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function applyOldDataFilter() {
+  const date = document.getElementById('oldDataDatePicker').value;
+  if (!date) { alert('Please select a date first.'); return; }
+  loadOldData(date);
+}
+
+function clearOldDataFilter() {
+  document.getElementById('oldDataDatePicker').value = '';
+  loadOldData();
+}
+
+async function loadAll() {
+  await Promise.all([loadBookings(), loadContacts()]);
+  updateTodayStats();
+}
+
+// Particle Background Animation
+(function () {
+  const canvas = document.getElementById('particles-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function Particle() {
+    this.x  = Math.random() * W;
+    this.y  = Math.random() * H;
+    this.r  = Math.random() * 1.5 + 0.3;
+    this.vx = (Math.random() - 0.5) * 0.22;
+    this.vy = (Math.random() - 0.5) * 0.22;
+    this.alpha = Math.random() * 0.5 + 0.1;
+  }
+
+  function init() {
+    particles = [];
+    const count = Math.floor((W * H) / 14000);
+    for (let i = 0; i < count; i++) particles.push(new Particle());
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    // var(--gold) is #d4af78 -> 212, 175, 120
+    const col = '212,175,120';
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W;
+      if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H;
+      if (p.y > H) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${col},${p.alpha})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(loop);
+  }
+
+  resize(); init(); loop();
+  window.addEventListener('resize', () => { resize(); init(); });
+})();
+
+// Init
+const d = new Date();
+document.getElementById('topbarDate').textContent = d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+loadAll();
+
+// Auto-refresh every 30 seconds
+setInterval(loadAll, 30000);
+</script>
+
+<!-- Mobile Bottom Nav -->
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-item active" id="mnav-bookings" onclick="showTab('bookings',null);setMobileNav('bookings')">
+    <span class="icon">📅</span>
+    <span>Bookings</span>
+  </button>
+  <button class="mobile-nav-item" id="mnav-contacts" onclick="showTab('contacts',null);setMobileNav('contacts')">
+    <span class="icon">💬</span>
+    <span>Messages</span>
+  </button>
+  <button class="mobile-nav-item" id="mnav-olddata" onclick="showTab('olddata',null);setMobileNav('olddata')">
+    <span class="icon">🗄️</span>
+    <span>Old Data</span>
+  </button>
+  <a class="mobile-nav-item" href="/" target="_blank">
+    <span class="icon">🌐</span>
+    <span>Website</span>
+  </a>
+  <a class="mobile-nav-item" href="/logout">
+    <span class="icon">🚪</span>
+    <span>Logout</span>
+  </a>
+</nav>
+
+<script>
+function setMobileNav(tab) {
+  document.querySelectorAll('.mobile-nav-item').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById('mnav-' + tab);
+  if (el) el.classList.add('active');
+}
+</script>
+
+</body>
+</html>
