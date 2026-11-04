@@ -422,12 +422,6 @@ textarea{resize:vertical}
     </svg></div>
   </section>
 
-  <section class="fanw" aria-label="Collection">
-    <h2>Browse the collection</h2><p>Hover a photo to bring it forward. Click to open the product.</p>
-    <div class="fan" id="fan"></div>
-    <div class="fan-nav"><button id="fanL" aria-label="Previous"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><span id="fanDots"></span><button id="fanR" aria-label="Next"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button></div>
-  </section>
-
   <section class="grid" id="grid" aria-label="Products"></section>
 
   <section class="info">
