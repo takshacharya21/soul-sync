@@ -173,6 +173,10 @@ def terms():
 def refund():
     return render_template('refund.html')
 
+@app.route('/gallery')
+def gallery():
+    return render_template('gallery.html')
+
 # ─── API: Razorpay Order Create ──────────────────────────────────────────────
 
 @app.route('/api/create-order', methods=['POST'])
