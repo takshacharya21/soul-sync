@@ -75,9 +75,20 @@ def init_shop(app, get_db):
                     vlabel=r['variant_label'] or '', variants=json.loads(r['variants'] or '[]'),
                     custom=bool(r['custom']), active=bool(r['active']), sort=r['sort'])
 
-    def parse_variants(text):
+    def parse_variants(val):
+        if isinstance(val, list):
+            out = []
+            for item in val:
+                if isinstance(item, dict) and item.get('n'):
+                    v = {'n': str(item['n']).strip()[:60]}
+                    if item.get('p') is not None and str(item['p']).isdigit():
+                        v['p'] = int(item['p'])
+                    if item.get('img'):
+                        v['img'] = str(item['img']).strip()[:120]
+                    out.append(v)
+            return out
         out = []
-        for line in (text or '').split('\n'):
+        for line in (val or '').split('\n'):
             parts = [x.strip() for x in line.split('|')]
             if not parts[0]:
                 continue
@@ -606,7 +617,14 @@ label{font-size:.8rem;color:var(--mu);display:block;margin-bottom:4px}.two{displ
   <div><label>Description</label><textarea id="f_desc" rows="3"></textarea></div>
   <div><label>Highlights (one per line)</label><textarea id="f_pts" rows="3"></textarea></div>
   <div class="two"><div><label>Option label (e.g. Stone, Design)</label><input id="f_vl"></div><div><label>&nbsp;</label><label style="color:var(--tx)"><input type="checkbox" id="f_cu" style="width:auto"> Allow customization note</label></div></div>
-  <div><label>Options, one per line: Name | price (optional) | image file (optional)</label><textarea id="f_vars" rows="4" placeholder="Rose Quartz&#10;Money Magnet | 599"></textarea></div>
+  <div style="background:rgba(255,255,255,.02);border:1px solid var(--ln);border-radius:10px;padding:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <label style="margin:0;font-weight:600;color:var(--tx);font-size:.9rem">Types / Variants (with individual photos)</label>
+      <button type="button" class="btn g" id="addVarBtn" style="padding:4px 12px;font-size:.8rem">+ Add Type</button>
+    </div>
+    <div id="varList" style="display:grid;gap:8px;max-height:240px;overflow-y:auto;padding-right:2px"></div>
+    <small style="color:var(--mu);display:block;margin-top:6px;font-size:.78rem">💡 Click "📷 Photo" on each type to upload or change its photo. When visitors select that type on the shop, its photo changes automatically!</small>
+  </div>
   <div style="display:flex;gap:14px;align-items:center"><img class="pv" id="pv" alt=""><div><label>Main photo</label><input type="file" id="f_file" accept="image/*"></div></div>
   <label style="color:var(--tx)"><input type="checkbox" id="f_act" style="width:auto" checked> Visible on shop</label>
   <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn g" id="cx">Cancel</button><button class="btn" id="sv">Save</button></div>
@@ -615,7 +633,7 @@ label{font-size:.8rem;color:var(--mu);display:block;margin-bottom:4px}.two{displ
 const $=s=>document.querySelector(s),esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])),inr=n=>"₹"+Number(n).toLocaleString("en-IN");
 const api=async(u,o)=>{const r=await fetch(u,o);if(r.status===401){location.href="/admin";return}const d=await r.json();if(!r.ok)throw new Error(d.error||"Error");return d};
 const J=(m,b)=>({method:m,headers:{"Content-Type":"application/json"},body:JSON.stringify(b)});
-let P=[],editing=null,photo="";
+let P=[],editing=null,photo="",varsData=[];
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x===t));$("#orders").style.display=t.dataset.t==="orders"?"":"none";$("#products").style.display=t.dataset.t==="products"?"":"none"});
 async function stats(){const s=await api("/api/admin/shop/stats");$("#stats").innerHTML=[["Orders",s.orders],["New orders",s.new],["Revenue (excl. cancelled)",inr(s.revenue)],["Products",s.products]].map(a=>`<div class="st"><b>${a[1]}</b><span>${a[0]}</span></div>`).join("")}
 async function orders(){const o=await api("/api/admin/shop/orders");
@@ -629,17 +647,59 @@ async function products(){P=await api("/api/admin/shop/products");
   $("#plist").innerHTML=P.length?P.map(p=>`<div class="row ${p.active?"":"off"}"><img src="/shop/img/${esc(p.img)}" alt=""><div><b>${esc(p.name)}</b> ${p.tag?`<span class="pill">${esc(p.tag)}</span>`:""}${p.active?"":' <span class="pill">hidden</span>'}<small>${inr(p.price)} · ${p.variants.length} options</small></div><div class="act"><button class="btn g" data-e="${p.pid}">Edit</button><button class="btn d" data-d="${p.pid}">Delete</button></div></div>`).join(""):'<p class="emp">No products.</p>'}
 $("#plist").onclick=async e=>{if(e.target.dataset.e)openF(P.find(p=>p.pid==e.target.dataset.e));
   if(e.target.dataset.d&&confirm("Delete this product?")){await api("/api/admin/shop/products/"+e.target.dataset.d,{method:"DELETE"});products();stats()}};
+function renderVars(){
+  const c=$("#varList");
+  if(!varsData.length){c.innerHTML='<p style="color:var(--mu);font-size:.82rem;padding:6px 0">No types added. Click "+ Add Type" to add one.</p>';return}
+  c.innerHTML=varsData.map((v,i)=>`
+    <div class="v-row" data-i="${i}" style="display:grid;grid-template-columns:40px 1fr 90px auto auto;gap:8px;align-items:center;background:rgba(0,0,0,.25);padding:6px 8px;border-radius:8px;border:1px solid var(--ln)">
+      <img src="${v.img?'/shop/img/'+esc(v.img):photo?'/shop/img/'+esc(photo):''}" class="v-pv" style="width:40px;height:40px;object-fit:cover;border-radius:6px;background:#241e32" alt="">
+      <input class="v-name" placeholder="Type name (e.g. Rose Quartz)" value="${esc(v.n||'')}">
+      <input class="v-price" type="number" placeholder="Price (₹)" value="${v.p!=null?v.p:''}" title="Leave empty to use base price">
+      <label class="btn g" style="padding:6px 10px;font-size:.78rem;cursor:pointer;white-space:nowrap;margin:0" title="Upload/change photo for this type">
+        📷 Photo
+        <input type="file" accept="image/*" class="v-file" style="display:none">
+      </label>
+      <button type="button" class="btn d v-del" style="padding:4px 8px;font-size:.85rem" title="Remove type">✕</button>
+    </div>
+  `).join("");
+}
+$("#varList").oninput=e=>{
+  const row=e.target.closest(".v-row");if(!row)return;const i=+row.dataset.i;
+  if(e.target.classList.contains("v-name"))varsData[i].n=e.target.value;
+  if(e.target.classList.contains("v-price"))varsData[i].p=e.target.value?+e.target.value:null;
+};
+$("#varList").onclick=e=>{
+  const del=e.target.closest(".v-del");if(del){const row=del.closest(".v-row");varsData.splice(+row.dataset.i,1);renderVars()}
+};
+$("#varList").onchange=async e=>{
+  if(e.target.classList.contains("v-file")){
+    const f=e.target.files[0];if(!f)return;
+    const row=e.target.closest(".v-row");if(!row)return;const i=+row.dataset.i;
+    try{
+      const im=await createImageBitmap(f),k=Math.min(1,1000/Math.max(im.width,im.height)),canvas=document.createElement("canvas");
+      canvas.width=im.width*k;canvas.height=im.height*k;
+      canvas.getContext("2d").drawImage(im,0,0,canvas.width,canvas.height);
+      const blob=await new Promise(r=>canvas.toBlob(r,"image/jpeg",.85)),fd=new FormData();
+      fd.append("file",blob,"v.jpg");
+      const d=await api("/api/admin/shop/upload",{method:"POST",body:fd});
+      varsData[i].img=d.name;renderVars();
+    }catch(err){alert(err.message)}
+  }
+};
+$("#addVarBtn").onclick=()=>{varsData.push({n:"",p:null,img:""});renderVars();const inp=$("#varList").querySelectorAll(".v-name");if(inp.length)inp[inp.length-1].focus()};
 function openF(p){editing=p?p.pid:null;$("#mh").textContent=p?"Edit product":"Add product";p=p||{};photo=p.img||"";
   $("#f_name").value=p.name||"";$("#f_price").value=p.price||"";$("#f_tag").value=p.tag||"";$("#f_sort").value=p.sort||0;$("#f_desc").value=p.desc||"";
   $("#f_pts").value=(p.pts||[]).join("\n");$("#f_vl").value=p.vlabel||"";$("#f_cu").checked=!!p.custom;
-  $("#f_vars").value=(p.variants||[]).map(v=>[v.n,v.p||"",v.img||""].join(" | ").replace(/( \| )+$/,"")).join("\n");
+  varsData=(p.variants||[]).map(v=>({n:v.n||"",p:(v.p!=null&&v.p!=="")?+v.p:null,img:v.img||""}));renderVars();
   $("#f_act").checked=p.active!==false;$("#pv").src=photo?"/shop/img/"+photo:"";$("#f_file").value="";$("#ov").classList.add("on")}
 $("#newP").onclick=()=>openF(null);$("#cx").onclick=()=>$("#ov").classList.remove("on");
 $("#f_file").onchange=async e=>{const f=e.target.files[0];if(!f)return;
   const im=await createImageBitmap(f),k=Math.min(1,1000/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);
   const blob=await new Promise(r=>c.toBlob(r,"image/jpeg",.85)),fd=new FormData();fd.append("file",blob,"p.jpg");
   try{const d=await api("/api/admin/shop/upload",{method:"POST",body:fd});photo=d.name;$("#pv").src="/shop/img/"+photo}catch(x){alert(x.message)}};
-$("#sv").onclick=async()=>{const b={name:$("#f_name").value.trim(),price:+$("#f_price").value,tag:$("#f_tag").value.trim(),sort:+$("#f_sort").value||0,description:$("#f_desc").value,points:$("#f_pts").value,variant_label:$("#f_vl").value.trim(),custom:$("#f_cu").checked,variants:$("#f_vars").value,image:photo,active:$("#f_act").checked};
+$("#sv").onclick=async()=>{
+  const cleanVars=varsData.filter(v=>v.n&&v.n.trim()).map(v=>({n:v.n.trim(),p:v.p?+v.p:null,img:v.img||""}));
+  const b={name:$("#f_name").value.trim(),price:+$("#f_price").value,tag:$("#f_tag").value.trim(),sort:+$("#f_sort").value||0,description:$("#f_desc").value,points:$("#f_pts").value,variant_label:$("#f_vl").value.trim(),custom:$("#f_cu").checked,variants:cleanVars,image:photo,active:$("#f_act").checked};
   if(!b.name||!(b.price>=0)||!photo){alert("Name, price and photo are required");return}
   try{await api(editing?"/api/admin/shop/products/"+editing:"/api/admin/shop/products",J(editing?"PUT":"POST",b));$("#ov").classList.remove("on");products();stats()}catch(x){alert(x.message)}};
 stats();orders();products();setInterval(()=>{if(!$("#ov").classList.contains("on")){orders();stats()}},60000);
