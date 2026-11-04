@@ -129,23 +129,8 @@ textarea{resize:vertical}
       <ul id="showList"></ul>
       <button class="btn view" id="showView">View product</button>
     </div>
-    <div class="art"><svg viewBox="0 0 500 500" role="img" aria-label="Product preview">
-      <defs>
-        <clipPath id="clip-original">
-          <path class="path" d="M480.6,235H19.4c-6,0-10.8-4.9-10.8-10.8v-9.5c0-6,4.9-10.8,10.8-10.8h461.1c6,0,10.8,4.9,10.8,10.8v9.5C491.4,230.2,486.6,235,480.6,235z"/>
-          <path class="path" d="M483.1,362.4H16.9c-4.6,0-8.3-3.7-8.3-8.3v-1.8c0-4.6,3.7-8.3,8.3-8.3h466.1c4.6,0,8.3,3.7,8.3,8.3v1.8C491.4,358.7,487.7,362.4,483.1,362.4z"/>
-          <path class="path" d="M460.3,336.3H39.7c-17.2,0-31.1-13.9-31.1-31.1v-31.5c0-17.2,13.9-31.1,31.1-31.1h420.7c17.2,0,31.1,13.9,31.1,31.1v31.5C491.4,322.4,477.5,336.3,460.3,336.3z"/>
-          <path class="path" d="M459.2,196.2H40.8v-35c0-47.5,38.5-86,86-86h246.5c47.5,0,86,38.5,86,86V196.2z"/>
-          <path class="path" d="M441.9,424.9H58.1c-9.6,0-17.3-7.8-17.3-17.3v-37.4h418.5v37.4C459.2,417.1,451.5,424.9,441.9,424.9z"/>
-        </clipPath>
-        <clipPath id="clip-hexagons">
-          <rect class="path" x="20" y="20" width="200" height="280" rx="12"/><rect class="path" x="20" y="320" width="200" height="160" rx="12"/>
-          <rect class="path" x="240" y="20" width="240" height="140" rx="12"/><rect class="path" x="240" y="180" width="110" height="160" rx="12"/>
-          <rect class="path" x="370" y="180" width="110" height="160" rx="12"/><rect class="path" x="240" y="360" width="240" height="120" rx="12"/>
-        </clipPath>
-        <clipPath id="clip-pixels"></clipPath>
-      </defs>
-      <g id="showG"><image id="showImg" width="500" height="500" preserveAspectRatio="xMidYMid slice"/></g>
+    <div class="art"><svg viewBox="0 0 500 500" role="img" aria-label="Product preview" style="border-radius:24px;border:1.5px solid rgba(212,175,120,.3);background:radial-gradient(circle at center, #241e32 0%, #120f1a 100%);overflow:hidden;">
+      <g id="showG"><image id="showImg" width="460" height="460" x="20" y="20" preserveAspectRatio="xMidYMid meet"/></g>
     </svg></div>
   </section>
 
@@ -261,19 +246,12 @@ const SHOW=[
 {n:"Laxmi Yantra",id:"laxmi-yantra",clip:"clip-hexagons",img:"yantra.jpg"},
 {n:"Healing Pendulum",id:"pendulum",clip:"clip-original",img:"pendulum.jpg"}];
 (function(){
-  const px=$("#clip-pixels");for(let i=0;i<9;i++){const r=document.createElementNS("http://www.w3.org/2000/svg","rect");
-    r.setAttribute("class","path");r.setAttribute("x",(i%3)*160+20);r.setAttribute("y",Math.floor(i/3)*160+20);r.setAttribute("width",140);r.setAttribute("height",140);r.setAttribute("rx",4);px.appendChild(r)}
   const list=$("#showList");let act=-1,tl=null;
   list.innerHTML=SHOW.map((x,i)=>{const w=x.n.split(" ");return `<li tabindex="0" data-i="${i}"><span class="n">0${i+1}</span><h2>${w[0]}<br>${w[1]||""}</h2></li>`}).join("");
-  function loop(i){const it=SHOW[i],sel="#"+it.clip+" .path";if(tl)tl.kill();
-    $("#showImg").setAttribute("href",IMG+it.img);$("#showG").setAttribute("clip-path","url(#"+it.clip+")");
-    if(!window.gsap){$("#showG").removeAttribute("clip-path");return}
-    gsap.set(sel,{scale:0,transformOrigin:"50% 50%"});
-    if(matchMedia("(prefers-reduced-motion:reduce)").matches){gsap.set(sel,{scale:1});return}
-    tl=gsap.timeline({repeat:-1,repeatDelay:1});
-    tl.to(sel,{scale:1,duration:.8,stagger:{amount:.4,from:"random"},ease:"expo.out"})
-      .to(sel,{scale:1.05,duration:1.5,yoyo:true,repeat:1,ease:"sine.inOut",stagger:{amount:.2,from:"center"}})
-      .to(sel,{scale:0,duration:.6,stagger:{amount:.3,from:"edges"},ease:"expo.in"})}
+  function loop(i){const it=SHOW[i];if(tl)tl.kill();
+    $("#showImg").setAttribute("href",IMG+it.img);
+    if(window.gsap){gsap.fromTo("#showImg",{opacity:0,scale:0.92,transformOrigin:"50% 50%"},{opacity:1,scale:1,duration:0.45,ease:"power2.out"})}
+  }
   function set(i){if(i===act)return;act=i;list.querySelectorAll("li").forEach((l,k)=>l.classList.toggle("on",k===i));loop(i)}
   list.addEventListener("mouseover",e=>{const l=e.target.closest("li");if(l)set(+l.dataset.i)});
   list.addEventListener("focusin",e=>{const l=e.target.closest("li");if(l)set(+l.dataset.i)});
