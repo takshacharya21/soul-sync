@@ -3063,3 +3063,119 @@ body.modal-open {
     border-radius: 20px;
   }
 }
+/* =====================================================
+   GALLERY FAN CAROUSEL SECTION
+   ===================================================== */
+.gallery-section {
+  background: var(--bg);
+  padding: 5rem 0 6rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.gallery-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.gallery-section .section-header {
+  margin-bottom: 1rem;
+}
+
+/* Fan layout container */
+.fan-layout {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 22rem;
+}
+@media (min-width: 480px)  { .fan-layout { height: 26rem; } }
+@media (min-width: 640px)  { .fan-layout { height: 28rem; } }
+@media (min-width: 768px)  { .fan-layout { height: 34rem; } }
+@media (min-width: 1024px) { .fan-layout { height: 38rem; } }
+
+/* Individual fan cards */
+.fan-card {
+  position: absolute;
+  width: 10rem; height: 15rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  cursor: pointer;
+  will-change: transform, opacity;
+  transform-origin: center bottom;
+  border: 2px solid rgba(255,255,255,0.08);
+  transition: box-shadow 0.3s;
+}
+@media (min-width: 480px)  { .fan-card { width: 11rem; height: 16.5rem; } }
+@media (min-width: 640px)  { .fan-card { width: 12rem; height: 18rem; } }
+@media (min-width: 768px)  { .fan-card { width: 14rem; height: 21rem; } }
+@media (min-width: 1024px) { .fan-card { width: 16rem; height: 24rem; } }
+
+.fan-card:hover {
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+}
+
+.fan-card img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Pagination arrows */
+.fan-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  position: relative;
+  z-index: 30;
+}
+
+.fan-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem; height: 2.75rem;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(16px);
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  transition: border-color 0.3s, color 0.3s, background 0.3s;
+  outline: none;
+}
+.fan-arrow:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(212,175,55,0.1);
+}
+.fan-arrow svg {
+  width: 1.1rem; height: 1.1rem;
+}
+
+.fan-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.fan-dot {
+  width: 0.5rem; height: 0.5rem;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  transition: background 0.3s, transform 0.3s;
+}
+.fan-dot.active {
+  background: var(--gold);
+  transform: scale(1.35);
+}

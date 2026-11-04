@@ -731,6 +731,33 @@
     </div>
   </section>
 
+  <!-- ░░ GALLERY FAN CAROUSEL ░░ -->
+  <section class="gallery-section section" id="gallery">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Our Moments</p>
+        <h2 class="section-title">Healing <em>Stories</em> in Frames</h2>
+        <p class="section-sub">Glimpses from real sessions, retreats &amp; sacred spaces at Soul Syync.</p>
+      </div>
+    </div>
+
+    <!-- Fan Carousel -->
+    <div class="flex flex-col items-center w-full" style="display:flex;flex-direction:column;align-items:center;">
+      <div id="fan-container" class="fan-layout">
+        <!-- Cards injected by JS -->
+      </div>
+      <div class="fan-pagination" id="fan-pagination" style="display:none;">
+        <button class="fan-arrow" id="fan-prev" aria-label="Previous">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="fan-dots" id="fan-dots"></div>
+        <button class="fan-arrow" id="fan-next" aria-label="Next">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
   <!-- ░░ WHY CHOOSE ░░ -->
   <section class="why section">
     <div class="why-bg">
@@ -1252,7 +1279,9 @@
 
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="{{ url_for('static', filename='fan-carousel.js') }}"></script>
 </body>
 
 </html>
