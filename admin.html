@@ -171,20 +171,27 @@ select.status-select{background:var(--surface2);border:1px solid var(--border);c
     background: var(--surface);
     border-top: 1px solid var(--border);
     z-index: 1000;
-    padding: 8px 0 env(safe-area-inset-bottom, 8px);
+    padding: 6px 2px env(safe-area-inset-bottom, 6px);
   }
   .mobile-nav-item {
     flex: 1; display: flex; flex-direction: column;
-    align-items: center; gap: 3px;
-    padding: 6px 4px;
+    align-items: center; gap: 2px;
+    padding: 4px 1px;
     color: var(--text-muted);
-    font-size: .6rem; letter-spacing: .05em;
+    font-size: .56rem; letter-spacing: .02em;
     text-transform: uppercase;
     background: none; border: none;
     cursor: pointer; transition: .2s;
     text-decoration: none;
+    min-width: 0;
   }
-  .mobile-nav-item .icon { font-size: 1.2rem; }
+  .mobile-nav-item .icon { font-size: 1.15rem; }
+  .mobile-nav-item span:not(.icon) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
   .mobile-nav-item.active,
   .mobile-nav-item:hover { color: var(--gold); }
 
@@ -322,6 +329,9 @@ select.status-select{background:var(--surface2);border:1px solid var(--border);c
     <button class="nav-item" id="nav-olddata" onclick="showTab('olddata',this)">
       <span class="icon">🗄️</span><span>Old Data</span>
     </button>
+    <a class="nav-item" id="nav-shop" href="/admin/shop">
+      <span class="icon">🛍️</span><span>Shop</span>
+    </a>
     <div class="nav-section">Quick Actions</div>
     <a class="nav-item" href="/" target="_blank">
       <span class="icon">🌐</span><span>View Website</span>
@@ -1474,6 +1484,10 @@ loadAll();
     <span class="icon">🗄️</span>
     <span>Old Data</span>
   </button>
+  <a class="mobile-nav-item" id="mnav-shop" href="/admin/shop">
+    <span class="icon">🛍️</span>
+    <span>Shop</span>
+  </a>
   <a class="mobile-nav-item" href="/" target="_blank">
     <span class="icon">🌐</span>
     <span>Website</span>

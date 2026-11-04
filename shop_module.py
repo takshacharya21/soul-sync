@@ -273,9 +273,13 @@ def init_shop(app, get_db):
                         resp.set_data(h.replace('</body>', '<script src="/shop/ad.js" defer></script></body>', 1))
                 elif request.path == '/admin' and session.get('logged_in'):
                     h = resp.get_data(as_text=True)
-                    if '/admin/shop' not in h and '</nav>' in h:
-                        link = '<a class="nav-item" href="/admin/shop"><span class="icon">🛍</span> Shop</a>'
-                        resp.set_data(h.replace('</nav>', link + '</nav>', 1))
+                    if '/admin/shop' not in h:
+                        link = '<a class="nav-item" id="nav-shop" href="/admin/shop"><span class="icon">🛍️</span><span>Shop</span></a>'
+                        if 'id="nav-olddata"' in h:
+                            h = re.sub(r'(<button[^>]*id="nav-olddata"[^>]*>[\s\S]*?</button>)', r'\1\n    ' + link, h, count=1)
+                        elif '</nav>' in h:
+                            h = h.replace('</nav>', link + '</nav>', 1)
+                        resp.set_data(h)
         except Exception:
             pass
         return resp
